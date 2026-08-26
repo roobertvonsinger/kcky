@@ -26,6 +26,9 @@ from src.browser import (
     find_orbita_executable, get_cached_gologin_profiles,
     find_free_port, launch_browser_process, attach_cdp_stealth_session
 )
+from src.virtual_cam_broadcaster import (
+    start_system_virtual_cam, stop_system_virtual_cam, get_virtual_cam_status
+)
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger("Onboarded_Server")
@@ -103,6 +106,8 @@ async def get_status():
     if state.active_mp4_preview and os.path.exists(state.active_mp4_preview):
         preview_url = f"/data/buffers/{os.path.basename(state.active_mp4_preview)}"
 
+    vcam_status = get_virtual_cam_status()
+
     return {
         "app": "Onboarded",
         "status": "ready",
@@ -115,10 +120,37 @@ async def get_status():
             "y4m": state.active_y4m,
             "preview_mp4": preview_url
         },
+        "virtual_cam": vcam_status,
         "browser_running": state.browser_running,
         "cdp_port": state.cdp_port,
         "detected_sdks": state.detected_sdks
     }
+
+
+@app.post("/api/virtual-cam/start")
+async def api_start_virtual_cam(media_path: Optional[str] = Form(None)):
+    target = media_path or state.active_mp4_preview or state.active_y4m
+    if not target or not os.path.exists(target):
+        raise HTTPException(status_code=400, detail="No hay ningún medio activo para transmitir.")
+    
+    ok = start_system_virtual_cam(target, width=1280, height=720, fps=30)
+    if ok:
+        await broadcast_log("Cámara Virtual DirectShow (OBS/Sistema) activa y transmitiendo.", "success")
+        return {"status": "started", "info": get_virtual_cam_status()}
+    else:
+        raise HTTPException(status_code=500, detail="No fue posible iniciar el dispositivo de cámara virtual.")
+
+
+@app.post("/api/virtual-cam/stop")
+async def api_stop_virtual_cam():
+    stop_system_virtual_cam()
+    await broadcast_log("Cámara Virtual DirectShow detenida.", "info")
+    return {"status": "stopped"}
+
+
+@app.get("/api/virtual-cam/status")
+async def api_get_virtual_cam_status():
+    return get_virtual_cam_status()
 
 
 @app.get("/api/profiles")

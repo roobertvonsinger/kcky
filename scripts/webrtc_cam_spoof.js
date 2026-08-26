@@ -26,27 +26,36 @@
     const origEnumerateDevices = navigator.mediaDevices.enumerateDevices.bind(navigator.mediaDevices);
     const origGUM = navigator.mediaDevices.getUserMedia ? navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices) : null;
 
-    // 0. Interceptar getUserMedia para relajar restricciones rígidas ('exact') que causan OverconstrainedError
+    // 0. Interceptar getUserMedia para relajar restricciones rígidas ('exact') y desviar deviceId hacia la cámara activa
     if (origGUM) {
         navigator.mediaDevices.getUserMedia = async function (constraints) {
             let adaptedConstraints = constraints;
             try {
                 if (constraints && typeof constraints === 'object') {
                     adaptedConstraints = JSON.parse(JSON.stringify(constraints));
-                    if (adaptedConstraints.video && typeof adaptedConstraints.video === 'object') {
-                        // Relajar restricciones exactas de resolución y fps hacia 'ideal'
-                        if (adaptedConstraints.video.width && adaptedConstraints.video.width.exact) {
-                            adaptedConstraints.video.width.ideal = adaptedConstraints.video.width.exact;
-                            delete adaptedConstraints.video.width.exact;
+                    if (adaptedConstraints.video) {
+                        if (typeof adaptedConstraints.video === 'object') {
+                            // Relajar restricciones exactas de resolución y fps hacia 'ideal'
+                            if (adaptedConstraints.video.width && adaptedConstraints.video.width.exact) {
+                                adaptedConstraints.video.width.ideal = adaptedConstraints.video.width.exact;
+                                delete adaptedConstraints.video.width.exact;
+                            }
+                            if (adaptedConstraints.video.height && adaptedConstraints.video.height.exact) {
+                                adaptedConstraints.video.height.ideal = adaptedConstraints.video.height.exact;
+                                delete adaptedConstraints.video.height.exact;
+                            }
+                            if (adaptedConstraints.video.frameRate && adaptedConstraints.video.frameRate.exact) {
+                                adaptedConstraints.video.frameRate.ideal = adaptedConstraints.video.frameRate.exact;
+                                delete adaptedConstraints.video.frameRate.exact;
+                            }
+                            // Eliminar deviceId o groupId restrictivos para que Chromium capture el stream falso sin error
+                            delete adaptedConstraints.video.deviceId;
+                            delete adaptedConstraints.video.groupId;
                         }
-                        if (adaptedConstraints.video.height && adaptedConstraints.video.height.exact) {
-                            adaptedConstraints.video.height.ideal = adaptedConstraints.video.height.exact;
-                            delete adaptedConstraints.video.height.exact;
-                        }
-                        if (adaptedConstraints.video.frameRate && adaptedConstraints.video.frameRate.exact) {
-                            adaptedConstraints.video.frameRate.ideal = adaptedConstraints.video.frameRate.exact;
-                            delete adaptedConstraints.video.frameRate.exact;
-                        }
+                    }
+                    if (adaptedConstraints.audio && typeof adaptedConstraints.audio === 'object') {
+                        delete adaptedConstraints.audio.deviceId;
+                        delete adaptedConstraints.audio.groupId;
                     }
                 }
             } catch (e) { }

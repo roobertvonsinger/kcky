@@ -23,7 +23,7 @@
             border-radius: 16px;
             padding: 24px;
             width: 100%;
-            max-width: 900px;
+            max-width: 960px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(0, 240, 144, 0.08);
             backdrop-filter: blur(12px);
         }
@@ -71,6 +71,26 @@
             50% { opacity: 0.4; transform: scale(0.85); }
             100% { opacity: 1; transform: scale(1); }
         }
+        .controls-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            align-items: center;
+        }
+        select, button {
+            background: #161b22;
+            border: 1px solid #30363d;
+            color: #f0f6fc;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            outline: none;
+            cursor: pointer;
+        }
+        button:hover {
+            border-color: #00f090;
+            color: #00f090;
+        }
         .video-viewport-wrapper {
             position: relative;
             width: 100%;
@@ -96,8 +116,8 @@
             justify-content: center;
         }
         .kyc-oval {
-            width: 220px;
-            height: 300px;
+            width: 240px;
+            height: 320px;
             border: 2px dashed rgba(0, 240, 144, 0.6);
             border-radius: 50%;
             box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.25);
@@ -121,7 +141,7 @@
         }
         .metrics-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 12px;
             margin-top: 20px;
         }
@@ -147,15 +167,36 @@
         .metric-value.highlight {
             color: #00f090;
         }
+        .pixel-activity-bar {
+            height: 6px;
+            background: #21262d;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 6px;
+        }
+        .pixel-activity-fill {
+            height: 100%;
+            width: 0%;
+            background: #00f090;
+            transition: width 0.1s linear;
+        }
     </style>
 </head>
 <body>
     <div class="monitor-card">
         <div class="header">
             <div class="header-title">
-                <span>📹</span> Monitor de Cámara Inyectada
+                <span>📹</span> Monitor de Cámara Inyectada & DirectShow
             </div>
-            <div class="badge-live">STREAM ACTIVO & VALIDADO</div>
+            <div class="badge-live" id="live-badge">STREAM ACTIVO & VALIDADO</div>
+        </div>
+
+        <div class="controls-bar">
+            <select id="camera-select" onchange="switchCamera(this.value)">
+                <option value="">Cargando dispositivos de video...</option>
+            </select>
+            <button onclick="startStream()">🔄 Reiniciar Cámara</button>
+            <button onclick="takeSnapshot()">📸 Capturar Fotograma</button>
         </div>
 
         <div class="video-viewport-wrapper">
@@ -167,51 +208,154 @@
 
         <div class="metrics-grid">
             <div class="metric-card">
-                <div class="metric-label">Dispositivo Spoofeado</div>
-                <div class="metric-value highlight" id="dev-name">Logitech HD Pro Webcam C920</div>
+                <div class="metric-label">Dispositivo Activo</div>
+                <div class="metric-value highlight" id="dev-name">Detectando...</div>
             </div>
             <div class="metric-card">
                 <div class="metric-label">Resolución Entregada</div>
-                <div class="metric-value" id="dev-res">1280x720 (16:9)</div>
+                <div class="metric-value" id="dev-res">0x0</div>
             </div>
             <div class="metric-card">
                 <div class="metric-label">Tasa de Cuadros (FPS)</div>
-                <div class="metric-value highlight" id="dev-fps">30.0 FPS</div>
+                <div class="metric-value highlight" id="dev-fps">0.0 FPS</div>
             </div>
             <div class="metric-card">
-                <div class="metric-label">Estado de Validación</div>
-                <div class="metric-value highlight">🟢 CERO EMULACIÓN DETECTABLE</div>
+                <div class="metric-label">Brillo & Actividad de Píxeles</div>
+                <div class="metric-value" id="dev-brightness">0% (Inactivo)</div>
+                <div class="pixel-activity-bar">
+                    <div class="pixel-activity-fill" id="pixel-bar"></div>
+                </div>
             </div>
         </div>
     </div>
 
+    <canvas id="hidden-canvas" width="320" height="180" style="display: none;"></canvas>
+
     <script>
-        async function startStream() {
+        let currentStream = null;
+        let frameCount = 0;
+        let lastFpsCheck = performance.now();
+        let fps = 0;
+
+        async function populateDevices() {
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({
-                    video: { width: { ideal: 1280 }, height: { ideal: 720 }, frameRate: { ideal: 30 } }
-                });
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                const select = document.getElementById('camera-select');
+                select.innerHTML = '';
+                
+                const videoDevices = devices.filter(d => d.kind === 'videoinput');
+                if (videoDevices.length === 0) {
+                    const opt = document.createElement('option');
+                    opt.value = "";
+                    opt.textContent = "Cámara Inyectada / Predeterminada";
+                    select.appendChild(opt);
+                } else {
+                    videoDevices.forEach((d, idx) => {
+                        const opt = document.createElement('option');
+                        opt.value = d.deviceId;
+                        opt.textContent = d.label || `Cámara ${idx + 1} (${d.deviceId.slice(0, 8)}...)`;
+                        select.appendChild(opt);
+                    });
+                }
+            } catch (e) {
+                console.warn("Error listando dispositivos:", e);
+            }
+        }
+
+        async function switchCamera(deviceId) {
+            await startStream(deviceId);
+        }
+
+        async function startStream(preferredDeviceId = null) {
+            if (currentStream) {
+                currentStream.getTracks().forEach(t => t.stop());
+                currentStream = null;
+            }
+
+            const constraints = {
+                video: preferredDeviceId ? { deviceId: { exact: preferredDeviceId } } : { width: { ideal: 1280 }, height: { ideal: 720 }, frameRate: { ideal: 30 } },
+                audio: false
+            };
+
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia(constraints);
+                currentStream = stream;
                 const video = document.getElementById('webcam-video');
                 video.srcObject = stream;
                 
+                await video.play().catch(e => console.log("Play error (ignorable):", e));
+
                 const track = stream.getVideoTracks()[0];
                 const settings = track.getSettings ? track.getSettings() : {};
                 
-                const devices = await navigator.mediaDevices.enumerateDevices();
-                const videoDev = devices.find(d => d.kind === 'videoinput');
-                if (videoDev && videoDev.label) {
-                    document.getElementById('dev-name').textContent = videoDev.label;
-                }
-                
+                document.getElementById('dev-name').textContent = track.label || "Cámara Inyectada Stealth";
+
                 video.onloadedmetadata = () => {
                     document.getElementById('dev-res').textContent = `${video.videoWidth}x${video.videoHeight} (16:9)`;
                 };
+
+                await populateDevices();
+                startPixelAnalyzer();
             } catch (err) {
                 console.error("Error obteniendo stream:", err);
                 document.getElementById('dev-name').textContent = "Error: " + err.message;
+                document.getElementById('live-badge').textContent = "ERROR STREAM";
+                document.getElementById('live-badge').style.borderColor = "#ff4d4f";
+                document.getElementById('live-badge').style.color = "#ff4d4f";
             }
         }
-        window.addEventListener('DOMContentLoaded', startStream);
+
+        function startPixelAnalyzer() {
+            const canvas = document.getElementById('hidden-canvas');
+            const ctx = canvas.getContext('2d');
+            const video = document.getElementById('webcam-video');
+
+            function analyze() {
+                if (video.readyState >= 2) {
+                    frameCount++;
+                    const now = performance.now();
+                    if (now - lastFpsCheck >= 1000) {
+                        fps = (frameCount * 1000) / (now - lastFpsCheck);
+                        document.getElementById('dev-fps').textContent = `${fps.toFixed(1)} FPS`;
+                        frameCount = 0;
+                        lastFpsCheck = now;
+                    }
+
+                    try {
+                        ctx.drawImage(video, 0, 0, 320, 180);
+                        const imgData = ctx.getImageData(0, 0, 320, 180);
+                        let totalLum = 0;
+                        const data = imgData.data;
+                        for (let i = 0; i < data.length; i += 16) {
+                            totalLum += (0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2]);
+                        }
+                        const avgLum = totalLum / (data.length / 16);
+                        const percent = Math.min(100, Math.round((avgLum / 255) * 100));
+
+                        document.getElementById('dev-brightness').textContent = `${percent}% Luminancia (${avgLum > 10 ? 'Activo' : 'Oscuro'})`;
+                        document.getElementById('pixel-bar').style.width = `${Math.max(5, percent)}%`;
+                    } catch (e) { }
+                }
+                requestAnimationFrame(analyze);
+            }
+            requestAnimationFrame(analyze);
+        }
+
+        function takeSnapshot() {
+            const video = document.getElementById('webcam-video');
+            const c = document.createElement('canvas');
+            c.width = video.videoWidth || 1280;
+            c.height = video.videoHeight || 720;
+            const ctx = c.getContext('2d');
+            ctx.drawImage(video, 0, 0, c.width, c.height);
+            const dataUrl = c.toDataURL('image/png');
+            const win = window.open();
+            if (win) {
+                win.document.write(`<img src="${dataUrl}" style="max-width:100%; border:2px solid #00f090; border-radius:8px;"/>`);
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => startStream());
     </script>
 </body>
 </html>

@@ -353,6 +353,28 @@
                                 <span class="metric-val text-cyan" id="metric-framing-val">Sensor Real (Fill Crop)</span>
                             </div>
                         </div>
+
+                        <!-- Panel de Control de Cámara Virtual DirectShow del Sistema -->
+                        <div class="system-vcam-card" style="margin-top: 16px; background: rgba(0, 240, 144, 0.05); border: 1px solid rgba(0, 240, 144, 0.2); border-radius: 10px; padding: 14px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <span style="font-size: 1.2rem;">📡</span>
+                                    <div>
+                                        <strong style="color: #f0f6fc; font-size: 0.9rem;">Cámara Virtual del Sistema (OBS / DirectShow)</strong>
+                                        <div style="font-size: 0.75rem; color: #8b949e;">Transmite este video a nivel de Windows para cualquier app/navegador</div>
+                                    </div>
+                                </div>
+                                <span class="badge-vcam-status" id="vcam-status-badge" style="font-size: 0.72rem; padding: 3px 8px; border-radius: 12px; font-weight: 700; background: rgba(255,255,255,0.08); color: #8b949e;">INACTIVO</span>
+                            </div>
+                            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                                <button class="btn-vcam-toggle" id="btn-toggle-vcam" onclick="toggleSystemVirtualCam()" style="flex: 1; padding: 8px 14px; background: #00f090; color: #06090e; font-weight: 700; border: none; border-radius: 6px; cursor: pointer;">
+                                    📡 TRANSMITIR A CÁMARA DEL SISTEMA
+                                </button>
+                                <a href="/static/test_cam.html" target="_blank" style="padding: 8px 14px; background: #161b22; color: #f0f6fc; border: 1px solid #30363d; border-radius: 6px; text-decoration: none; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 6px;">
+                                    👁️ Abrir Monitor
+                                </a>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="glass-card">

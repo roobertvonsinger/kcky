@@ -503,6 +503,79 @@ function setUrlPreset(url) {
     if (input) input.value = url;
 }
 
+let vcamActive = false;
+
+async function toggleSystemVirtualCam() {
+    const btn = document.getElementById('btn-toggle-vcam');
+    if (!vcamActive) {
+        if (!StudioApp.activeY4mPath && !StudioApp.activeMp4PreviewUrl) {
+            alert("Primero debes generar un buffer de cámara en el Paso 1.");
+            return;
+        }
+        btn.disabled = true;
+        appendLogLine("Iniciando transmisión a la cámara virtual del sistema (OBS / DirectShow)...", "info");
+        try {
+            const formData = new FormData();
+            formData.append('media_path', StudioApp.activeMp4PreviewUrl || StudioApp.activeY4mPath);
+            const resp = await fetch('/api/virtual-cam/start', { method: 'POST', body: formData });
+            const res = await resp.json();
+            if (resp.ok) {
+                setVirtualCamActiveUI(true);
+                appendLogLine(`Cámara Virtual del Sistema transmitiendo en vivo a: ${res.info?.device || 'OBS Virtual Camera'}`, "success");
+            } else {
+                alert(`Error: ${res.detail}`);
+                appendLogLine(`Error: ${res.detail}`, "error");
+            }
+        } catch (e) {
+            console.error(e);
+            appendLogLine(`Error: ${e.message}`, "error");
+        } finally {
+            btn.disabled = false;
+        }
+    } else {
+        btn.disabled = true;
+        try {
+            const resp = await fetch('/api/virtual-cam/stop', { method: 'POST' });
+            if (resp.ok) {
+                setVirtualCamActiveUI(false);
+                appendLogLine("Cámara Virtual del Sistema detenida.", "info");
+            }
+        } catch (e) {
+            console.error(e);
+        } finally {
+            btn.disabled = false;
+        }
+    }
+}
+
+function setVirtualCamActiveUI(isActive) {
+    vcamActive = isActive;
+    const badge = document.getElementById('vcam-status-badge');
+    const btn = document.getElementById('btn-toggle-vcam');
+    if (badge) {
+        if (isActive) {
+            badge.textContent = "TRANSMITIENDO EN VIVO (OBS CAM)";
+            badge.style.background = "rgba(0, 240, 144, 0.2)";
+            badge.style.color = "#00f090";
+        } else {
+            badge.textContent = "INACTIVO";
+            badge.style.background = "rgba(255, 255, 255, 0.08)";
+            badge.style.color = "#8b949e";
+        }
+    }
+    if (btn) {
+        if (isActive) {
+            btn.textContent = "🛑 DETENER TRANSMISIÓN DEL SISTEMA";
+            btn.style.background = "#ff4d4f";
+            btn.style.color = "#ffffff";
+        } else {
+            btn.textContent = "📡 TRANSMITIR A CÁMARA DEL SISTEMA";
+            btn.style.background = "#00f090";
+            btn.style.color = "#06090e";
+        }
+    }
+}
+
 async function loadSystemStatus() {
     try {
         const resp = await fetch('/api/status');
@@ -521,6 +594,12 @@ async function loadSystemStatus() {
         if (data.active_buffer && data.active_buffer.preview_mp4) {
             StudioApp.activeY4mPath = data.active_buffer.y4m;
             StudioApp.activeMp4PreviewUrl = data.active_buffer.preview_mp4;
+        }
+
+        if (data.virtual_cam && data.virtual_cam.active) {
+            setVirtualCamActiveUI(true);
+        } else {
+            setVirtualCamActiveUI(false);
         }
 
         if (data.browser_running) {
