@@ -91,6 +91,16 @@ def launch_browser_process(
     user_data_dir: str
 ) -> subprocess.Popen:
     """Lanza el proceso de Chromium con flags de cámara y anti-throttling."""
+    import tempfile
+    import shutil
+
+    # Chromium falla al parsear flags si la ruta del video tiene espacios (p. ej. 'TESTING DEV')
+    clean_y4m = os.path.abspath(y4m_path)
+    if " " in clean_y4m:
+        temp_y4m = os.path.join(tempfile.gettempdir(), "onboarded_stream.y4m")
+        shutil.copy2(clean_y4m, temp_y4m)
+        clean_y4m = temp_y4m
+
     cmd_args = [
         executable_path,
         f"--remote-debugging-port={cdp_port}",
@@ -100,7 +110,7 @@ def launch_browser_process(
         "--no-default-browser-check",
         "--use-fake-ui-for-media-stream",
         "--use-fake-device-for-media-stream",
-        f"--use-file-for-fake-video-capture={os.path.abspath(y4m_path)}",
+        f"--use-file-for-fake-video-capture={clean_y4m}",
         "--disable-background-timer-throttling",
         "--disable-backgrounding-occluded-windows",
         "--disable-renderer-backgrounding",

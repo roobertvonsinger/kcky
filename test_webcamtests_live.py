@@ -107,12 +107,12 @@ async def main():
         page = context.pages[0] if context.pages else await context.new_page()
         
         print(f"\n[4/4] Navegando a {target_url} y ejecutando test de camara...")
-        await page.goto("https://webcamtests.com/", timeout=40000)
-        await page.wait_for_load_state("networkidle")
+        await page.goto("https://webcamtests.com/", timeout=45000)
+        await page.wait_for_load_state("domcontentloaded")
         await asyncio.sleep(2.0)
 
         # Clic en el botón "Test my cam" de webcamtests.com
-        test_btn = await page.query_selector("#webcam-launcher")
+        test_btn = await page.wait_for_selector("#webcam-launcher", timeout=15000)
         if test_btn:
             print("  -> Iniciando prueba en webcamtests.com...")
             await test_btn.click()
