@@ -25,10 +25,22 @@ def find_free_port() -> int:
 
 
 def find_orbita_executable() -> Optional[str]:
-    """Busca el ejecutable de GoLogin Orbita o Chrome en el sistema en <1ms."""
-    home = Path.home()
+    """Busca el ejecutable de Google Chrome u Orbita en el sistema en <1ms."""
+    # 1. Google Chrome del sistema (estable, nativo, sin restricciones de perfil)
+    for p in [
+        r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+        r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe",
+        os.path.expanduser(r"~\AppData\Local\Google\Chrome\Application\chrome.exe")
+    ]:
+        if os.path.isfile(p):
+            return p
 
-    # 1. Directorio principal de GoLogin
+    sys_chrome = shutil.which("chrome") or shutil.which("google-chrome")
+    if sys_chrome:
+        return sys_chrome
+
+    home = Path.home()
+    # 2. Directorio principal de GoLogin Orbita
     primary_dir = home / ".gologin" / "browser"
     if primary_dir.is_dir():
         try:
@@ -38,33 +50,8 @@ def find_orbita_executable() -> Optional[str]:
                 p = primary_dir / d / "chrome.exe"
                 if p.is_file():
                     return str(p)
-                p2 = primary_dir / d / "orbita-browser" / "chrome.exe"
-                if p2.is_file():
-                    return str(p2)
         except Exception:
             pass
-
-    # 2. Directorio AppData Local
-    appdata_dir = home / "AppData" / "Local" / "GoLogin" / "browser"
-    if appdata_dir.is_dir():
-        try:
-            subdirs = [d for d in os.listdir(appdata_dir) if d.startswith("orbita-browser-")]
-            subdirs.sort(reverse=True)
-            for d in subdirs:
-                p = appdata_dir / d / "chrome.exe"
-                if p.is_file():
-                    return str(p)
-        except Exception:
-            pass
-
-    # 3. Fallbacks a Chrome del sistema
-    sys_chrome = shutil.which("chrome") or shutil.which("google-chrome")
-    if sys_chrome:
-        return sys_chrome
-
-    for p in [r"C:\Program Files\Google\Chrome\Application\chrome.exe", r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"]:
-        if os.path.isfile(p):
-            return p
 
     return None
 
