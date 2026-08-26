@@ -153,6 +153,45 @@ async def upload_face(file: UploadFile = File(...)):
     }
 
 
+@app.post("/api/extract-id-face")
+async def api_extract_id_face(file: UploadFile = File(...)):
+    ext = os.path.splitext(file.filename)[1].lower()
+    if ext not in [".jpg", ".jpeg", ".png", ".webp", ".bmp"]:
+        raise HTTPException(status_code=400, detail="Formato de imagen no soportado.")
+
+    file_id = uuid.uuid4().hex[:8]
+    id_card_path = str(UPLOADS_DIR / f"id_card_{file_id}{ext}")
+    crop_path = str(UPLOADS_DIR / f"crop_{file_id}.png")
+    enhanced_path = str(UPLOADS_DIR / f"enhanced_{file_id}.png")
+
+    with open(id_card_path, "wb") as f:
+        content = await file.read()
+        f.write(content)
+
+    await broadcast_log(f"Credencial/INE cargada: {file.filename}. Detectando rostro y aplicando AI Super-Resolución...", "info")
+
+    from src.id_extractor import extract_and_restore_id_face
+    try:
+        data = await extract_and_restore_id_face(id_card_path, crop_path, enhanced_path)
+        if not data.get("success"):
+            raise RuntimeError(data.get("error", "Error desconocido extrayendo rostro de credencial."))
+
+        await broadcast_log(f"Rostro extraído y restaurado a calidad HD ({data.get('enhanced_size')}).", "success")
+        return {
+            "status": "success",
+            "id_card_url": f"/data/uploads/id_card_{file_id}{ext}",
+            "crop_url": f"/data/uploads/crop_{file_id}.png",
+            "enhanced_url": f"/data/uploads/enhanced_{file_id}.png",
+            "enhanced_file_path": enhanced_path,
+            "crop_file_path": crop_path,
+            "metadata": data
+        }
+    except Exception as e:
+        logger.error(f"Error procesando credencial: {e}", exc_info=True)
+        await broadcast_log(f"Error en extracción de credencial: {str(e)}", "error")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @app.post("/api/upload-target")
 async def upload_target(file: UploadFile = File(...)):
     ext = os.path.splitext(file.filename)[1].lower()

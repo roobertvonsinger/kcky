@@ -107,6 +107,7 @@ def launch_browser_process(
     cmd_args = [
         executable_path,
         f"--remote-debugging-port={cdp_port}",
+        "--remote-allow-origins=*",
         f"--user-data-dir={user_data_dir}",
         "--no-first-run",
         "--no-default-browser-check",

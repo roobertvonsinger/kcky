@@ -96,18 +96,71 @@
                             </div>
                         </div>
 
-                        <div class="dropzone" id="face-dropzone">
-                            <input type="file" id="face-file-input" accept="image/jpeg,image/png,image/webp" style="display: none;">
-                            <div class="dropzone-content" id="dropzone-idle">
-                                <div class="upload-icon-anim">📸</div>
-                                <p class="drop-title">Arrastra la foto aquí o <span class="browse-link">examinar archivo</span></p>
-                                <span class="drop-hint">Formatos soportados: JPG, PNG, WEBP (Alta resolución recomendada)</span>
+                        <div class="upload-type-tabs">
+                            <button type="button" class="upload-tab active" id="tab-direct-face" onclick="switchUploadTab('direct')">
+                                <span class="tab-icon">📸</span> Foto de Rostro / Selfie Directa
+                            </button>
+                            <button type="button" class="upload-tab" id="tab-id-card" onclick="switchUploadTab('id_card')">
+                                <span class="tab-icon">🪪</span> Credencial / INE (Auto-Crop + AI HD Enhancer)
+                            </button>
+                        </div>
+
+                        <!-- 1A: Carga Directa de Foto -->
+                        <div class="upload-section-panel active" id="panel-upload-direct">
+                            <div class="dropzone" id="face-dropzone">
+                                <input type="file" id="face-file-input" accept="image/jpeg,image/png,image/webp" style="display: none;">
+                                <div class="dropzone-content" id="dropzone-idle">
+                                    <div class="upload-icon-anim">📸</div>
+                                    <p class="drop-title">Arrastra la foto de rostro aquí o <span class="browse-link">examinar archivo</span></p>
+                                    <span class="drop-hint">Formatos soportados: JPG, PNG, WEBP (Alta resolución recomendada)</span>
+                                </div>
+                                <div class="dropzone-preview" id="face-preview-container" style="display: none;">
+                                    <img id="face-preview-img" src="" alt="Vista previa de rostro">
+                                    <div class="preview-overlay">
+                                        <span class="file-name-tag" id="face-file-name">foto.jpg</span>
+                                        <button class="btn-change-file" onclick="triggerFileInput('face-file-input', event)">Cambiar Foto</button>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="dropzone-preview" id="face-preview-container" style="display: none;">
-                                <img id="face-preview-img" src="" alt="Vista previa de rostro">
-                                <div class="preview-overlay">
-                                    <span class="file-name-tag" id="face-file-name">foto.jpg</span>
-                                    <button class="btn-change-file" onclick="triggerFileInput('face-file-input')">Cambiar Foto</button>
+                        </div>
+
+                        <!-- 1B: Carga de Credencial / INE con Extracción y Super-Resolución -->
+                        <div class="upload-section-panel" id="panel-upload-id" style="display: none;">
+                            <div class="dropzone id-dropzone" id="id-dropzone" onclick="triggerFileInput('id-file-input')">
+                                <input type="file" id="id-file-input" accept="image/jpeg,image/png,image/webp" style="display: none;">
+                                <div class="dropzone-content" id="id-dropzone-idle">
+                                    <div class="upload-icon-anim">🪪</div>
+                                    <p class="drop-title">Arrastra la imagen de la Credencial / INE o <span class="browse-link">examinar archivo</span></p>
+                                    <span class="drop-hint">La IA detectará automáticamente la foto tamaño credencial y la restaurará en Super-Resolución HD</span>
+                                </div>
+                            </div>
+
+                            <div class="id-extraction-results" id="id-extraction-results" style="display: none;">
+                                <div class="extraction-cards-grid">
+                                    <div class="extract-card">
+                                        <span class="extract-card-title">1. Recorte Original de INE</span>
+                                        <div class="extract-img-wrap">
+                                            <img id="id-crop-preview" src="" alt="Recorte INE">
+                                        </div>
+                                        <span class="extract-tag low-res" id="id-crop-dim">Original</span>
+                                    </div>
+
+                                    <div class="extract-divider">
+                                        <span class="divider-arrow">➡️</span>
+                                        <span class="ai-badge-pulse">GFPGAN AI</span>
+                                    </div>
+
+                                    <div class="extract-card highlight">
+                                        <span class="extract-card-title">2. ✨ Rostro Restaurado en HD</span>
+                                        <div class="extract-img-wrap">
+                                            <img id="id-enhanced-preview" src="" alt="Rostro HD Restaurado">
+                                        </div>
+                                        <span class="extract-tag hd-res" id="id-enhanced-dim">1024x1024 HD</span>
+                                    </div>
+                                </div>
+                                <div class="id-action-bar">
+                                    <span class="id-status-badge text-green">✔️ Rostro extraído y cargado como fuente activa</span>
+                                    <button class="btn-change-file" onclick="triggerFileInput('id-file-input', event)">Subir Otra Credencial</button>
                                 </div>
                             </div>
                         </div>

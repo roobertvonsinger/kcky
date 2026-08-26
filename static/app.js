@@ -192,6 +192,13 @@ function selectHardwarePersona(persona) {
     else if (persona === 'hp_wide') document.getElementById('hw-opt-hpwide').classList.add('active');
 }
 
+function switchUploadTab(tab) {
+    document.getElementById('tab-direct-face').classList.toggle('active', tab === 'direct');
+    document.getElementById('tab-id-card').classList.toggle('active', tab === 'id_card');
+    document.getElementById('panel-upload-direct').style.display = tab === 'direct' ? 'block' : 'none';
+    document.getElementById('panel-upload-id').style.display = tab === 'id_card' ? 'block' : 'none';
+}
+
 function initDropzones() {
     const faceDrop = document.getElementById('face-dropzone');
     const faceInput = document.getElementById('face-file-input');
@@ -225,6 +232,34 @@ function initDropzones() {
         });
     }
 
+    const idDrop = document.getElementById('id-dropzone');
+    const idInput = document.getElementById('id-file-input');
+
+    if (idDrop && idInput) {
+        idDrop.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            idDrop.classList.add('drag-over');
+        });
+
+        idDrop.addEventListener('dragleave', () => {
+            idDrop.classList.remove('drag-over');
+        });
+
+        idDrop.addEventListener('drop', (e) => {
+            e.preventDefault();
+            idDrop.classList.remove('drag-over');
+            if (e.dataTransfer.files.length > 0) {
+                handleIdCardUpload(e.dataTransfer.files[0]);
+            }
+        });
+
+        idInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleIdCardUpload(e.target.files[0]);
+            }
+        });
+    }
+
     const targetInput = document.getElementById('target-file-input');
     if (targetInput) {
         targetInput.addEventListener('change', (e) => {
@@ -232,6 +267,45 @@ function initDropzones() {
                 handleTargetUpload(e.target.files[0]);
             }
         });
+    }
+}
+
+async function handleIdCardUpload(file) {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    appendLogLine(`Procesando Credencial/INE: ${file.name}...`, 'info');
+
+    try {
+        const resp = await fetch('/api/extract-id-face', { method: 'POST', body: formData });
+        const res = await resp.json();
+        if (resp.ok) {
+            StudioApp.uploadedFacePath = res.enhanced_file_path;
+            StudioApp.uploadedFaceFilename = file.name;
+            StudioApp.activeY4mPath = null;
+            StudioApp.activeMp4PreviewUrl = null;
+
+            document.getElementById('id-dropzone').style.display = 'none';
+            const resContainer = document.getElementById('id-extraction-results');
+            const cropImg = document.getElementById('id-crop-preview');
+            const enhancedImg = document.getElementById('id-enhanced-preview');
+            const cropDim = document.getElementById('id-crop-dim');
+            const enhancedDim = document.getElementById('id-enhanced-dim');
+
+            cropImg.src = res.crop_url;
+            enhancedImg.src = res.enhanced_url;
+            cropDim.textContent = `Recorte: ${res.metadata.original_crop_size || 'Original'}`;
+            enhancedDim.textContent = `✨ Super-Resolución: ${res.metadata.enhanced_size || '1024x1024'}`;
+
+            resContainer.style.display = 'block';
+            appendLogLine(`Rostro de credencial extraído y mejorado en HD con GFPGAN.`, 'success');
+        } else {
+            alert(`Error procesando credencial: ${res.detail}`);
+            appendLogLine(`Error: ${res.detail}`, 'error');
+        }
+    } catch (e) {
+        console.error(e);
+        appendLogLine(`Error en extracción: ${e.message}`, 'error');
     }
 }
 
