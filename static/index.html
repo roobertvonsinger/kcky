@@ -113,23 +113,32 @@
                         </div>
 
                         <div class="mode-selector-wrapper">
-                            <label class="section-label">Modo de Generación de Video:</label>
-                            <div class="mode-toggle-group">
+                            <label class="section-label">Selecciona el Modo de Inyección & Generación:</label>
+                            <div class="mode-toggle-group three-cols">
                                 <label class="mode-card active" id="mode-opt-synthetic">
                                     <input type="radio" name="generation-mode" value="synthetic" checked onchange="toggleGenMode('synthetic')">
                                     <div class="mode-card-content">
                                         <div class="mode-badge-rec">RECOMENDADO RÁPIDO</div>
                                         <div class="mode-card-title">✨ Liveness Sintético 3D</div>
-                                        <p class="mode-card-desc">Genera 90s continuos desde 1 sola foto con micro-movimiento senoidal, variación de auto-exposición y ruido analógico CMOS.</p>
+                                        <p class="mode-card-desc">1 Sola Foto: Genera 90s con micro-movimiento senoidal armónico (respiración/pulso), micro-luz y ruido CMOS analógico.</p>
                                     </div>
                                 </label>
 
                                 <label class="mode-card" id="mode-opt-swap">
                                     <input type="radio" name="generation-mode" value="swap" onchange="toggleGenMode('swap')">
                                     <div class="mode-card-content">
-                                        <div class="mode-badge-pro">PRO DIRECTML</div>
-                                        <div class="mode-card-title">🎭 Deep-Live-Cam Face Swap</div>
-                                        <p class="mode-card-desc">Reemplaza el rostro sobre un video base pregrabado con gestos activos acelerado por AMD Radeon RX 580.</p>
+                                        <div class="mode-badge-pro">DIRECTML PRO</div>
+                                        <div class="mode-card-title">🎭 Deep-Live Video Pregrabado</div>
+                                        <p class="mode-card-desc">Foto + Video Base: Procesa Face Swap cuadro por cuadro sobre un video pregrabado con gestos (AMD RX 580).</p>
+                                    </div>
+                                </label>
+
+                                <label class="mode-card" id="mode-opt-livecam">
+                                    <input type="radio" name="generation-mode" value="livecam" onchange="toggleGenMode('livecam')">
+                                    <div class="mode-card-content">
+                                        <div class="mode-badge-live">TIEMPO REAL</div>
+                                        <div class="mode-card-title">📹 Deep-Live Live Webcam</div>
+                                        <p class="mode-card-desc">Foto + Webcam en Vivo: Abre el motor en tiempo real para gesticular frente a tu cámara física con swap por GPU.</p>
                                     </div>
                                 </label>
                             </div>
@@ -143,6 +152,19 @@
                                     <span class="mini-icon">🎬</span>
                                     <span class="mini-text" id="target-file-name">Seleccionar video base (.mp4 con movimientos)</span>
                                 </div>
+                            </div>
+                        </div>
+
+                        <div class="livecam-action-box" id="livecam-action-box" style="display: none;">
+                            <label class="section-label">Captura en Vivo con Webcam Física (Deep-Live-Cam DirectML):</label>
+                            <div class="livecam-inner-card">
+                                <div class="livecam-info">
+                                    <span class="livecam-badge">AMD RX 580 DML READY</span>
+                                    <p>Esta opción abre la ventana interactiva de Deep-Live-Cam conectada a tu webcam física. Tu rostro será reemplazado en tiempo real mientras hablas o te mueves.</p>
+                                </div>
+                                <button class="btn-livecam-launch" type="button" onclick="launchLiveWebcamWindow()">
+                                    <span class="btn-icon">⚡</span> ABRIR DEEP-LIVE-CAM EN VIVO CON WEBCAM
+                                </button>
                             </div>
                         </div>
 

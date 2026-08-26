@@ -277,6 +277,20 @@ async def api_process_swap(
         state.is_processing = False
 
 
+@app.post("/api/launch-deeplive-cam-gui")
+async def api_launch_deeplive_cam_gui(source_face_path: Optional[str] = Form(None)):
+    """Lanza la ventana en vivo de Deep-Live-Cam DirectML con captura de webcam física."""
+    from src.face_swap import launch_deep_live_cam_gui
+    try:
+        proc = launch_deep_live_cam_gui(source_face_path)
+        await broadcast_log("Ventana interactiva de Deep-Live-Cam DirectML lanzada.", "info")
+        return {"status": "launched", "pid": proc.pid}
+    except Exception as e:
+        logger.error(f"Error lanzando Deep-Live-Cam GUI: {e}")
+        await broadcast_log(f"Error: {str(e)}", "error")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 def kill_process_tree(proc: Optional[subprocess.Popen]):
     if not proc:
         return

@@ -476,6 +476,72 @@ body.cyber-theme {
     margin-bottom: 4px;
 }
 
+.mode-badge-live {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 800;
+    color: #ffaa00;
+    background: rgba(255, 170, 0, 0.15);
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-bottom: 4px;
+}
+
+.livecam-action-box {
+    margin-top: 16px;
+    animation: fadeIn 0.25s ease-out;
+}
+
+.livecam-inner-card {
+    background: rgba(255, 170, 0, 0.05);
+    border: 1px dashed rgba(255, 170, 0, 0.35);
+    border-radius: var(--radius-md);
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.livecam-info p {
+    font-size: 0.84rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    margin-top: 6px;
+}
+
+.livecam-badge {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #ffaa00;
+    background: rgba(255, 170, 0, 0.15);
+    padding: 3px 8px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.btn-livecam-launch {
+    background: linear-gradient(135deg, #ffaa00 0%, #ff6600 100%);
+    color: #000;
+    font-weight: 800;
+    border: none;
+    padding: 12px 18px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 0.88rem;
+    transition: var(--transition-fast);
+    box-shadow: 0 0 16px rgba(255, 170, 0, 0.3);
+}
+
+.btn-livecam-launch:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 24px rgba(255, 170, 0, 0.5);
+}
+
 .mode-card-title {
     font-weight: 700;
     font-size: 0.92rem;

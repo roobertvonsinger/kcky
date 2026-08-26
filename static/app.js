@@ -149,10 +149,37 @@ function toggleGenMode(mode) {
     StudioApp.generationMode = mode;
     document.getElementById('mode-opt-synthetic').classList.toggle('active', mode === 'synthetic');
     document.getElementById('mode-opt-swap').classList.toggle('active', mode === 'swap');
+    document.getElementById('mode-opt-livecam').classList.toggle('active', mode === 'livecam');
 
     const targetBox = document.getElementById('target-video-box');
     if (targetBox) {
         targetBox.style.display = mode === 'swap' ? 'block' : 'none';
+    }
+
+    const liveBox = document.getElementById('livecam-action-box');
+    if (liveBox) {
+        liveBox.style.display = mode === 'livecam' ? 'block' : 'none';
+    }
+}
+
+async function launchLiveWebcamWindow() {
+    appendLogLine("Iniciando ventana interactiva de Deep-Live-Cam con Webcam física...", "info");
+    const formData = new FormData();
+    if (StudioApp.uploadedFacePath) {
+        formData.append('source_face_path', StudioApp.uploadedFacePath);
+    }
+    try {
+        const resp = await fetch('/api/launch-deeplive-cam-gui', { method: 'POST', body: formData });
+        const res = await resp.json();
+        if (resp.ok) {
+            appendLogLine(`Deep-Live-Cam abierto en vivo (PID: ${res.pid}).`, "success");
+        } else {
+            alert(`Error: ${res.detail}`);
+            appendLogLine(`Error: ${res.detail}`, "error");
+        }
+    } catch (e) {
+        console.error(e);
+        appendLogLine(`Error de conexión: ${e.message}`, "error");
     }
 }
 
