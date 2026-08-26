@@ -1,0 +1,23 @@
+__pycache__/
+*.py[cod]
+*$py.class
+*.log
+
+# Entornos virtuales
+venv/
+.venv/
+env/
+
+# Buffers de video pesados y fotos temporales
+data/uploads/*
+data/buffers/*
+data/sessions/*
+!data/uploads/.gitkeep
+!data/buffers/.gitkeep
+!data/sessions/.gitkeep
+
+# IDE y sistema
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
