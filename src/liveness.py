@@ -92,6 +92,79 @@ def generate_synthetic_liveness(
     }
 
 
+def compute_smart_biometric_crop(
+    video_path: str,
+    target_w: int = 1280,
+    target_h: int = 720
+) -> str:
+    """
+    Analiza los primeros frames del video selfie para detectar la posición del rostro
+    y calcula el recorte quirúrgico exacto para que encaje a la perfección en el óvalo KYC.
+    """
+    target_ar = target_w / target_h
+    try:
+        import cv2
+        import numpy as np
+
+        cap = cv2.VideoCapture(video_path)
+        if cap.isOpened():
+            in_w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+            in_h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+            
+            face_boxes = []
+            cascade_path = cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'
+            detector = cv2.CascadeClassifier(cascade_path) if cv2.data.haarcascades else None
+
+            for _ in range(12):
+                ret, frame = cap.read()
+                if not ret:
+                    break
+                if detector and not detector.empty():
+                    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                    faces = detector.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=3, minSize=(60, 60))
+                    if len(faces) > 0:
+                        faces = sorted(faces, key=lambda f: f[2]*f[3], reverse=True)
+                        face_boxes.append(faces[0])
+            cap.release()
+
+            if face_boxes:
+                avg_x = int(np.median([b[0] for b in face_boxes]))
+                avg_y = int(np.median([b[1] for b in face_boxes]))
+                avg_fw = int(np.median([b[2] for b in face_boxes]))
+                avg_fh = int(np.median([b[3] for b in face_boxes]))
+
+                # El rostro debe ocupar ~58% de la altura vertical de la cámara de onboarding
+                desired_crop_h = int(avg_fh / 0.58)
+                desired_crop_w = int(desired_crop_h * target_ar)
+
+                if desired_crop_w > in_w or desired_crop_h > in_h:
+                    if (in_w / in_h) > target_ar:
+                        desired_crop_h = in_h
+                        desired_crop_w = int(in_h * target_ar)
+                    else:
+                        desired_crop_w = in_w
+                        desired_crop_h = int(in_w / target_ar)
+
+                face_center_x = avg_x + avg_fw / 2.0
+                crop_x = int(face_center_x - desired_crop_w / 2.0)
+                crop_y = int(avg_y - desired_crop_h * 0.22)
+
+                crop_x = max(0, min(in_w - desired_crop_w, crop_x))
+                crop_y = max(0, min(in_h - desired_crop_h, crop_y))
+
+                desired_crop_w = (desired_crop_w // 2) * 2
+                desired_crop_h = (desired_crop_h // 2) * 2
+                crop_x = (crop_x // 2) * 2
+                crop_y = (crop_y // 2) * 2
+
+                return f"crop={desired_crop_w}:{desired_crop_h}:{crop_x}:{crop_y},scale={target_w}:{target_h}"
+    except Exception:
+        pass
+
+    # Fallback heurístico de encuadre selfie primer cuadro con headroom superior
+    return f"scale={target_w}:{target_h}:force_original_aspect_ratio=increase,crop={target_w}:{target_h}:(iw-ow)/2:'max(0, (ih-oh)*0.25)'"
+
+
 def convert_video_to_seamless_y4m(
     video_path: str,
     output_y4m_path: str,
@@ -102,7 +175,7 @@ def convert_video_to_seamless_y4m(
     fps: int = 30,
     framing_mode: str = "fill_crop"
 ) -> Dict[str, Any]:
-    """Normaliza y extiende un video (p. ej. de face swap) a un bucle continuo de 90s+ en formato Y4M."""
+    """Normaliza, encuadra quirúrgicamente y extiende un video a un bucle continuo de 90s+ en formato Y4M."""
     if not os.path.exists(video_path):
         raise FileNotFoundError(f"Video no encontrado: {video_path}")
 
@@ -111,8 +184,8 @@ def convert_video_to_seamless_y4m(
     if framing_mode == "fit_pad":
         vf_scale = f"scale={width}:{height}:force_original_aspect_ratio=decrease,pad={width}:{height}:(ow-iw)/2:(oh-ih)/2"
     else:
-        # Primer cuadro selfie: llena marco y posiciona la cara con 25% de margen superior para centrar frente/ojos
-        vf_scale = f"scale={width}:{height}:force_original_aspect_ratio=increase,crop={width}:{height}:(iw-ow)/2:'max(0, (ih-oh)*0.25)'"
+        # Auto-encuadre biométrico inteligente para video selfie
+        vf_scale = compute_smart_biometric_crop(video_path, width, height)
 
     cmd = [
         "ffmpeg",
