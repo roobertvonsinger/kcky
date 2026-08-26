@@ -179,7 +179,8 @@ async def api_generate_liveness(
     duration: int = Form(90),
     width: int = Form(1280),
     height: int = Form(720),
-    fps: int = Form(30)
+    fps: int = Form(30),
+    framing_mode: str = Form("fill_crop")
 ):
     if not os.path.exists(face_path):
         raise HTTPException(status_code=404, detail="Archivo de rostro no encontrado.")
@@ -190,7 +191,7 @@ async def api_generate_liveness(
     out_mp4 = str(BUFFERS_DIR / f"preview_{stream_id}.mp4")
 
     try:
-        await broadcast_log(f"Sintetizando Liveness 3D ({duration}s @ {fps}fps, {width}x{height})...", "info")
+        await broadcast_log(f"Sintetizando Liveness 3D ({duration}s @ {fps}fps, {width}x{height}, encuadre: {framing_mode})...", "info")
         res = await asyncio.to_thread(
             generate_synthetic_liveness,
             image_path=face_path,
@@ -199,11 +200,12 @@ async def api_generate_liveness(
             duration=duration,
             width=width,
             height=height,
-            fps=fps
+            fps=fps,
+            framing_mode=framing_mode
         )
         state.active_y4m = out_y4m
         state.active_mp4_preview = out_mp4
-        await broadcast_log(f"Buffer Y4M generado: {res['size_mb']} MB. Listo para inyección.", "success")
+        await broadcast_log(f"Cámara lista en buffer: {res['size_mb']} MB ({width}x{height} @ {fps}fps).", "success")
         return {
             "status": "success",
             "y4m_path": out_y4m,
@@ -225,7 +227,8 @@ async def api_process_swap(
     duration: int = Form(90),
     width: int = Form(1280),
     height: int = Form(720),
-    fps: int = Form(30)
+    fps: int = Form(30),
+    framing_mode: str = Form("fill_crop")
 ):
     if not os.path.exists(source_face_path) or not os.path.exists(target_video_path):
         raise HTTPException(status_code=404, detail="Archivos de entrada no encontrados.")
@@ -244,7 +247,7 @@ async def api_process_swap(
             log_callback=broadcast_log
         )
 
-        await broadcast_log("Face swap completado. Normalizando a buffer Y4M...", "info")
+        await broadcast_log("Face swap completado. Normalizando a buffer Y4M continuo...", "info")
         res = await asyncio.to_thread(
             convert_video_to_seamless_y4m,
             video_path=raw_swap_mp4,
@@ -253,12 +256,13 @@ async def api_process_swap(
             min_duration=duration,
             width=width,
             height=height,
-            fps=fps
+            fps=fps,
+            framing_mode=framing_mode
         )
 
         state.active_y4m = out_y4m
         state.active_mp4_preview = out_mp4
-        await broadcast_log(f"Buffer Swapped Y4M listo: {res['size_mb']} MB.", "success")
+        await broadcast_log(f"Cámara Swapped lista: {res['size_mb']} MB ({width}x{height}).", "success")
         return {
             "status": "success",
             "y4m_path": out_y4m,
@@ -287,7 +291,7 @@ def kill_process_tree(proc: Optional[subprocess.Popen]):
 
 @app.post("/api/launch-browser")
 async def api_launch_browser(
-    target_url: str = Form("https://webcamtests.com/"),
+    target_url: str = Form("about:blank"),
     profile_id: str = Form("temporary_clean_profile"),
     hardware_persona: str = Form("logitech_c920"),
     y4m_path: Optional[str] = Form(None)
@@ -299,6 +303,9 @@ async def api_launch_browser(
     executable = find_orbita_executable()
     if not executable:
         raise HTTPException(status_code=500, detail="No se encontró ejecutable de Orbita Browser o Chrome.")
+
+    # Si target_url está vacío, abrir en about:blank listo para navegar a cualquier URL
+    final_url = target_url.strip() if target_url and target_url.strip() else "about:blank"
 
     # Detener proceso previo si existe
     if state.browser_proc:

@@ -159,11 +159,21 @@
 
                         <div class="form-grid">
                             <div class="form-group">
-                                <label for="setting-resolution">Resolución de Salida</label>
+                                <label for="setting-resolution">Resolución & Relación de Aspecto</label>
                                 <select id="setting-resolution" class="custom-select">
-                                    <option value="1280x720" selected>1280 x 720 (HD 720p - Óptimo para Onboarding)</option>
-                                    <option value="1920x1080">1920 x 1080 (Full HD 1080p)</option>
-                                    <option value="640x480">640 x 480 (VGA Standard)</option>
+                                    <option value="1280x720" selected>1280 x 720 (16:9 HD — Estándar Webcams)</option>
+                                    <option value="960x720">960 x 720 (4:3 Classic — Ideal Foto INE / Pasaporte)</option>
+                                    <option value="1920x1080">1920 x 1080 (16:9 Full HD)</option>
+                                    <option value="720x1280">720 x 1280 (9:16 Vertical Mobile)</option>
+                                    <option value="640x480">640 x 480 (4:3 VGA Standard)</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="setting-framing">Modo de Encuadre de la Captura</label>
+                                <select id="setting-framing" class="custom-select">
+                                    <option value="fill_crop" selected>Llenar Sensor & Auto-Centrado (Recomendado — Sin barras negras, encuadre 100% natural)</option>
+                                    <option value="fit_pad">Ajustar con Padding Centrado (Mantiene imagen original completa)</option>
                                 </select>
                             </div>
 
@@ -185,7 +195,7 @@
                                 </select>
                             </div>
 
-                            <div class="form-group">
+                            <div class="form-group" style="grid-column: 1 / -1;">
                                 <label>Protección de Sensor Físico</label>
                                 <div class="checkbox-pill-group">
                                     <label class="custom-checkbox">
@@ -204,7 +214,7 @@
 
                         <div class="action-footer">
                             <button class="btn-primary-glow full-width" id="btn-process-stage1" onclick="processStage1()">
-                                <span class="btn-icon">⚡</span> GENERAR BUFFER & PASAR AL PASO 2
+                                <span class="btn-icon">⚡</span> GENERAR BUFFER & DEJAR CÁMARA ARMADA
                             </button>
                         </div>
 
@@ -240,7 +250,7 @@
                             </video>
                             <div class="player-hud-overlay">
                                 <div class="hud-tag top-left">
-                                    <span class="rec-dot"></span> LIVE BUFFER PREVIEW
+                                    <span class="rec-dot"></span> CÁMARA LISTA & ARMADA
                                 </div>
                                 <div class="hud-tag top-right" id="hud-specs">
                                     1280x720 @ 30fps
@@ -264,8 +274,8 @@
                                 <span class="metric-val text-green">Activo (Micro-Drift OK)</span>
                             </div>
                             <div class="metric-item">
-                                <span class="metric-label">Sensor Noise</span>
-                                <span class="metric-val text-cyan">Gaussiano Aplicado</span>
+                                <span class="metric-label">Encuadre Sensor</span>
+                                <span class="metric-val text-cyan" id="metric-framing-val">Sensor Real (Fill Crop)</span>
                             </div>
                         </div>
                     </div>
@@ -320,7 +330,7 @@
                         <div class="action-footer step-actions-split">
                             <button class="btn-secondary" onclick="switchStep(1)">⬅️ Volver</button>
                             <button class="btn-primary-glow" onclick="switchStep(3)">
-                                CONFIGURAR INYECCIÓN Y AUDITORÍA ➡️
+                                PASAR A INYECCIÓN Y AUDITORÍA ➡️
                             </button>
                         </div>
                     </div>
@@ -336,8 +346,8 @@
                         <div class="card-header">
                             <div class="header-icon">🚀</div>
                             <div class="header-titles">
-                                <h2>3. Lanzar Orbita & Inyectar Stream</h2>
-                                <p>Abre el navegador antidetect con la cámara virtual y el sniffer stealth activados.</p>
+                                <h2>3. Abrir Navegador con Cámara Armada</h2>
+                                <p>El navegador se abre con el stream inyectado a nivel de sistema. Listo para cualquier URL de selfie o formulario.</p>
                             </div>
                         </div>
 
@@ -350,32 +360,32 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="target-url-input">URL Objetivo de Auditoría</label>
+                                <label for="target-url-input">URL Inicial (Opcional — Puedes dejarlo en blanco o pegar cualquier URL)</label>
                                 <div class="url-input-wrapper">
-                                    <input type="url" id="target-url-input" class="custom-input" value="https://webcamtests.com/" placeholder="https://betmexico.mx/onboarding">
+                                    <input type="text" id="target-url-input" class="custom-input" value="about:blank" placeholder="about:blank o pega cualquier enlace de selfie/onboarding">
                                 </div>
                                 <div class="url-presets-row">
-                                    <span class="preset-label">Presets:</span>
-                                    <button class="btn-preset-chip" onclick="setUrlPreset('https://webcamtests.com/')">WebcamTests.com</button>
+                                    <span class="preset-label">Presets Rápidos:</span>
+                                    <button class="btn-preset-chip" onclick="setUrlPreset('about:blank')">En Blanco (about:blank)</button>
+                                    <button class="btn-preset-chip" onclick="setUrlPreset('https://webcamtests.com/')">WebcamTests.com (Probar)</button>
                                     <button class="btn-preset-chip" onclick="setUrlPreset('https://webcam-test.com/')">Webcam-Test</button>
-                                    <button class="btn-preset-chip" onclick="setUrlPreset('https://betmexico.mx/onboarding')">BetMexico Onboarding</button>
                                 </div>
                             </div>
 
                             <div class="stealth-features-box">
-                                <div class="stealth-title">🛡️ Escudos Stealth Activos:</div>
+                                <div class="stealth-title">🛡️ Escudos Stealth & Inyección Activa:</div>
                                 <ul class="stealth-list">
+                                    <li>✔️ <strong>Cámara Armada en Background:</strong> Lista para activarse en cuanto cualquier página pida video.</li>
+                                    <li>✔️ <strong>Encuadre & Aspect Ratio Óptimos:</strong> Sin deformación facial ni franjas negras.</li>
                                     <li>✔️ <strong>WebRTC Constraint Adapter:</strong> Previene <code>OverconstrainedError</code>.</li>
                                     <li>✔️ <strong>Background Anti-Throttling:</strong> 30 FPS constantes en segundo plano.</li>
-                                    <li>✔️ <strong>Deterministic Device GUIDs:</strong> Identificadores fijos por perfil.</li>
-                                    <li>✔️ <strong>Canvas Snapshot Sniffer:</strong> Intercepta capturas de rostro en vivo.</li>
                                 </ul>
                             </div>
                         </div>
 
                         <div class="action-footer">
                             <button class="btn-launch-glow full-width" id="btn-launch-browser" onclick="launchBrowserInjection()">
-                                <span class="btn-icon">🌐</span> INYECTAR CÁMARA & LANZAR NAVEGADOR
+                                <span class="btn-icon">🌐</span> ABRIR NAVEGADOR CON CÁMARA ARMADA
                             </button>
                         </div>
                     </div>

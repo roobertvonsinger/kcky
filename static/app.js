@@ -298,12 +298,14 @@ async function processStage1() {
     const height = parseInt(resolution[1], 10);
     const duration = parseInt(document.getElementById('setting-duration').value, 10);
     const fps = parseInt(document.getElementById('setting-fps').value, 10);
+    const framingMode = document.getElementById('setting-framing') ? document.getElementById('setting-framing').value : 'fill_crop';
 
     const formData = new FormData();
     formData.append('duration', duration);
     formData.append('width', width);
     formData.append('height', height);
     formData.append('fps', fps);
+    formData.append('framing_mode', framingMode);
 
     try {
         let endpoint = '/api/generate-liveness';
@@ -324,7 +326,7 @@ async function processStage1() {
             StudioApp.activeY4mPath = res.y4m_path;
             StudioApp.activeMp4PreviewUrl = res.preview_url;
 
-            appendLogLine(`Buffer de cámara listo (${res.metadata.size_mb} MB).`, 'success');
+            appendLogLine(`Cámara armada y lista (${res.metadata.size_mb} MB, ${width}x${height}).`, 'success');
 
             const player = document.getElementById('buffer-video-player');
             const source = document.getElementById('buffer-video-source');
@@ -335,6 +337,11 @@ async function processStage1() {
             document.getElementById('hud-specs').textContent = `${width}x${height} @ ${fps}fps`;
             document.getElementById('hud-buffer-name').textContent = res.y4m_path.split(/[\\/]/).pop();
             document.getElementById('hud-duration').textContent = `${duration}s Loop Ready`;
+            
+            const framingTag = document.getElementById('metric-framing-val');
+            if (framingTag) {
+                framingTag.textContent = framingMode === 'fill_crop' ? 'Sensor Real (Fill Crop)' : 'Padding Centrado';
+            }
 
             switchStep(2);
         } else {
@@ -357,11 +364,12 @@ async function launchBrowserInjection() {
     }
 
     const profileId = document.getElementById('select-profile').value;
-    const targetUrl = document.getElementById('target-url-input').value.trim() || 'https://webcamtests.com/';
+    const rawTargetUrl = document.getElementById('target-url-input').value.trim();
+    const targetUrl = rawTargetUrl || 'about:blank';
     const btn = document.getElementById('btn-launch-browser');
 
     btn.disabled = true;
-    appendLogLine(`Lanzando navegador hacia ${targetUrl}...`, 'info');
+    appendLogLine(`Abriendo navegador con cámara armada hacia ${targetUrl}...`, 'info');
 
     const formData = new FormData();
     formData.append('target_url', targetUrl);

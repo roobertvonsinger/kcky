@@ -103,10 +103,12 @@
                 settings.deviceId = FAKE_CAM_CONFIG.deviceId;
                 settings.groupId = FAKE_CAM_CONFIG.groupId;
                 settings.facingMode = "user";
-                if (!settings.width) settings.width = 1280;
-                if (!settings.height) settings.height = 720;
+                const w = settings.width || 1280;
+                const h = settings.height || 720;
+                settings.width = w;
+                settings.height = h;
+                settings.aspectRatio = w / h;
                 if (!settings.frameRate) settings.frameRate = 30;
-                if (!settings.aspectRatio) settings.aspectRatio = 1280 / 720;
             }
             return settings;
         };
@@ -116,13 +118,16 @@
             MediaStreamTrack.prototype.getCapabilities = function () {
                 const caps = origGetCapabilities ? origGetCapabilities.apply(this) : {};
                 if (this.kind === 'video') {
-                    caps.aspectRatio = { max: 1280, min: 0.001388888888888889 };
+                    const settings = this.getSettings ? this.getSettings() : {};
+                    const w = settings.width || 1280;
+                    const h = settings.height || 720;
                     caps.deviceId = FAKE_CAM_CONFIG.deviceId;
                     caps.groupId = FAKE_CAM_CONFIG.groupId;
                     caps.facingMode = ["user"];
                     caps.frameRate = { max: 30, min: 1 };
-                    caps.height = { max: 720, min: 1 };
-                    caps.width = { max: 1280, min: 1 };
+                    caps.height = { max: h, min: 1 };
+                    caps.width = { max: w, min: 1 };
+                    caps.aspectRatio = { max: w / h, min: 0.001 };
                     caps.resizeMode = ["none", "crop-and-scale"];
                 }
                 return caps;

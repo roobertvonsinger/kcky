@@ -63,11 +63,12 @@ def main():
     live_parser.add_argument("-w", "--width", type=int, default=1280, help="Ancho (default: 1280)")
     live_parser.add_argument("-H", "--height", type=int, default=720, help="Alto (default: 720)")
     live_parser.add_argument("-fps", type=int, default=30, help="FPS (default: 30)")
+    live_parser.add_argument("--framing", choices=["fill_crop", "fit_pad"], default="fill_crop", help="Modo de encuadre (default: fill_crop)")
 
     # Subcomando Launch Browser CLI
     launch_parser = subparsers.add_parser("launch", help="Lanzar Orbita con cámara Y4M inyectada")
     launch_parser.add_argument("y4m", help="Ruta al archivo .y4m")
-    launch_parser.add_argument("url", nargs="?", default="https://webcamtests.com/", help="URL destino")
+    launch_parser.add_argument("url", nargs="?", default="about:blank", help="URL destino (default: about:blank)")
 
     # Subcomando Status
     subparsers.add_parser("status", help="Auditar estado de hardware y dependencias")
@@ -82,9 +83,10 @@ def main():
             duration=args.duration,
             width=args.width,
             height=args.height,
-            fps=args.fps
+            fps=args.fps,
+            framing_mode=args.framing
         )
-        print(f"[+] Liveness completado: {res['y4m_path']} ({res['size_mb']} MB)")
+        print(f"[+] Liveness completado: {res['y4m_path']} ({res['size_mb']} MB, {args.width}x{args.height})")
 
     elif args.command == "launch":
         executable = find_orbita_executable()

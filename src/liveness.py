@@ -15,11 +15,14 @@ def generate_synthetic_liveness(
     duration: int = 90,
     width: int = 1280,
     height: int = 720,
-    fps: int = 30
+    fps: int = 30,
+    framing_mode: str = "fill_crop"
 ) -> Dict[str, Any]:
     """
     Genera un stream continuo de video .y4m y preview .mp4 desde una imagen estática.
-    Aplica micro-movimiento senoidal armónico (respiración/pulso), micro-luz ambiental y ruido CMOS.
+    Soporta modos de encuadre:
+    - 'fill_crop': Llena todo el sensor de cámara recortando al centro sin barras negras ni distorsión.
+    - 'fit_pad': Mantiene imagen completa ajustada con padding centrado.
     """
     if not os.path.exists(image_path):
         raise FileNotFoundError(f"Imagen no encontrada: {image_path}")
@@ -30,9 +33,14 @@ def generate_synthetic_liveness(
 
     total_frames = duration * fps
 
+    if framing_mode == "fit_pad":
+        scale_pad_part = f"scale={width*2}:{height*2}:force_original_aspect_ratio=decrease,pad={width*2}:{height*2}:(ow-iw)/2:(oh-ih)/2,"
+    else:
+        # fill_crop (Default): llena el marco de la cámara como sensor real sin franjas negras
+        scale_pad_part = f"scale={width*2}:{height*2}:force_original_aspect_ratio=increase,crop={width*2}:{height*2},"
+
     vf_filter = (
-        f"scale={width*2}:{height*2}:force_original_aspect_ratio=decrease,"
-        f"pad={width*2}:{height*2}:(ow-iw)/2:(oh-ih)/2,"
+        f"{scale_pad_part}"
         f"zoompan=z='1.02+0.015*sin(2*3.14159*on/({fps}*4.5))':"
         f"x='iw/2-(iw/zoom/2)+2.0*sin(2*3.14159*on/({fps}*6.2))':"
         f"y='ih/2-(ih/zoom/2)+1.5*cos(2*3.14159*on/({fps}*3.8))':"
@@ -79,6 +87,7 @@ def generate_synthetic_liveness(
         "duration": duration,
         "resolution": f"{width}x{height}",
         "fps": fps,
+        "framing": framing_mode,
         "size_mb": round(size_mb, 2)
     }
 
@@ -90,7 +99,8 @@ def convert_video_to_seamless_y4m(
     min_duration: int = 90,
     width: int = 1280,
     height: int = 720,
-    fps: int = 30
+    fps: int = 30,
+    framing_mode: str = "fill_crop"
 ) -> Dict[str, Any]:
     """Normaliza y extiende un video (p. ej. de face swap) a un bucle continuo de 90s+ en formato Y4M."""
     if not os.path.exists(video_path):
@@ -98,13 +108,18 @@ def convert_video_to_seamless_y4m(
 
     os.makedirs(os.path.dirname(os.path.abspath(output_y4m_path)), exist_ok=True)
 
+    if framing_mode == "fit_pad":
+        vf_scale = f"scale={width}:{height}:force_original_aspect_ratio=decrease,pad={width}:{height}:(ow-iw)/2:(oh-ih)/2"
+    else:
+        vf_scale = f"scale={width}:{height}:force_original_aspect_ratio=increase,crop={width}:{height}"
+
     cmd = [
         "ffmpeg",
         "-y",
         "-stream_loop", "-1",
         "-i", video_path,
         "-t", str(min_duration),
-        "-vf", f"scale={width}:{height}:force_original_aspect_ratio=decrease,pad={width}:{height}:(ow-iw)/2:(oh-ih)/2,noise=alls=2:allf=t+u,format=yuv420p",
+        "-vf", f"{vf_scale},noise=alls=2:allf=t+u,format=yuv420p",
         "-r", str(fps),
         "-pix_fmt", "yuv420p",
         output_y4m_path
