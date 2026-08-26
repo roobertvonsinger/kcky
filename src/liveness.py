@@ -181,11 +181,37 @@ def convert_video_to_seamless_y4m(
 
     os.makedirs(os.path.dirname(os.path.abspath(output_y4m_path)), exist_ok=True)
 
+    # Detectar dimensiones nativas del video de entrada
+    in_w, in_h = 1280, 720
+    try:
+        import cv2
+        cap = cv2.VideoCapture(video_path)
+        if cap.isOpened():
+            in_w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)) or in_w
+            in_h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT)) or in_h
+            cap.release()
+    except Exception:
+        pass
+
+    is_portrait = (in_w / (in_h or 1)) < 1.0
+
     if framing_mode == "fit_pad":
-        vf_scale = f"scale={width}:{height}:force_original_aspect_ratio=decrease,pad={width}:{height}:(ow-iw)/2:(oh-ih)/2"
+        filter_args = [
+            "-vf", f"scale={width}:{height}:force_original_aspect_ratio=decrease,pad={width}:{height}:(ow-iw)/2:(oh-ih)/2,noise=alls=2:allf=t+u,format=yuv420p"
+        ]
+    elif is_portrait and (width > height):
+        # Video vertical (selfie móvil) en salida horizontal (16:9 webcam):
+        # Mantiene 100% de la cabeza/pecho centrado sin cortes y añade fondo ambiental desenfocado en los flancos
+        filter_complex = (
+            f"[0:v]scale={width}:{height}:force_original_aspect_ratio=increase,crop={width}:{height},boxblur=25:5,eq=brightness=-0.18[bg];"
+            f"[0:v]scale=-2:{height}[fg];"
+            f"[bg][fg]overlay=(W-w)/2:0,noise=alls=2:allf=t+u,format=yuv420p"
+        )
+        filter_args = ["-filter_complex", filter_complex]
     else:
-        # Auto-encuadre biométrico inteligente para video selfie
-        vf_scale = compute_smart_biometric_crop(video_path, width, height)
+        # Video horizontal o relación 16:9 / 4:3
+        vf_scale = f"scale={width}:{height}:force_original_aspect_ratio=increase,crop={width}:{height}:(iw-ow)/2:'max(0, (ih-oh)*0.15)'"
+        filter_args = ["-vf", f"{vf_scale},noise=alls=2:allf=t+u,format=yuv420p"]
 
     cmd = [
         "ffmpeg",
@@ -193,7 +219,7 @@ def convert_video_to_seamless_y4m(
         "-stream_loop", "-1",
         "-i", video_path,
         "-t", str(min_duration),
-        "-vf", f"{vf_scale},noise=alls=2:allf=t+u,format=yuv420p",
+        *filter_args,
         "-r", str(fps),
         "-pix_fmt", "yuv420p",
         output_y4m_path

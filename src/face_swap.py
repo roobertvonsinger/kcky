@@ -25,14 +25,19 @@ async def execute_face_swap_directml(
     source_face_path: str,
     target_video_path: str,
     output_raw_mp4: str,
+    enable_enhancer: bool = True,
     log_callback: Optional[Callable[[str, str], Any]] = None
 ) -> None:
-    """Ejecuta Deep-Live-Cam de forma asíncrona usando el proveedor DirectML (AMD GPU)."""
+    """Ejecuta Deep-Live-Cam de forma asíncrona usando el proveedor DirectML (AMD GPU) y restauración GFPGAN."""
     python_exec = get_deep_live_cam_python() or sys.executable
     run_py = DEEP_LIVE_CAM_DIR / "run.py"
 
     if not run_py.is_file():
         raise FileNotFoundError(f"No se encontró run.py de Deep-Live-Cam en: {run_py}")
+
+    processors = ["face_swapper"]
+    if enable_enhancer:
+        processors.append("face_enhancer")
 
     cmd = [
         python_exec,
@@ -41,7 +46,7 @@ async def execute_face_swap_directml(
         "-t", target_video_path,
         "-o", output_raw_mp4,
         "--execution-provider", "dml",
-        "--frame-processor", "face_swapper",
+        "--frame-processor", *processors,
         "--video-encoder", "libx264"
     ]
 
