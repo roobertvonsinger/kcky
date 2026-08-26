@@ -128,9 +128,7 @@ async def attach_cdp_stealth_session(
     event_callback: Optional[Callable[[str, Any], Any]] = None,
     log_callback: Optional[Callable[[str, str], Any]] = None
 ) -> None:
-    """Conecta Playwright sobre CDP e inyecta los scripts de evasión y sniffer."""
-    await asyncio.sleep(2.0)
-
+    """Conecta Playwright sobre CDP con reintentos e inyecta los scripts de evasión y sniffer."""
     spoof_script_path = SCRIPTS_DIR / "webrtc_cam_spoof.js"
     sniffer_script_path = SCRIPTS_DIR / "kyc_sniffer.js"
 
@@ -138,7 +136,6 @@ async def attach_cdp_stealth_session(
     if spoof_script_path.is_file():
         with open(spoof_script_path, "r", encoding="utf-8") as f:
             spoof_code = f.read()
-            # Inyectar hardware persona
             hw_config = HARDWARE_PERSONAS.get(hardware_persona, HARDWARE_PERSONAS["logitech_c920"])
             spoof_code = spoof_code.replace("Integrated Camera (04f2:b614)", hw_config["label"])
             spoof_code = spoof_code.replace("Microphone (Realtek(R) Audio)", hw_config["mic_label"])
@@ -151,36 +148,55 @@ async def attach_cdp_stealth_session(
     try:
         from playwright.async_api import async_playwright
         async with async_playwright() as pw:
-            if log_callback:
-                await log_callback(f"Conectando CDP en puerto :{cdp_port}...", "info")
+            browser = None
+            # Bucle de reintentos para dar tiempo a que Chromium abra el puerto CDP
+            for attempt in range(12):
+                await asyncio.sleep(0.5)
+                try:
+                    browser = await pw.chromium.connect_over_cdp(f"http://127.0.0.1:{cdp_port}")
+                    break
+                except Exception:
+                    if attempt == 11:
+                        raise
 
-            browser = await pw.chromium.connect_over_cdp(f"http://127.0.0.1:{cdp_port}")
+            if not browser:
+                raise ConnectionError("No fue posible conectar con el puerto CDP de Chromium.")
+
+            if log_callback:
+                await log_callback(f"Conectado a CDP en puerto :{cdp_port}.", "info")
+
             contexts = browser.contexts
             context = contexts[0] if contexts else await browser.new_context()
 
+            # Preload scripts stealth para cualquier nueva página / iframe
             if spoof_code:
                 await context.add_init_script(spoof_code)
             if sniffer_code:
                 await context.add_init_script(sniffer_code)
 
-            pages = context.pages
-            page = pages[0] if pages else await context.new_page()
+            def attach_page_listeners(p):
+                def on_console(msg):
+                    text = msg.text
+                    if "[KYC_SNIFFER_EVENT]" in text:
+                        try:
+                            raw_json = text.split("[KYC_SNIFFER_EVENT]")[1].strip()
+                            data = json.loads(raw_json)
+                            if event_callback:
+                                asyncio.create_task(event_callback(data.get("type", "EVENT"), data))
+                        except Exception:
+                            pass
 
-            def on_console(msg):
-                text = msg.text
-                if "[KYC_SNIFFER_EVENT]" in text:
-                    try:
-                        raw_json = text.split("[KYC_SNIFFER_EVENT]")[1].strip()
-                        data = json.loads(raw_json)
-                        if event_callback:
-                            asyncio.create_task(event_callback(data.get("type", "EVENT"), data))
-                    except Exception:
-                        pass
+                p.on("console", on_console)
 
-            page.on("console", on_console)
+            # Escuchar en todas las páginas abiertas actuales
+            for p in context.pages:
+                attach_page_listeners(p)
+
+            # Escuchar en nuevas pestañas o popups generados por el flujo de onboarding
+            context.on("page", lambda new_page: attach_page_listeners(new_page))
 
             if log_callback:
-                await log_callback("🛡️ WebRTC Stealth Spoofing & KYC Sniffer activos en Orbita.", "success")
+                await log_callback("🛡️ WebRTC Stealth Spoofing & KYC Sniffer activos en todas las pestañas.", "success")
 
             while browser.is_connected():
                 await asyncio.sleep(1)

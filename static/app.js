@@ -208,7 +208,11 @@ function initDropzones() {
     }
 }
 
-function triggerFileInput(id) {
+function triggerFileInput(id, event) {
+    if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+    }
     const el = document.getElementById(id);
     if (el) el.click();
 }
@@ -225,6 +229,9 @@ async function handleFaceUpload(file) {
         if (resp.ok) {
             StudioApp.uploadedFacePath = res.file_path;
             StudioApp.uploadedFaceFilename = res.filename;
+            // Reset buffer activo previo para obligar a nueva generación
+            StudioApp.activeY4mPath = null;
+            StudioApp.activeMp4PreviewUrl = null;
 
             document.getElementById('dropzone-idle').style.display = 'none';
             const previewCont = document.getElementById('face-preview-container');

@@ -273,6 +273,18 @@ async def api_process_swap(
         state.is_processing = False
 
 
+def kill_process_tree(proc: Optional[subprocess.Popen]):
+    if not proc:
+        return
+    try:
+        if os.name == "nt":
+            subprocess.run(f"taskkill /F /PID {proc.pid} /T", shell=True, capture_output=True)
+        else:
+            proc.terminate()
+    except Exception:
+        pass
+
+
 @app.post("/api/launch-browser")
 async def api_launch_browser(
     target_url: str = Form("https://webcamtests.com/"),
@@ -290,10 +302,8 @@ async def api_launch_browser(
 
     # Detener proceso previo si existe
     if state.browser_proc:
-        try:
-            state.browser_proc.terminate()
-        except Exception:
-            pass
+        kill_process_tree(state.browser_proc)
+        state.browser_proc = None
 
     state.cdp_port = find_free_port()
     state.detected_sdks = []
@@ -341,10 +351,7 @@ async def api_launch_browser(
 @app.post("/api/panic-reset")
 async def api_panic_reset():
     if state.browser_proc:
-        try:
-            state.browser_proc.terminate()
-        except Exception:
-            pass
+        kill_process_tree(state.browser_proc)
         state.browser_proc = None
 
     state.browser_running = False

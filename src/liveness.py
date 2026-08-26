@@ -36,7 +36,7 @@ def generate_synthetic_liveness(
         f"zoompan=z='1.02+0.015*sin(2*3.14159*on/({fps}*4.5))':"
         f"x='iw/2-(iw/zoom/2)+2.0*sin(2*3.14159*on/({fps}*6.2))':"
         f"y='ih/2-(ih/zoom/2)+1.5*cos(2*3.14159*on/({fps}*3.8))':"
-        f"d={total_frames}:s={width}x{height},"
+        f"d={total_frames}:fps={fps}:s={width}x{height},"
         f"eq=brightness='0.004*sin(2*3.14159*t/8.0)':contrast='1.0+0.008*cos(2*3.14159*t/7.0)',"
         f"noise=alls=3:allf=t+u,"
         f"format=yuv420p"
@@ -101,7 +101,7 @@ def convert_video_to_seamless_y4m(
     cmd = [
         "ffmpeg",
         "-y",
-        "-stream_loop", "10",
+        "-stream_loop", "-1",
         "-i", video_path,
         "-t", str(min_duration),
         "-vf", f"scale={width}:{height}:force_original_aspect_ratio=decrease,pad={width}:{height}:(ow-iw)/2:(oh-ih)/2,noise=alls=2:allf=t+u,format=yuv420p",

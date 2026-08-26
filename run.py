@@ -43,9 +43,13 @@ def run_web_studio(host: str = DEFAULT_HOST, port: int = DEFAULT_PORT, auto_open
 
 def main():
     parser = argparse.ArgumentParser(description="ONBOARDED — Plataforma de Evasión WebRTC & Auditoría KYC")
-    subparsers = parser.add_subparsers(dest="command", help="Comando a ejecutar")
+    parser.add_argument("--host", default=DEFAULT_HOST, help=f"Host para Web Studio (default: {DEFAULT_HOST})")
+    parser.add_argument("--port", type=int, default=DEFAULT_PORT, help=f"Puerto para Web Studio (default: {DEFAULT_PORT})")
+    parser.add_argument("--no-open", action="store_true", help="No abrir navegador automáticamente")
 
-    # Subcomando Web (default)
+    subparsers = parser.add_subparsers(dest="command", help="Comando a ejecutar (opcional)")
+
+    # Subcomando Web
     web_parser = subparsers.add_parser("web", help="Iniciar Studio Web GUI")
     web_parser.add_argument("--host", default=DEFAULT_HOST, help=f"Host (default: {DEFAULT_HOST})")
     web_parser.add_argument("--port", type=int, default=DEFAULT_PORT, help=f"Puerto (default: {DEFAULT_PORT})")
