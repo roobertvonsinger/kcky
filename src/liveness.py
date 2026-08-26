@@ -36,8 +36,8 @@ def generate_synthetic_liveness(
     if framing_mode == "fit_pad":
         scale_pad_part = f"scale={width*2}:{height*2}:force_original_aspect_ratio=decrease,pad={width*2}:{height*2}:(ow-iw)/2:(oh-ih)/2,"
     else:
-        # fill_crop (Default): llena el marco de la cámara como sensor real sin franjas negras
-        scale_pad_part = f"scale={width*2}:{height*2}:force_original_aspect_ratio=increase,crop={width*2}:{height*2},"
+        # fill_crop (Primer cuadro selfie): llena el marco y deja headroom superior natural para frente/ojos
+        scale_pad_part = f"scale={width*2}:{height*2}:force_original_aspect_ratio=increase,crop={width*2}:{height*2}:(iw-ow)/2:'max(0, (ih-oh)*0.20)',"
 
     vf_filter = (
         f"{scale_pad_part}"
@@ -111,7 +111,8 @@ def convert_video_to_seamless_y4m(
     if framing_mode == "fit_pad":
         vf_scale = f"scale={width}:{height}:force_original_aspect_ratio=decrease,pad={width}:{height}:(ow-iw)/2:(oh-ih)/2"
     else:
-        vf_scale = f"scale={width}:{height}:force_original_aspect_ratio=increase,crop={width}:{height}"
+        # Primer cuadro selfie: llena marco y posiciona la cara con 25% de margen superior para centrar frente/ojos
+        vf_scale = f"scale={width}:{height}:force_original_aspect_ratio=increase,crop={width}:{height}:(iw-ow)/2:'max(0, (ih-oh)*0.25)'"
 
     cmd = [
         "ffmpeg",

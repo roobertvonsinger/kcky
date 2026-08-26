@@ -80,29 +80,33 @@ def process_id_card(
 
     img = cv2.imread(image_path)
     if img is None:
-        return {"success": False, "error": "No se pudo decodificar la imagen de la credencial."}
+        return {"success": False, "error": "No se pudo decodificar la imagen de la credencial INE."}
 
     h, w = img.shape[:2]
 
-    # 1. Detección Facial usando InsightFace / RetinaFace o Haar Cascade
-    face_box = None
+    # 1. Detección Facial Especializada para INE (Prioridad Foto Principal Izquierda vs Foto Fantasma)
+    detected_boxes = []
     try:
         import insightface
         fa = insightface.app.FaceAnalysis(name='buffalo_l', providers=['CPUExecutionProvider'], allowed_modules=['detection'])
         fa.prepare(ctx_id=0, det_size=(640, 640))
         faces = fa.get(img)
         if faces:
-            # Seleccionar la cara con mayor área o score de confianza
-            faces.sort(key=lambda f: (f.bbox[2]-f.bbox[0]) * (f.bbox[3]-f.bbox[1]), reverse=True)
-            b = faces[0].bbox.astype(int)
-            face_box = (b[0], b[1], b[2], b[3])
+            for f in faces:
+                b = f.bbox.astype(int)
+                area = (b[2] - b[0]) * (b[3] - b[1])
+                center_x = (b[0] + b[2]) / 2.0
+                # En INE la foto principal está a la izquierda (center_x < 0.6 * w) y tiene mayor área
+                # Bonificar rostros ubicados en la mitad izquierda
+                left_bonus = 2.0 if center_x < (w * 0.55) else 0.5
+                score = area * left_bonus * float(getattr(f, 'det_score', 1.0))
+                detected_boxes.append((score, (b[0], b[1], b[2], b[3])))
     except Exception:
         pass
 
     # Fallback a Haar Cascade si InsightFace no detectó
-    if face_box is None:
+    if not detected_boxes:
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        # Intentar cargar cascade local
         cascade_paths = [
             cv2.data.haarcascades + 'haarcascade_frontalface_default.xml',
             os.path.join(os.path.dirname(cv2.__file__), 'data', 'haarcascade_frontalface_default.xml')
@@ -110,25 +114,32 @@ def process_id_card(
         for cp in cascade_paths:
             if os.path.exists(cp):
                 detector = cv2.CascadeClassifier(cp)
-                detected = detector.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=4, minSize=(60, 60))
-                if len(detected) > 0:
-                    x, y, fw, fh = detected[0]
-                    face_box = (x, y, x + fw, y + fh)
+                detected = detector.detectMultiScale(gray, scaleFactor=1.08, minNeighbors=3, minSize=(50, 50))
+                for (x, y, fw, fh) in detected:
+                    center_x = x + fw / 2.0
+                    left_bonus = 2.0 if center_x < (w * 0.55) else 0.5
+                    score = (fw * fh) * left_bonus
+                    detected_boxes.append((score, (x, y, x + fw, y + fh)))
+                if detected_boxes:
                     break
 
-    # Si no se detectó cara (p. ej. foto muy pequeña), centrar en el tercio superior izquierdo común de credenciales
-    if face_box is None:
-        # Bounding box heurístico de credenciales INE (foto a la izquierda)
-        face_box = (int(w * 0.05), int(h * 0.15), int(w * 0.45), int(h * 0.85))
+    # Seleccionar la mejor caja facial (foto principal de la INE)
+    if detected_boxes:
+        detected_boxes.sort(key=lambda item: item[0], reverse=True)
+        face_box = detected_boxes[0][1]
+    else:
+        # Bounding box heurístico estándar para INE (Foto principal en el tercio izquierdo)
+        face_box = (int(w * 0.04), int(h * 0.12), int(w * 0.42), int(h * 0.88))
 
     x1, y1, x2, y2 = face_box
     fw = x2 - x1
     fh = y2 - y1
 
-    # Margen proporcional inteligente para encuadre tipo retrato/pasaporte
-    pad_x = int(fw * 0.40)
-    pad_y_top = int(fh * 0.50)
-    pad_y_bottom = int(fh * 0.35)
+    # Margen proporcional optimizado para primer cuadro tipo selfie / retrato KYC
+    # Proporción con espacio superior para cabello/frente y espacio inferior para cuello/hombros
+    pad_x = int(fw * 0.35)
+    pad_y_top = int(fh * 0.45)
+    pad_y_bottom = int(fh * 0.30)
 
     cx1 = max(0, x1 - pad_x)
     cy1 = max(0, y1 - pad_y_top)
@@ -143,7 +154,11 @@ def process_id_card(
     os.makedirs(os.path.dirname(os.path.abspath(output_crop_path)), exist_ok=True)
     cv2.imwrite(output_crop_path, crop)
 
-    # 2. Restauración Facial y Super-Resolución HD con GFPGAN / GPEN
+    # 2. Filtrado sutil de textura / De-moire antes de Super-Resolución
+    # Reduce las líneas guilloche del plástico del INE
+    denoised_crop = cv2.bilateralFilter(crop, d=7, sigmaColor=45, sigmaSpace=45)
+
+    # 3. Restauración Facial y Super-Resolución HD con GFPGAN / GPEN
     gfpgan_model = os.path.join(models_dir, "gfpgan-1024.onnx")
     gpen_model = os.path.join(models_dir, "GPEN-BFR-512.onnx")
 
@@ -156,14 +171,21 @@ def process_id_card(
     enhanced_crop = None
     if model_to_use:
         try:
-            enhanced_crop = enhance_face_crop_gfpgan(crop, model_to_use)
+            enhanced_crop = enhance_face_crop_gfpgan(denoised_crop, model_to_use)
         except Exception as e:
             print(f"[!] Warning en mejora AI: {e}", file=sys.stderr)
 
     if enhanced_crop is None:
-        # Fallback de mejora con interpolación Bicúbica y filtro bilateral
-        enhanced_crop = cv2.resize(crop, (1024, 1024), interpolation=cv2.INTER_LANCZOS4)
+        enhanced_crop = cv2.resize(denoised_crop, (1024, 1024), interpolation=cv2.INTER_LANCZOS4)
         enhanced_crop = cv2.bilateralFilter(enhanced_crop, 9, 75, 75)
+
+    # Ajuste fino de color y balance de blancos para piel natural
+    # Corrige el tono lavado/grisáceo de fotos escaneadas de INE
+    lab = cv2.cvtColor(enhanced_crop, cv2.COLOR_BGR2LAB)
+    l, a, b_chan = cv2.split(lab)
+    clahe = cv2.createCLAHE(clipLimit=1.8, tileGridSize=(8, 8))
+    cl = clahe.apply(l)
+    enhanced_crop = cv2.cvtColor(cv2.merge((cl, a, b_chan)), cv2.COLOR_LAB2BGR)
 
     os.makedirs(os.path.dirname(os.path.abspath(output_enhanced_path)), exist_ok=True)
     cv2.imwrite(output_enhanced_path, enhanced_crop)
