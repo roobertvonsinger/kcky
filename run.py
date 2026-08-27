@@ -17,28 +17,53 @@ from src.liveness import generate_synthetic_liveness, convert_video_to_seamless_
 from src.browser import find_orbita_executable, launch_browser_process, find_free_port
 
 
-def run_web_studio(host: str = DEFAULT_HOST, port: int = DEFAULT_PORT, auto_open: bool = True):
-    """Inicia el servidor web FastAPI con Uvicorn y abre el navegador automáticamente."""
+def run_native_app(host: str = DEFAULT_HOST, port: int = DEFAULT_PORT):
+    """Inicia el servidor backend y abre una Ventana Nativa de Escritorio (Desktop App) en Windows."""
     import uvicorn
+    import threading
+    import time
     from src.server import app
 
     url = f"http://{host}:{port}"
     print("======================================================================")
-    print("  ONBOARDED — Suite de Inyección Biometríca & Auditoría KYC")
-    print(f"  URL: {url}")
+    print("  ONBOARDED — Suite de Inyeccion Biometrica & Auditoria KYC (Desktop)")
+    print(f"  URL Backend: {url}")
     print("  GPU: AMD Radeon RX 580 (DirectML Enabled)")
     print("======================================================================")
 
-    if auto_open:
-        def open_browser():
-            import time
-            time.sleep(1.5)
-            webbrowser.open(url)
-        
-        import threading
-        threading.Thread(target=open_browser, daemon=True).start()
+    # Iniciar servidor Uvicorn en hilo secundario daemon
+    config = uvicorn.Config(app, host=host, port=port, log_level="warning")
+    server = uvicorn.Server(config)
+    server_thread = threading.Thread(target=server.run, daemon=True)
+    server_thread.start()
 
-    uvicorn.run(app, host=host, port=port, log_level="warning")
+    time.sleep(1.0)
+
+    try:
+        import webview
+        print("[*] Abriendo ventana nativa de escritorio...")
+        window = webview.create_window(
+            title="ONBOARDED — Suite de Inyección Biométrica & KYC (DirectML AMD RX 580)",
+            url=url,
+            width=1320,
+            height=860,
+            resizable=True,
+            min_size=(1040, 700)
+        )
+        webview.start()
+    except Exception as err:
+        print(f"[!] PyWebView no disponible o fallo ({err}), abriendo en navegador...")
+        webbrowser.open(url)
+        try:
+            while True:
+                time.sleep(1)
+        except KeyboardInterrupt:
+            pass
+
+
+def run_web_studio(host: str = DEFAULT_HOST, port: int = DEFAULT_PORT, auto_open: bool = True):
+    """Inicia el servidor web FastAPI con Uvicorn."""
+    run_native_app(host, port)
 
 
 def main():
