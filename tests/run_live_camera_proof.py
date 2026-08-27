@@ -11,7 +11,7 @@ import tempfile
 from pathlib import Path
 from playwright.async_api import async_playwright
 
-BASE_DIR = Path(r"C:\Users\rober\Dropbox\TESTING DEV\repos\onboarded")
+BASE_DIR = Path(r"C:\Users\rober\Dropbox\TESTING DEV\repos\kcky")
 sys.path.insert(0, str(BASE_DIR))
 
 from src.config import SCRIPTS_DIR, HARDWARE_PERSONAS, BUFFERS_DIR
@@ -75,7 +75,7 @@ async def main():
     # 3. Lanzar Navegador con inyección
     executable = find_orbita_executable()
     cdp_port = find_free_port()
-    user_dir = os.path.join(tempfile.gettempdir(), f"onboarded_proof_{cdp_port}")
+    user_dir = os.path.join(tempfile.gettempdir(), f"kcky_proof_{cdp_port}")
     os.makedirs(user_dir, exist_ok=True)
 
     print(f"[2/4] Lanzando proceso Chrome con inyección Y4M (CDP :{cdp_port})...")

@@ -1,5 +1,5 @@
 """
-server.py — Backend FastAPI + WebSockets + REST API para Onboarded
+server.py — Backend FastAPI + WebSockets + REST API para K.C.K.Y.
 """
 
 import asyncio

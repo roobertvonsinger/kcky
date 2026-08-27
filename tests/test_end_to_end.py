@@ -1,5 +1,5 @@
 """
-test_end_to_end.py — Suite Autónoma de Verificación Extremo a Extremo para Onboarded
+test_end_to_end.py — Suite Autónoma de Verificación Extremo a Extremo para kcky
 Valida:
 1. Servidor FastAPI & REST API
 2. Generación FFmpeg Liveness 3D (Y4M 1280x720 30fps)
@@ -79,7 +79,7 @@ HTML_TEST_HARNESS = """<!DOCTYPE html>
 
 async def main():
     print("======================================================================")
-    print("  INICIANDO AUDITORIA INTEGRAL DE FUNCIONAMIENTO (ONBOARDED)")
+    print("  INICIANDO AUDITORIA INTEGRAL DE FUNCIONAMIENTO (kcky)")
     print("======================================================================\n")
 
     # 1. Crear imagen de prueba sintetica con FFmpeg
@@ -96,7 +96,7 @@ async def main():
     print(f"  [OK] Imagen lista: {test_img} ({os.path.getsize(test_img)} bytes)")
 
     # 2. Iniciar servidor backend en subproceso
-    print("\n[2/5] Iniciando servidor Onboarded en background...")
+    print("\n[2/5] Iniciando servidor kcky en background...")
     server_proc = subprocess.Popen([sys.executable, "run.py", "--no-open"], cwd=str(BASE_DIR))
     await asyncio.sleep(2.5)
 

@@ -1,5 +1,5 @@
 """
-test_complete_quality_audit.py — Auditoría Integral de Calidad y Rendimiento de Onboarded
+test_complete_quality_audit.py — Auditoría Integral de Calidad y Rendimiento de kcky
 Ejecuta y certifica:
 1. Extracción de Rostro y Super-Resolución GFPGAN desde INE.
 2. Face Swap DirectML (AMD RX 580) sobre Video Base de Estudio.
@@ -21,7 +21,7 @@ import cv2
 import numpy as np
 from playwright.async_api import async_playwright
 
-BASE_DIR = Path(r"c:\Users\rober\Dropbox\TESTING DEV\repos\onboarded")
+BASE_DIR = Path(r"c:\Users\rober\Dropbox\TESTING DEV\repos\kcky")
 sys.path.insert(0, str(BASE_DIR))
 
 from src.config import SCRIPTS_DIR, HARDWARE_PERSONAS, BUFFERS_DIR, UPLOADS_DIR, SESSIONS_DIR
@@ -60,7 +60,7 @@ async def main():
     }
 
     print("="*75)
-    print("  AUDITORIA EXHAUSTIVA DE CALIDAD Y RENDIMIENTO — ONBOARDED v2.0")
+    print("  AUDITORIA EXHAUSTIVA DE CALIDAD Y RENDIMIENTO — kcky v2.0")
     print("="*75 + "\n")
 
     # -------------------------------------------------------------
@@ -189,7 +189,7 @@ async def main():
     user_dir = os.path.join(os.environ.get("TEMP", "/tmp"), f"audit_quality_{cdp_port}")
     os.makedirs(user_dir, exist_ok=True)
 
-    # Iniciar servidor web Onboarded si no está activo
+    # Iniciar servidor web kcky si no está activo
     server_proc = subprocess.Popen([sys.executable, "run.py", "--no-open"], cwd=str(BASE_DIR))
     await asyncio.sleep(2.0)
 

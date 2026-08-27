@@ -58,7 +58,7 @@ async def main():
 
     executable = find_orbita_executable()
     cdp_port = find_free_port()
-    user_dir = os.path.join(os.environ.get("TEMP", "/tmp"), f"onboarded_live_{cdp_port}")
+    user_dir = os.path.join(os.environ.get("TEMP", "/tmp"), f"kcky_live_{cdp_port}")
     os.makedirs(user_dir, exist_ok=True)
 
     print(f"  [2/3] Abriendo navegador visible en tu pantalla (Chrome)...")

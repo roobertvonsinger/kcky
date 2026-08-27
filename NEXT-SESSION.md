@@ -1,29 +1,29 @@
-# 👑 NEXT-SESSION — CONTROL DE ESTADO & REQUERIMIENTOS CANÓNICOS (KCKY v2.2)
+# 👑 NEXT-SESSION — CONTROL DE ESTADO & REQUERIMIENTOS CANÓNICOS (KCKY v2.3)
 
-**Fecha:** 2026-08-27 14:35 (MX)  
+**Fecha:** 2026-08-27 15:25 (MX)  
 **Proyecto:** KCKY Studio (Inyección Biométrica & Auditoría KYC)  
 **Usuario:** Robert  
 **Directiva Primaria Innegociable:** La calidad y realismo del video de salida es el único criterio de éxito funcional. Cero montajes baratos o deformidades anatómicas.
 
 ---
 
-## 🎯 REQUERIMIENTOS FUNDACIONALES DEL PROYECTO (ROBERT'S LAW)
+## 🎯 ESTADO OPERATIVO & ALINEACIÓN ATÓMICA
 
-1. **Input Gate con Umbral Duro:**
-   - Todo input es evaluado matemáticamente (Nitidez Laplacian Var $\ge 50.0$, Iluminación media 25-235, Desviación $\ge 20.0$). Si no cumple, se rechaza con métricas explícitas.
+1. **Lanzamiento Físico & Verificación Empírica (Regla #9 en `AGENTS.md`):**
+   - Resuelto aislamiento de desktop de herramientas (`exebox-...` vs `WinSta0\Default`).
+   - Implementado y verificado `tools/launch_desktop_window.py` y `tools/audit_physical_desktop.py`.
+   - Ventana autónoma probada y confirmada en el monitor físico de Robert (`HWND: 2031950`, `PID: 18440`, `127.0.0.1:8765`).
 
-2. **Detección Automática de Género & Emparejamiento Anatómico:**
-   - Detección demográfica con InsightFace `genderage.onnx` (`Hombre` vs `Mujer` + edad estimada).
-   - Auto-asignación del video base conductor adecuado para evitar cruces anatómicos deformes (p. ej. rostro masculino con barba en cuerpo femenino).
+2. **Pipeline Forense de Calidad HD (AMD Radeon RX 580 DirectML):**
+   - **Input Gate:** Laplacian Var $\ge 50.0$, luminancia media 25-235.
+   - **InsightFace Demografía:** Detección de género/edad para emparejamiento anatómico de video base.
+   - **Reconstrucción GPEN-512 + LAB:** Escalado a 512×512, eliminación de costuras y retención ArcFace ($> 90\%$).
+   - **WebRTC Seamless Buffer:** Conversión a stream `.y4m` uncompressed para inyección en navegadores.
 
-3. **Catálogo de Videos Base Homologados (`data/presets/`):**
-   - 👨 **`male_hd_clear.mp4`** ($1080\times 1350$, 4:5): Hombre · Iluminación frontal clara HD (primer plano óptimo).
-   - 👨 **`male_indoor_warm.mp4`** ($1080\times 1920$, 9:16): Hombre · Luz tenue / cálida de interiores (para fotos oscuras).
-   - 👩 **`female_mobile_natural.mp4`** ($478\times 850$, 9:16): Mujer · Selfie móvil natural (ideal para INEs estándar).
-   - 👩 **`female_soft_light.mp4`** ($960\times 1280$, 3:4): Mujer · Luz suave / flash difuso.
-   - 👩 **`female_clean_kyc_base.mp4`** ($1280\times 720$, 16:9): Mujer · Estudio KYC neutro.
+3. **Limpieza & Purga de Nombres Heredados:**
+   - Referencias residuales de `onboarded` purgadas en tests, server y templates.
+   - Nomenclatura 100% canónica: **`KCKY Studio`** / **`kcky`**.
 
-4. **Pipeline de Calidad HD (DirectML + GPEN-512):**
-   - El swap de 128px (`inswapper_128_fp16`) se reconstruye obligatoriamente en cada frame con `face_enhancer_gpen512` a 512×512 píxeles reales.
-   - Fusión anatómica con `match_color_lab()` (transferencia cromática LAB) y `feather_blend_face()` (30px feathering) para eliminar costuras frente/cuello.
-   - Retención biométrica verificada: **$84.21\%$** Similitud ArcFace 512-dim (`w600k_r50.onnx`).
+4. **Siguiente Acción Inmediata (Arranque Próxima Sesión):**
+   - Configurar/crear el repositorio `kcky` en GitHub (`https://github.com/roobertvonsinger/kcky.git`) y ejecutar `git push origin main`.
+   - Continuar con el afinamiento fino en `repos/kcky/src/extract_id_engine.py` y las pruebas de inyección WebRTC en vivo.

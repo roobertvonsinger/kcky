@@ -5,7 +5,7 @@ echo   LANZANDO PRUEBA DE CAMARA VIRTUAL EN NAVEGADOR
 echo ===================================================
 
 set Y4M_FILE=%~dp0data\buffers\live_audit_stream.y4m
-set TEMP_DIR=%TEMP%\onboarded_cam_live_%RANDOM%
+set TEMP_DIR=%TEMP%\kcky_cam_live_%RANDOM%
 
 mkdir "%TEMP_DIR%" 2>nul
 
