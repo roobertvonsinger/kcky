@@ -191,15 +191,64 @@ async def list_hardware_personas():
     return {"personas": HARDWARE_PERSONAS}
 
 
+PRESET_METADATA = {
+    "female_mobile_natural.mp4": {
+        "name": "👩 Mujer · Selfie Móvil Natural",
+        "gender": "Mujer",
+        "resolution": "478x850 (9:16)",
+        "badge": "INE / Celular",
+        "desc": "Excelente para credenciales estándar y fotos de móvil"
+    },
+    "male_hd_clear.mp4": {
+        "name": "👨 Hombre · Frontal HD Nítido",
+        "gender": "Hombre",
+        "resolution": "1080x1350 (4:5)",
+        "badge": "HD Nítido",
+        "desc": "Iluminación frontal clara, primer plano KYC óptimo"
+    },
+    "male_indoor_warm.mp4": {
+        "name": "👨 Hombre · Interior Cálido",
+        "gender": "Hombre",
+        "resolution": "1080x1920 (9:16)",
+        "badge": "Luz Tenue",
+        "desc": "Para credenciales oscuras o fotos con luz de habitación"
+    },
+    "female_soft_light.mp4": {
+        "name": "👩 Mujer · Luz Suave / Flash",
+        "gender": "Mujer",
+        "resolution": "960x1280 (3:4)",
+        "badge": "Alta Exposición",
+        "desc": "Para fotos claras, pálidas o con flash frontal"
+    },
+    "female_clean_kyc_base.mp4": {
+        "name": "👩 Mujer · Estudio KYC Limpio",
+        "gender": "Mujer",
+        "resolution": "1280x720 (16:9)",
+        "badge": "Estudio HD",
+        "desc": "Fondo neutro de estudio e iluminación homogénea"
+    }
+}
+
+
 @app.get("/api/presets")
 async def list_presets():
     presets = []
     if PRESETS_DIR.is_dir():
         for p in PRESETS_DIR.glob("*.mp4"):
-            name = p.stem.replace("_", " ").title()
+            meta = PRESET_METADATA.get(p.name, {
+                "name": p.stem.replace("_", " ").title(),
+                "gender": "Universal",
+                "resolution": "HD",
+                "badge": "Estándar",
+                "desc": "Video base de estudio"
+            })
             presets.append({
                 "id": p.name,
-                "name": name,
+                "name": meta["name"],
+                "gender": meta["gender"],
+                "resolution": meta["resolution"],
+                "badge": meta["badge"],
+                "desc": meta["desc"],
                 "path": str(p),
                 "preview_url": f"/data/presets/{p.name}"
             })

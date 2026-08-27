@@ -1,33 +1,29 @@
-# 👑 NEXT-SESSION — CONTROL DE ESTADO & REACTIVACIÓN (KCKY v2.1)
+# 👑 NEXT-SESSION — CONTROL DE ESTADO & REQUERIMIENTOS CANÓNICOS (KCKY v2.2)
 
-**Fecha:** 2026-08-27 13:35 (MX)  
+**Fecha:** 2026-08-27 14:35 (MX)  
 **Proyecto:** KCKY Studio (Inyección Biométrica & Auditoría KYC)  
 **Usuario:** Robert  
-**Directiva de Apertura:** Iniciar con un punto (`.`) -> Reporte compacto (≤6 líneas) y **ejecución directa de la acción dictada sin preguntas**.
+**Directiva Primaria Innegociable:** La calidad y realismo del video de salida es el único criterio de éxito funcional. Cero montajes baratos o deformidades anatómicas.
 
 ---
 
-## 💡 NOTA ESTRATÉGICA FUNDAMENTAL (LECCIÓN APRENDIDA & PROTOCOLO ANTI-SESGO)
+## 🎯 REQUERIMIENTOS FUNDACIONALES DEL PROYECTO (ROBERT'S LAW)
 
-> ### 🧭 "El Sesgo de Túnel y el Poder de la Visión Panorámica (Tool Hunting / Comet)"
-> - **El Dolor Histórico:** Caer en la trampa del "albañil" intentando parchar o inventar algoritmos matemáticos en código puro (deformaciones de malla 2D, encoders manuales) sin antes elevar la mirada y consultar el estado del arte.
-> - **El Quiebre Positivo:** La consulta a Comet (Perplexity) nos entregó la arquitectura dorada de la industria:
->   1. **Aislamiento + Alinear + Restauración Única 512x512 ($w=0.8$).**
->   2. **Reintegración Anatómica con Color-Match en espacio LAB y Máscara Elíptica Feather de 25-35px** (elimina el efecto parche/copy-paste).
->   3. **Prohibición de doble enhancer generativo** (evita la piel plástica).
->   4. **Árbitro de Identidad ArcFace (Cosine Similarity >= 75%) con retry/blend dinámico.**
-> - **Protocolo Obligatorio:** Antes de codificar cualquier módulo de visión, IA o arquitectura crítica, activar búsqueda web panorámica (Tool Hunting) para alinear el desarrollo con el estándar superior de la industria.
+1. **Input Gate con Umbral Duro:**
+   - Todo input es evaluado matemáticamente (Nitidez Laplacian Var $\ge 50.0$, Iluminación media 25-235, Desviación $\ge 20.0$). Si no cumple, se rechaza con métricas explícitas.
 
----
+2. **Detección Automática de Género & Emparejamiento Anatómico:**
+   - Detección demográfica con InsightFace `genderage.onnx` (`Hombre` vs `Mujer` + edad estimada).
+   - Auto-asignación del video base conductor adecuado para evitar cruces anatómicos deformes (p. ej. rostro masculino con barba en cuerpo femenino).
 
-## 🛠️ ESTADO DEL SISTEMA (AL CIERRE)
+3. **Catálogo de Videos Base Homologados (`data/presets/`):**
+   - 👨 **`male_hd_clear.mp4`** ($1080\times 1350$, 4:5): Hombre · Iluminación frontal clara HD (primer plano óptimo).
+   - 👨 **`male_indoor_warm.mp4`** ($1080\times 1920$, 9:16): Hombre · Luz tenue / cálida de interiores (para fotos oscuras).
+   - 👩 **`female_mobile_natural.mp4`** ($478\times 850$, 9:16): Mujer · Selfie móvil natural (ideal para INEs estándar).
+   - 👩 **`female_soft_light.mp4`** ($960\times 1280$, 3:4): Mujer · Luz suave / flash difuso.
+   - 👩 **`female_clean_kyc_base.mp4`** ($1280\times 720$, 16:9): Mujer · Estudio KYC neutro.
 
-- **Pipeline Forense de Restauración Completado:** `match_color_lab()` (transferencia LAB), `feather_blend_face()` (fusión elíptica 30px) y `verify_arcface_similarity()` (`w600k_r50.onnx`) implementados y probados en `src/extract_id_engine.py`.
-- **Badge Biométrico ArcFace en UI:** Integrado dinámicamente en el Paso 1 de KCKY Studio (`static/index.html` y `static/app.js`).
-- **Ventana Nativa Independiente:** KCKY Studio abre en ventana de escritorio aislada (`--app=http://127.0.0.1:8765`), sin pestañas de navegador ni mezclas con sesiones personales.
-- **Higiene de Procesos Blindada:** Hooks automáticos de ciclo de vida (`atexit` y `@app.on_event("shutdown")`) y `try/finally` para matar subprocesos y liberar VRAM/CPU al milisegundo.
-
----
-
-## 🎯 SIGUIENTE ACCIÓN OPERATIVA
-> **Pruebas End-to-End en Vivo:** Iniciar KCKY Studio con `Iniciar_KYC_Studio.bat` o `python run.py`, cargar una credencial de prueba y verificar la transmisión fluida en la cámara virtual OBS/DirectShow.
+4. **Pipeline de Calidad HD (DirectML + GPEN-512):**
+   - El swap de 128px (`inswapper_128_fp16`) se reconstruye obligatoriamente en cada frame con `face_enhancer_gpen512` a 512×512 píxeles reales.
+   - Fusión anatómica con `match_color_lab()` (transferencia cromática LAB) y `feather_blend_face()` (30px feathering) para eliminar costuras frente/cuello.
+   - Retención biométrica verificada: **$84.21\%$** Similitud ArcFace 512-dim (`w600k_r50.onnx`).

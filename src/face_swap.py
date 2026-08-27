@@ -37,8 +37,7 @@ async def execute_face_swap_directml(
 
     processors = ["face_swapper"]
     if enable_enhancer:
-        # Nota: face_enhancer a 300 frames satura DirectML si no se limita; se activa si el usuario lo requiere explícitamente
-        pass
+        processors.append("face_enhancer_gpen512")
 
     cmd = [
         python_exec,

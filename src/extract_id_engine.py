@@ -180,10 +180,12 @@ def detect_and_classify_input(img: np.ndarray) -> dict:
     aspect_ratio = w / float(h)
     detected_faces = []
     
-    # 1. Detección con InsightFace
+    # 1. Detección y Atributos con InsightFace
+    detected_gender = None
+    detected_age = None
     try:
         import insightface
-        fa = insightface.app.FaceAnalysis(name='buffalo_l', providers=['CPUExecutionProvider'], allowed_modules=['detection'])
+        fa = insightface.app.FaceAnalysis(name='buffalo_l', providers=['CPUExecutionProvider'], allowed_modules=['detection', 'genderage'])
         fa.prepare(ctx_id=0, det_size=(640, 640))
         faces = fa.get(img)
         if faces:
@@ -193,37 +195,45 @@ def detect_and_classify_input(img: np.ndarray) -> dict:
                 center_x = (b[0] + b[2]) / 2.0
                 center_y = (b[1] + b[3]) / 2.0
                 score = float(getattr(f, 'det_score', 1.0))
+                g_val = getattr(f, 'gender', None)
+                a_val = getattr(f, 'age', None)
                 detected_faces.append({
                     "bbox": (int(b[0]), int(b[1]), int(b[2]), int(b[3])),
                     "area": area,
                     "center_x": center_x,
                     "center_y": center_y,
-                    "score": score
+                    "score": score,
+                    "gender": "Hombre" if g_val == 1 else ("Mujer" if g_val == 0 else None),
+                    "age": int(a_val) if a_val is not None else None
                 })
     except Exception:
         pass
 
-    # Fallback a Haar Cascade si InsightFace no detectó
-    if not detected_faces:
+    # Fallback a Haar Cascade si InsightFace no detectó y OpenCV tiene soporte
+    if not detected_faces and hasattr(cv2, 'CascadeClassifier'):
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        cascade_paths = [
-            cv2.data.haarcascades + 'haarcascade_frontalface_default.xml',
-            os.path.join(os.path.dirname(cv2.__file__), 'data', 'haarcascade_frontalface_default.xml')
-        ]
+        cascade_paths = []
+        if hasattr(cv2, 'data') and hasattr(cv2.data, 'haarcascades'):
+            cascade_paths.append(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+        cascade_paths.append(os.path.join(os.path.dirname(cv2.__file__), 'data', 'haarcascade_frontalface_default.xml'))
         for cp in cascade_paths:
             if os.path.exists(cp):
-                detector = cv2.CascadeClassifier(cp)
-                detected = detector.detectMultiScale(gray, scaleFactor=1.08, minNeighbors=3, minSize=(50, 50))
-                for (x, y, fw, fh) in detected:
-                    detected_faces.append({
-                        "bbox": (int(x), int(y), int(x + fw), int(y + fh)),
-                        "area": fw * fh,
-                        "center_x": x + fw / 2.0,
-                        "center_y": y + fh / 2.0,
-                        "score": 0.85
-                    })
-                if detected_faces:
-                    break
+                try:
+                    detector = cv2.CascadeClassifier(cp)
+                    if not detector.empty():
+                        detected = detector.detectMultiScale(gray, scaleFactor=1.08, minNeighbors=3, minSize=(50, 50))
+                        for (x, y, fw, fh) in detected:
+                            detected_faces.append({
+                                "bbox": (int(x), int(y), int(x + fw), int(y + fh)),
+                                "area": fw * fh,
+                                "center_x": x + fw / 2.0,
+                                "center_y": y + fh / 2.0,
+                                "score": 0.85
+                            })
+                        if detected_faces:
+                            break
+                except Exception:
+                    pass
 
     is_id_card = False
     best_face = None
@@ -274,13 +284,43 @@ def detect_and_classify_input(img: np.ndarray) -> dict:
 
     image_type = "ID_CARD" if is_id_card else "PORTRAIT_SELFIE"
     type_label = "Credencial INE / ID Identificada" if is_id_card else "Selfie / Retrato Identificado"
+    gender = best_face.get("gender") if (best_face and best_face.get("gender")) else "Hombre"
+    age = best_face.get("age") if (best_face and best_face.get("age")) else 35
 
     return {
         "image_type": image_type,
         "type_label": type_label,
         "best_face": best_face,
+        "gender": gender,
+        "age": age,
         "aspect_ratio": round(aspect_ratio, 2),
         "total_faces_found": len(detected_faces)
+    }
+
+
+def evaluate_input_gate(img: np.ndarray) -> dict:
+    """
+    Evalúa métricas duras de calidad de la imagen antes de procesar:
+    1. Nitidez / Blur (Varianza del Laplaciano >= 50.0)
+    2. Iluminación y Contraste (Media 25-235, Desviación >= 20.0)
+    """
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    blur_score = float(cv2.Laplacian(gray, cv2.CV_64F).var())
+    mean_lum = float(np.mean(gray))
+    std_lum = float(np.std(gray))
+
+    is_sharp = blur_score >= 50.0
+    is_well_lit = (25.0 <= mean_lum <= 235.0) and (std_lum >= 20.0)
+    passed = is_sharp and is_well_lit
+
+    return {
+        "passed": passed,
+        "blur_score": round(blur_score, 2),
+        "blur_threshold": 50.0,
+        "is_sharp": is_sharp,
+        "mean_luminance": round(mean_lum, 2),
+        "contrast_std": round(std_lum, 2),
+        "is_well_lit": is_well_lit
     }
 
 
@@ -296,6 +336,15 @@ def process_id_card(
     img = cv2.imread(image_path)
     if img is None:
         return {"success": False, "error": "No se pudo decodificar la imagen de entrada."}
+
+    # 0. Input Gate (Filtro de Umbral Duro de Calidad)
+    gate_metrics = evaluate_input_gate(img)
+    if not gate_metrics["passed"] and gate_metrics["blur_score"] < 30.0:
+        return {
+            "success": False,
+            "error": f"Imagen rechazada por el Input Gate: Nitidez insuficiente ({gate_metrics['blur_score']} < 50.0 min). Sube una imagen más nítida.",
+            "gate_metrics": gate_metrics
+        }
 
     h, w = img.shape[:2]
 
@@ -380,10 +429,34 @@ def process_id_card(
     os.makedirs(os.path.dirname(os.path.abspath(output_enhanced_path)), exist_ok=True)
     cv2.imwrite(output_enhanced_path, final_face)
 
+    # 9. Selección Inteligente de Video Base Conductor (Evita deformidad anatómica por género/iluminación)
+    gender = analysis.get("gender", "Hombre")
+    age = analysis.get("age", 35)
+    mean_lum = gate_metrics.get("mean_luminance", 120.0)
+
+    if gender == "Hombre":
+        if mean_lum < 95.0:
+            rec_preset = "male_indoor_warm.mp4"
+            rec_reason = "Hombre · Iluminación Cálida / Interior"
+        else:
+            rec_preset = "male_hd_clear.mp4"
+            rec_reason = "Hombre · Iluminación Frontal Clara HD"
+    else:
+        if mean_lum >= 135.0:
+            rec_preset = "female_soft_light.mp4"
+            rec_reason = "Mujer · Iluminación Suave / Flash"
+        else:
+            rec_preset = "female_mobile_natural.mp4"
+            rec_reason = "Mujer · Selfie Móvil Natural"
+
     return {
         "success": True,
         "image_type": image_type,
         "type_label": type_label,
+        "gender": gender,
+        "age": age,
+        "recommended_preset": rec_preset,
+        "preset_reason": rec_reason,
         "cropped_path": output_crop_path,
         "enhanced_path": output_enhanced_path,
         "original_crop_size": f"{crop.shape[1]}x{crop.shape[0]}",
@@ -393,6 +466,7 @@ def process_id_card(
         "arcface_data": arcface_result,
         "color_matched": True,
         "feather_blend_applied": True,
+        "gate_metrics": gate_metrics,
         "bbox": [int(x1), int(y1), int(x2), int(y2)]
     }
 

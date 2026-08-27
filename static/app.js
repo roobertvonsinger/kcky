@@ -41,6 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initDropzone();
     initPanicReset();
     checkVirtualCamStatus();
+    loadPresetsCatalog();
 });
 
 /* ==========================================================================
@@ -197,6 +198,10 @@ async function handleImageUpload(file) {
         Studio.uploadedCropUrl = res.crop_url;
         Studio.uploadedEnhancedUrl = res.enhanced_url;
         Studio.imageType = res.metadata?.image_type || 'ID_CARD';
+        const detectedGender = res.metadata?.gender || 'Hombre';
+        const detectedAge = res.metadata?.age || 35;
+        const recommendedPreset = res.metadata?.recommended_preset || (detectedGender === 'Hombre' ? 'male_hd_clear.mp4' : 'female_mobile_natural.mp4');
+        const presetReason = res.metadata?.preset_reason || `${detectedGender} · Base recomendada`;
 
         // Mostrar vistas previas
         document.getElementById('img-crop-preview').src = res.crop_url;
@@ -212,6 +217,31 @@ async function handleImageUpload(file) {
             typeBadge.querySelector('.badge-icon').textContent = '👤';
             typeText.textContent = res.metadata?.type_label || 'Selfie / Retrato Detectado';
         }
+
+        // Badge de Género & Edad
+        const genderBadge = document.getElementById('gender-detected-badge');
+        const genderIcon = document.getElementById('gender-icon');
+        const genderText = document.getElementById('gender-text');
+        if (genderBadge && genderText) {
+            genderBadge.style.display = 'inline-flex';
+            if (detectedGender === 'Hombre') {
+                genderIcon.textContent = '👨';
+                genderText.textContent = `Hombre (~${detectedAge} años)`;
+                genderBadge.style.background = 'rgba(59, 130, 246, 0.14)';
+                genderBadge.style.borderColor = 'rgba(59, 130, 246, 0.4)';
+                genderBadge.style.color = '#60a5fa';
+            } else {
+                genderIcon.textContent = '👩';
+                genderText.textContent = `Mujer (~${detectedAge} años)`;
+                genderBadge.style.background = 'rgba(236, 72, 153, 0.14)';
+                genderBadge.style.borderColor = 'rgba(236, 72, 153, 0.4)';
+                genderBadge.style.color = '#f472b6';
+            }
+        }
+
+        // Auto-seleccionar Preset anatómico adecuado
+        Studio.targetPreset = recommendedPreset;
+        renderPresetsCatalog();
 
         // Badge de Fidelidad ArcFace
         const arcfaceScore = res.metadata?.arcface_score || 96.2;
@@ -237,7 +267,7 @@ async function handleImageUpload(file) {
         scanningUI.style.display = 'none';
         resultBox.style.display = 'block';
 
-        showToast(`Rostro restaurado y verificado (${arcfaceScore}% ArcFace).`, "success");
+        showToast(`Identidad procesada: ${detectedGender} (~${detectedAge}a) · Base: ${recommendedPreset}`, "success");
     } catch (err) {
         console.error(err);
         scanningUI.style.display = 'none';
@@ -247,8 +277,46 @@ async function handleImageUpload(file) {
 }
 
 /* ==========================================================================
-   PASO 2: DINÁMICA FACIAL & MODOS
+   CATÁLOGO DE PRESETS & DINÁMICA FACIAL
    ========================================================================== */
+Studio.availablePresets = [];
+
+async function loadPresetsCatalog() {
+    try {
+        const data = await safeFetchJson('/api/presets');
+        Studio.availablePresets = data.presets || [];
+        renderPresetsCatalog();
+    } catch (e) {
+        console.error("Error cargando presets:", e);
+    }
+}
+
+function renderPresetsCatalog() {
+    const container = document.getElementById('preset-buttons-row');
+    if (!container) return;
+
+    container.innerHTML = '';
+    Studio.availablePresets.forEach(p => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        const isSelected = (Studio.targetPreset === p.id);
+        btn.className = `preset-btn ${isSelected ? 'active' : ''}`;
+        btn.onclick = (e) => setSwapPreset(p.id, e);
+        btn.innerHTML = `
+            <span>${p.name}</span>
+            <span style="font-size: 9px; opacity: 0.75; display: block;">${p.resolution} · ${p.badge}</span>
+        `;
+        container.appendChild(btn);
+    });
+
+    const customBtn = document.createElement('button');
+    customBtn.type = 'button';
+    customBtn.className = `preset-btn custom ${Studio.customVideoPath ? 'active' : ''}`;
+    customBtn.onclick = (e) => triggerFileInput('custom-video-input', e);
+    customBtn.innerHTML = `📁 Subir Propio`;
+    container.appendChild(customBtn);
+}
+
 function selectMotionMode(mode) {
     Studio.generationMode = mode;
 
@@ -257,13 +325,13 @@ function selectMotionMode(mode) {
     const subOptions = document.getElementById('swap-sub-options');
 
     if (mode === 'synthetic') {
-        cardSynth.classList.add('active');
-        cardSwap.classList.remove('active');
-        subOptions.style.display = 'none';
+        if (cardSynth) cardSynth.classList.add('active');
+        if (cardSwap) cardSwap.classList.remove('active');
+        if (subOptions) subOptions.style.display = 'none';
     } else {
-        cardSwap.classList.add('active');
-        cardSynth.classList.remove('active');
-        subOptions.style.display = 'block';
+        if (cardSwap) cardSwap.classList.add('active');
+        if (cardSynth) cardSynth.classList.remove('active');
+        if (subOptions) subOptions.style.display = 'block';
     }
 }
 
@@ -271,12 +339,8 @@ function setSwapPreset(presetName, event) {
     if (event) event.stopPropagation();
     Studio.targetPreset = presetName;
     Studio.customVideoPath = null;
-
-    document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('active'));
-    if (event && event.target) {
-        event.target.classList.add('active');
-    }
-    showToast(`Preset seleccionado: ${presetName}`, "success");
+    renderPresetsCatalog();
+    showToast(`Base seleccionada: ${presetName}`, "success");
 }
 
 async function handleCustomVideoUpload(event) {

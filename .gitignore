@@ -30,6 +30,7 @@ data/sessions/*
 # Preservar presets de video base
 !data/presets/
 !data/presets/*.mp4
+data/presets/audit/
 
 # Modelos pesados ONNX (si se descargan localmente)
 models/*.onnx

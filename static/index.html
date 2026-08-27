@@ -90,6 +90,10 @@
                             <span class="badge-icon">🪪</span>
                             <span id="identity-type-text">Credencial INE Detectada</span>
                         </div>
+                        <div class="gender-detected-badge" id="gender-detected-badge" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 999px; background: rgba(59, 130, 246, 0.12); border: 1px solid rgba(59, 130, 246, 0.35); font-size: 0.8rem; font-weight: 600; color: #60a5fa;">
+                            <span id="gender-icon">👤</span>
+                            <span id="gender-text">Hombre (~35 años)</span>
+                        </div>
                         <div class="arcface-match-badge" id="arcface-match-badge" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 999px; background: rgba(34, 197, 94, 0.12); border: 1px solid rgba(34, 197, 94, 0.35); font-size: 0.8rem; font-weight: 600; color: #4ade80;">
                             <span>🛡️</span>
                             <span id="arcface-score-text">96.4% Match ArcFace</span>
@@ -136,7 +140,7 @@
                 <div class="step-hero">
                     <span class="step-label-badge">Paso 2 de 3</span>
                     <h1 class="step-heading">Dinámica Facial</h1>
-                    <p class="step-description">Selecciona el método de generación para dar vida al rostro restaurado antes de inyectarlo en la cámara de verificación.</p>
+                    <p class="step-description">Selecciona el video base conductor para transferir la identidad anatómica. El sistema auto-selecciona el video que mejor empata con el género e iluminación del sujeto.</p>
                 </div>
 
                 <!-- Selector de Modo en 2 Grandes Tarjetas -->
@@ -146,23 +150,15 @@
                         <div class="card-radio-mark"></div>
                         <div class="motion-card-badge pro">RECOMENDADO · FOTOREALISMO PURO</div>
                         <h2 class="motion-card-title">Transferencia de Rostro (Face Swap HD)</h2>
-                        <p class="motion-card-desc">Transfiere el rostro restaurado sobre un video conductor de estudio real. Persona física con parpadeo real, cuello, hombros y respiración natural sin deformaciones.</p>
+                        <p class="motion-card-desc">Transfiere el rostro restaurado sobre una persona física real con parpadeo, respiración y micro-movimientos musculares continuos.</p>
                         
                         <!-- Sub-opciones de Face Swap (Presets / Upload) -->
                         <div class="swap-options-container" id="swap-sub-options" style="display: block;">
-                            <div class="sub-label">Seleccionar Video Base de Estudio:</div>
-                            <div class="preset-buttons-row">
-                                <button type="button" class="preset-btn active" id="btn-preset-clean" onclick="setSwapPreset('female_clean_kyc_base.mp4', event)">
-                                    👩 Base Estudio KYC
-                                </button>
-                                <button type="button" class="preset-btn" id="btn-preset-alt" onclick="setSwapPreset('female_driving_alt.mp4', event)">
-                                    🎬 Base Alternativa
-                                </button>
-                                <button type="button" class="preset-btn custom" onclick="triggerFileInput('custom-video-input', event)">
-                                    📁 Subir Video Propio
-                                </button>
-                                <input type="file" id="custom-video-input" accept="video/mp4,video/webm,video/mov" style="display: none;" onchange="handleCustomVideoUpload(event)">
+                            <div class="sub-label" id="preset-selection-label">Seleccionar Video Base Conductor:</div>
+                            <div class="preset-buttons-row" id="preset-buttons-row">
+                                <!-- Se renderiza dinámicamente con /api/presets -->
                             </div>
+                            <input type="file" id="custom-video-input" accept="video/mp4,video/webm,video/mov" style="display: none;" onchange="handleCustomVideoUpload(event)">
                         </div>
                     </div>
 
