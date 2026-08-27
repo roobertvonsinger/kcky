@@ -290,9 +290,15 @@
                 
                 document.getElementById('dev-name').textContent = track.label || "Cámara Inyectada Stealth";
 
-                video.onloadedmetadata = () => {
-                    document.getElementById('dev-res').textContent = `${video.videoWidth}x${video.videoHeight} (16:9)`;
+                const updateRes = () => {
+                    if (video.videoWidth > 0) {
+                        document.getElementById('dev-res').textContent = `${video.videoWidth}x${video.videoHeight} (16:9)`;
+                    }
                 };
+                video.onloadedmetadata = updateRes;
+                video.onloadeddata = updateRes;
+                video.ontimeupdate = updateRes;
+                updateRes();
 
                 await populateDevices();
                 startPixelAnalyzer();
