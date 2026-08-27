@@ -1,5 +1,5 @@
 """
-run.py — Punto de Entrada Unificado para Onboarded (CLI & Web Studio)
+run.py — Punto de Entrada Unificado para KCKY (CLI & Web Studio)
 """
 
 import argparse
@@ -15,10 +15,14 @@ sys.path.insert(0, str(BASE_DIR))
 from src.config import DEFAULT_HOST, DEFAULT_PORT, BUFFERS_DIR
 from src.liveness import generate_synthetic_liveness, convert_video_to_seamless_y4m
 from src.browser import find_orbita_executable, launch_browser_process, find_free_port
+from src.dependency_manager import run_preflight_checks
 
 
 def run_native_app(host: str = DEFAULT_HOST, port: int = DEFAULT_PORT):
-    """Inicia el servidor backend y abre una Ventana Nativa de Escritorio (Desktop App) en Windows."""
+    """Inicia el servidor backend y abre la interfaz de K.C.K.Y. Studio."""
+    # Ejecutar comprobaciones automáticas de dependencias y modelos
+    run_preflight_checks()
+
     import uvicorn
     import threading
     import time
@@ -26,7 +30,7 @@ def run_native_app(host: str = DEFAULT_HOST, port: int = DEFAULT_PORT):
 
     url = f"http://{host}:{port}"
     print("======================================================================")
-    print("  ONBOARDED — Suite de Inyeccion Biometrica & Auditoria KYC (Desktop)")
+    print("  K.C.K.Y. — Suite de Inyeccion Biometrica & Auditoria KYC (Desktop)")
     print(f"  URL Backend: {url}")
     print("  GPU: AMD Radeon RX 580 (DirectML Enabled)")
     print("======================================================================")
@@ -43,7 +47,7 @@ def run_native_app(host: str = DEFAULT_HOST, port: int = DEFAULT_PORT):
         import webview
         print("[*] Abriendo ventana nativa de escritorio...")
         window = webview.create_window(
-            title="ONBOARDED — Suite de Inyección Biométrica & KYC (DirectML AMD RX 580)",
+            title="K.C.K.Y. — Suite de Inyección Biométrica & KYC (DirectML AMD RX 580)",
             url=url,
             width=1320,
             height=860,
@@ -52,7 +56,7 @@ def run_native_app(host: str = DEFAULT_HOST, port: int = DEFAULT_PORT):
         )
         webview.start()
     except Exception as err:
-        print(f"[!] PyWebView no disponible o fallo ({err}), abriendo en navegador...")
+        print(f"[!] Abriendo en navegador web ({err})...")
         webbrowser.open(url)
         try:
             while True:
@@ -67,7 +71,7 @@ def run_web_studio(host: str = DEFAULT_HOST, port: int = DEFAULT_PORT, auto_open
 
 
 def main():
-    parser = argparse.ArgumentParser(description="ONBOARDED — Plataforma de Evasión WebRTC & Auditoría KYC")
+    parser = argparse.ArgumentParser(description="KCKY — Plataforma de Evasión WebRTC & Auditoría KYC (K.C.K.Y.)")
     parser.add_argument("--host", default=DEFAULT_HOST, help=f"Host para Web Studio (default: {DEFAULT_HOST})")
     parser.add_argument("--port", type=int, default=DEFAULT_PORT, help=f"Puerto para Web Studio (default: {DEFAULT_PORT})")
     parser.add_argument("--no-open", action="store_true", help="No abrir navegador automáticamente")
@@ -120,10 +124,10 @@ def main():
             sys.exit(1)
 
         cdp_port = find_free_port()
-        user_dir = os.path.join(os.environ.get("TEMP", "/tmp"), f"onboarded_cli_{cdp_port}")
+        user_dir = os.path.join(os.environ.get("TEMP", "/tmp"), f"kcky_cli_{cdp_port}")
         os.makedirs(user_dir, exist_ok=True)
 
-        print(f"[*] Lanzando Orbita con {args.y4m} hacia {args.url} (CDP :{cdp_port})...")
+        print(f"[*] Lanzando Navegador con {args.y4m} hacia {args.url} (CDP :{cdp_port})...")
         proc = launch_browser_process(executable, args.y4m, args.url, cdp_port, user_dir)
         try:
             proc.wait()
@@ -132,8 +136,8 @@ def main():
 
     elif args.command == "status":
         from src.server import find_orbita_executable, get_deep_live_cam_python
-        print("=== ESTADO DEL SISTEMA ONBOARDED ===")
-        print(f"  Orbita Browser: {find_orbita_executable() or 'No detectado'}")
+        print("=== ESTADO DEL SISTEMA KCKY ===")
+        print(f"  Orbita/Chrome Browser: {find_orbita_executable() or 'No detectado'}")
         print(f"  Deep-Live-Cam Venv: {get_deep_live_cam_python() or 'No detectado'}")
         print(f"  DirectML GPU: AMD Radeon RX 580 (Activo)")
 

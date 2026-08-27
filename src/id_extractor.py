@@ -1,5 +1,5 @@
 """
-id_extractor.py — Conector Asíncrono para Extracción y Super-Resolución de Rostros desde Credenciales
+id_extractor.py — Conector Asíncrono para Extracción y Super-Resolución Universal de Rostros
 """
 
 import asyncio
@@ -10,22 +10,23 @@ import sys
 from pathlib import Path
 from typing import Dict, Any, Optional
 
-from src.config import DEEP_LIVE_CAM_DIR
+from src.config import DEEP_LIVE_CAM_DIR, resolve_media_path
 from src.face_swap import get_deep_live_cam_python
 
-logger = logging.getLogger("Onboarded_ID_Extractor")
+logger = logging.getLogger("KCKY_Face_Extractor")
 
 
-async def extract_and_restore_id_face(
-    id_card_path: str,
+async def extract_and_restore_face(
+    image_path: str,
     output_crop_path: str,
     output_enhanced_path: str
 ) -> Dict[str, Any]:
     """
-    Ejecuta la extracción de rostro de credencial y super-resolución HD con GFPGAN/GPEN.
+    Ejecuta la extracción universal de rostro (INE / Selfie) y super-resolución HD con GFPGAN/GPEN.
     """
-    if not os.path.exists(id_card_path):
-        raise FileNotFoundError(f"Credencial no encontrada: {id_card_path}")
+    resolved_img = resolve_media_path(image_path)
+    if not resolved_img or not os.path.exists(resolved_img):
+        raise FileNotFoundError(f"Imagen no encontrada: {image_path}")
 
     python_exec = get_deep_live_cam_python() or sys.executable
     engine_script = Path(__file__).resolve().parent / "extract_id_engine.py"
@@ -34,7 +35,7 @@ async def extract_and_restore_id_face(
     cmd = [
         python_exec,
         str(engine_script),
-        "--image", id_card_path,
+        "--image", resolved_img,
         "--output-crop", output_crop_path,
         "--output-enhanced", output_enhanced_path,
         "--models-dir", str(models_dir)
@@ -51,14 +52,17 @@ async def extract_and_restore_id_face(
     if proc.returncode != 0:
         err_msg = stderr.decode("utf-8", errors="ignore").strip()
         logger.error(f"Error en extract_id_engine: {err_msg}")
-        raise RuntimeError(f"Fallo al procesar credencial: {err_msg}")
+        raise RuntimeError(f"Fallo al procesar imagen facial: {err_msg}")
 
     try:
         raw_output = stdout.decode("utf-8", errors="ignore").strip()
-        # Tomar la última línea con formato JSON
         json_line = [line for line in raw_output.splitlines() if line.startswith("{")][-1]
         data = json.loads(json_line)
         return data
     except Exception as e:
         logger.error(f"Error parseando resultado de extracción: {e}, Raw: {stdout}")
         raise RuntimeError(f"Error procesando resultado: {e}")
+
+
+# Alias para retrocompatibilidad
+extract_and_restore_id_face = extract_and_restore_face

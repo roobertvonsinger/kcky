@@ -55,7 +55,7 @@ def generate_synthetic_liveness(
             return json.loads(lines[-1])
     except Exception as err:
         import logging
-        logging.getLogger("Onboarded_Liveness").warning(f"Fallback a shader trigonométrico: {err}")
+        logging.getLogger("KCKY_Liveness").warning(f"Fallback a shader trigonométrico: {err}")
 
     total_frames = duration * fps
 

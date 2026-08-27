@@ -14,7 +14,7 @@ from typing import Dict, List, Any, Optional, Callable
 
 from src.config import SCRIPTS_DIR, HARDWARE_PERSONAS
 
-logger = logging.getLogger("Onboarded_Browser")
+logger = logging.getLogger("KCKY_Browser")
 
 
 def find_free_port() -> int:
@@ -97,7 +97,7 @@ def launch_browser_process(
     # Chromium falla al parsear flags si la ruta del video tiene espacios (p. ej. 'TESTING DEV')
     clean_y4m = os.path.abspath(y4m_path)
     if " " in clean_y4m:
-        temp_y4m = os.path.join(tempfile.gettempdir(), "onboarded_stream.y4m")
+        temp_y4m = os.path.join(tempfile.gettempdir(), "kcky_stream.y4m")
         shutil.copy2(clean_y4m, temp_y4m)
         clean_y4m = temp_y4m
 

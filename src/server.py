@@ -31,9 +31,9 @@ from src.virtual_cam_broadcaster import (
 )
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
-logger = logging.getLogger("Onboarded_Server")
+logger = logging.getLogger("KCKY_Server")
 
-app = FastAPI(title="Onboarded — Suite de Inyección Biometríca & KYC", version="1.0.0")
+app = FastAPI(title="K.C.K.Y. — Suite de Inyección Biométrica & KYC (KCKY)", version="2.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -109,8 +109,8 @@ async def get_status():
     vcam_status = get_virtual_cam_status()
 
     return {
-        "app": "Onboarded",
-        "status": "ready",
+        "app": "K.C.K.Y.",
+        "version": "2.0.0",
         "orbita_installed": orbita_path is not None,
         "orbita_path": orbita_path,
         "deep_live_cam_installed": deep_cam_py is not None,
@@ -268,8 +268,9 @@ async def api_generate_liveness(
     fps: int = Form(30),
     framing_mode: str = Form("fill_crop")
 ):
-    if not os.path.exists(face_path):
-        raise HTTPException(status_code=404, detail="Archivo de rostro no encontrado.")
+    resolved_face = resolve_media_path(face_path)
+    if not resolved_face or not os.path.exists(resolved_face):
+        raise HTTPException(status_code=404, detail=f"Archivo de rostro no encontrado: {face_path}")
 
     state.is_processing = True
     stream_id = uuid.uuid4().hex[:8]
@@ -280,7 +281,7 @@ async def api_generate_liveness(
         await broadcast_log(f"Sintetizando Liveness 3D ({duration}s @ {fps}fps, {width}x{height}, encuadre: {framing_mode})...", "info")
         res = await asyncio.to_thread(
             generate_synthetic_liveness,
-            image_path=face_path,
+            image_path=resolved_face,
             output_y4m_path=out_y4m,
             output_mp4_preview_path=out_mp4,
             duration=duration,
@@ -309,15 +310,25 @@ async def api_generate_liveness(
 @app.post("/api/process-swap")
 async def api_process_swap(
     source_face_path: str = Form(...),
-    target_video_path: str = Form(...),
+    target_video_path: Optional[str] = Form(None),
     duration: int = Form(90),
     width: int = Form(1280),
     height: int = Form(720),
     fps: int = Form(30),
     framing_mode: str = Form("fill_crop")
 ):
-    if not os.path.exists(source_face_path) or not os.path.exists(target_video_path):
-        raise HTTPException(status_code=404, detail="Archivos de entrada no encontrados.")
+    resolved_face = resolve_media_path(source_face_path)
+    if not resolved_face or not os.path.exists(resolved_face):
+        raise HTTPException(status_code=404, detail=f"Rostro de entrada no encontrado: {source_face_path}")
+
+    # Fallback automático a preset predeterminado si target no existe o no se especificó
+    resolved_target = resolve_media_path(target_video_path)
+    if not resolved_target or not os.path.exists(resolved_target):
+        default_preset = PRESETS_DIR / "female_clean_kyc_base.mp4"
+        if default_preset.is_file():
+            resolved_target = str(default_preset)
+        else:
+            raise HTTPException(status_code=404, detail="Video base de estudio no encontrado.")
 
     state.is_processing = True
     stream_id = uuid.uuid4().hex[:8]
@@ -327,8 +338,8 @@ async def api_process_swap(
 
     try:
         await execute_face_swap_directml(
-            source_face_path=source_face_path,
-            target_video_path=target_video_path,
+            source_face_path=resolved_face,
+            target_video_path=resolved_target,
             output_raw_mp4=raw_swap_mp4,
             log_callback=broadcast_log
         )
@@ -416,7 +427,7 @@ async def api_launch_browser(
     state.detected_sdks = []
 
     if profile_id == "temporary_clean_profile":
-        user_data_dir = os.path.join(os.environ.get("TEMP", "/tmp"), f"onboarded_profile_{state.cdp_port}")
+        user_data_dir = os.path.join(os.environ.get("TEMP", "/tmp"), f"kcky_profile_{state.cdp_port}")
         os.makedirs(user_data_dir, exist_ok=True)
     else:
         user_data_dir = os.path.join(Path.home(), ".gologin", "gologin-cached-profiles", profile_id)
@@ -481,7 +492,7 @@ async def ws_telemetry_endpoint(websocket: WebSocket):
         "type": "log",
         "category": "system",
         "level": "info",
-        "message": "Conectado al motor de telemetría de Onboarded."
+        "message": "Conectado al motor de telemetría de K.C.K.Y. Studio."
     })
     try:
         while True:
@@ -512,4 +523,4 @@ async def root_view():
     index_file = STATIC_DIR / "index.html"
     if index_file.is_file():
         return FileResponse(str(index_file))
-    return {"app": "Onboarded", "message": "Backend listo."}
+    return {"app": "K.C.K.Y.", "message": "Backend KCKY listo."}

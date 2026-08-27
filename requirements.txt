@@ -1,6 +1,29 @@
+# ==============================================================================
+# KCKY — Dependencies & Environment Specification (K.C.K.Y. Studio)
+# Compatible con Python 3.10+ (Windows / Linux / macOS)
+# ==============================================================================
+
+# Web Framework & Real-Time API
 fastapi>=0.110.0
 uvicorn[standard]>=0.28.0
 websockets>=12.0
-playwright>=1.42.0
 python-multipart>=0.0.9
 aiofiles>=23.2.1
+pydantic>=2.6.0
+
+# Computer Vision & Image Processing
+opencv-python>=4.8.0
+numpy>=1.24.0
+scipy>=1.10.0
+Pillow>=10.0.0
+
+# AI Facial Models & Inference (CPU / DirectML GPU)
+onnxruntime-directml>=1.16.0; sys_platform == 'win32'
+onnxruntime>=1.16.0; sys_platform != 'win32'
+insightface>=0.7.3
+
+# Browser Automation & Hardware Spoofing
+playwright>=1.42.0
+
+# System Virtual Camera Driver (DirectShow / OBS Loop)
+pyvirtualcam>=0.11.0

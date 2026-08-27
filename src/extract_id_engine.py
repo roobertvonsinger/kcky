@@ -1,5 +1,5 @@
 """
-extract_id_engine.py — Motor de Detección de Rostros en Credenciales y Super-Resolución HD (GFPGAN / GPEN)
+extract_id_engine.py — Motor Universal de Detección de Rostros (INE/Credenciales vs Selfie) y Super-Resolución HD
 Ejecutado en el entorno Python de Deep-Live-Cam (con OpenCV + InsightFace + ONNX Runtime DirectML/CPU).
 """
 
@@ -10,18 +10,6 @@ import argparse
 import numpy as np
 import cv2
 import onnxruntime as ort
-
-# Template estándar FFHQ 512x512 para alineación facial
-FFHQ_TEMPLATE_512 = np.array(
-    [
-        [192.98138, 239.94708],
-        [318.90277, 240.19366],
-        [256.63416, 314.01935],
-        [201.26117, 371.41043],
-        [313.08905, 371.15118],
-    ],
-    dtype=np.float32,
-)
 
 
 def get_onnx_session(model_path: str) -> ort.InferenceSession:
@@ -42,13 +30,12 @@ def enhance_face_crop_gfpgan(crop_bgr: np.ndarray, model_path: str) -> np.ndarra
     session = get_onnx_session(model_path)
     input_shape = session.get_inputs()[0].shape
     
-    # Determinar resolución esperada por el modelo (512x512 o 1024x1024)
     target_h = input_shape[2] if isinstance(input_shape[2], int) else 512
     target_w = input_shape[3] if isinstance(input_shape[3], int) else 512
 
     resized = cv2.resize(crop_bgr, (target_w, target_h), interpolation=cv2.INTER_CUBIC)
     
-    # Normalizar de BGR [0, 255] a RGB [-1.0, 1.0] (formato estándar de GFPGAN/GPEN)
+    # Normalizar de BGR [0, 255] a RGB [-1.0, 1.0]
     img_rgb = cv2.cvtColor(resized, cv2.COLOR_BGR2RGB).astype(np.float32) / 255.0
     img_norm = (img_rgb - 0.5) / 0.5
     img_input = np.transpose(img_norm, (2, 0, 1))[None, ...].astype(np.float32)
@@ -69,6 +56,128 @@ def enhance_face_crop_gfpgan(crop_bgr: np.ndarray, model_path: str) -> np.ndarra
     return unsharp
 
 
+def detect_and_classify_input(img: np.ndarray) -> dict:
+    """
+    Detecta rostros y clasifica automáticamente si la imagen es una credencial (INE/ID) o una Selfie/Retrato.
+    """
+    h, w = img.shape[:2]
+    aspect_ratio = w / float(h)
+    
+    detected_faces = []
+    
+    # 1. Detección con InsightFace
+    try:
+        import insightface
+        fa = insightface.app.FaceAnalysis(name='buffalo_l', providers=['CPUExecutionProvider'], allowed_modules=['detection'])
+        fa.prepare(ctx_id=0, det_size=(640, 640))
+        faces = fa.get(img)
+        if faces:
+            for f in faces:
+                b = f.bbox.astype(int)
+                area = (b[2] - b[0]) * (b[3] - b[1])
+                center_x = (b[0] + b[2]) / 2.0
+                center_y = (b[1] + b[3]) / 2.0
+                score = float(getattr(f, 'det_score', 1.0))
+                detected_faces.append({
+                    "bbox": (int(b[0]), int(b[1]), int(b[2]), int(b[3])),
+                    "area": area,
+                    "center_x": center_x,
+                    "center_y": center_y,
+                    "score": score
+                })
+    except Exception:
+        pass
+
+    # Fallback a Haar Cascade si InsightFace no detectó
+    if not detected_faces:
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        cascade_paths = [
+            cv2.data.haarcascades + 'haarcascade_frontalface_default.xml',
+            os.path.join(os.path.dirname(cv2.__file__), 'data', 'haarcascade_frontalface_default.xml')
+        ]
+        for cp in cascade_paths:
+            if os.path.exists(cp):
+                detector = cv2.CascadeClassifier(cp)
+                detected = detector.detectMultiScale(gray, scaleFactor=1.08, minNeighbors=3, minSize=(50, 50))
+                for (x, y, fw, fh) in detected:
+                    detected_faces.append({
+                        "bbox": (int(x), int(y), int(x + fw), int(y + fh)),
+                        "area": fw * fh,
+                        "center_x": x + fw / 2.0,
+                        "center_y": y + fh / 2.0,
+                        "score": 0.85
+                    })
+                if detected_faces:
+                    break
+
+    # Clasificación Automática de Tipo de Imagen
+    # - Si la imagen es horizontal (aspect ratio > 1.35) y hay un rostro en el tercio izquierdo -> ID_CARD
+    # - Si hay múltiples rostros (ej. foto principal + foto fantasma de seguridad del INE) -> ID_CARD
+    # - Si el rostro ocupa > 20% del área total y está centrado -> PORTRAIT_SELFIE
+    
+    is_id_card = False
+    best_face = None
+
+    if detected_faces:
+        if len(detected_faces) >= 2:
+            # Caso típico INE (foto principal izq + foto fantasma der)
+            # Ordenar por área y posición izquierda
+            left_faces = [f for f in detected_faces if f["center_x"] < (w * 0.6)]
+            if left_faces:
+                left_faces.sort(key=lambda item: item["area"], reverse=True)
+                best_face = left_faces[0]
+                is_id_card = True
+            else:
+                detected_faces.sort(key=lambda item: item["area"], reverse=True)
+                best_face = detected_faces[0]
+        else:
+            face = detected_faces[0]
+            face_rel_area = face["area"] / float(w * h)
+            face_rel_x = face["center_x"] / float(w)
+
+            if aspect_ratio >= 1.30 and face_rel_x < 0.55 and face_rel_area < 0.35:
+                is_id_card = True
+                best_face = face
+            elif face_rel_area >= 0.15 or (0.35 <= face_rel_x <= 0.65):
+                is_id_card = False
+                best_face = face
+            else:
+                # Si aspect ratio es similar a tarjeta de crédito (~1.58)
+                is_id_card = (1.25 <= aspect_ratio <= 1.85)
+                best_face = face
+    else:
+        # Fallback sin rostros detectados: asumir recorte central o lateral según aspect ratio
+        if 1.25 <= aspect_ratio <= 1.85:
+            is_id_card = True
+            best_face = {
+                "bbox": (int(w * 0.04), int(h * 0.12), int(w * 0.42), int(h * 0.88)),
+                "area": int(w * 0.38 * h * 0.76),
+                "center_x": w * 0.23,
+                "center_y": h * 0.5,
+                "score": 0.5
+            }
+        else:
+            is_id_card = False
+            best_face = {
+                "bbox": (int(w * 0.15), int(h * 0.10), int(w * 0.85), int(h * 0.85)),
+                "area": int(w * 0.70 * h * 0.75),
+                "center_x": w * 0.5,
+                "center_y": h * 0.48,
+                "score": 0.5
+            }
+
+    image_type = "ID_CARD" if is_id_card else "PORTRAIT_SELFIE"
+    type_label = "Credencial INE / ID Identificada" if is_id_card else "Selfie / Retrato Identificado"
+
+    return {
+        "image_type": image_type,
+        "type_label": type_label,
+        "best_face": best_face,
+        "aspect_ratio": round(aspect_ratio, 2),
+        "total_faces_found": len(detected_faces)
+    }
+
+
 def process_id_card(
     image_path: str,
     output_crop_path: str,
@@ -80,66 +189,30 @@ def process_id_card(
 
     img = cv2.imread(image_path)
     if img is None:
-        return {"success": False, "error": "No se pudo decodificar la imagen de la credencial INE."}
+        return {"success": False, "error": "No se pudo decodificar la imagen de entrada."}
 
     h, w = img.shape[:2]
 
-    # 1. Detección Facial Especializada para INE (Prioridad Foto Principal Izquierda vs Foto Fantasma)
-    detected_boxes = []
-    try:
-        import insightface
-        fa = insightface.app.FaceAnalysis(name='buffalo_l', providers=['CPUExecutionProvider'], allowed_modules=['detection'])
-        fa.prepare(ctx_id=0, det_size=(640, 640))
-        faces = fa.get(img)
-        if faces:
-            for f in faces:
-                b = f.bbox.astype(int)
-                area = (b[2] - b[0]) * (b[3] - b[1])
-                center_x = (b[0] + b[2]) / 2.0
-                # En INE la foto principal está a la izquierda (center_x < 0.6 * w) y tiene mayor área
-                # Bonificar rostros ubicados en la mitad izquierda
-                left_bonus = 2.0 if center_x < (w * 0.55) else 0.5
-                score = area * left_bonus * float(getattr(f, 'det_score', 1.0))
-                detected_boxes.append((score, (b[0], b[1], b[2], b[3])))
-    except Exception:
-        pass
+    # 1. Detección Inteligente & Clasificación Automática
+    analysis = detect_and_classify_input(img)
+    best_face = analysis["best_face"]
+    image_type = analysis["image_type"]
+    type_label = analysis["type_label"]
 
-    # Fallback a Haar Cascade si InsightFace no detectó
-    if not detected_boxes:
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        cascade_paths = [
-            cv2.data.haarcascades + 'haarcascade_frontalface_default.xml',
-            os.path.join(os.path.dirname(cv2.__file__), 'data', 'haarcascade_frontalface_default.xml')
-        ]
-        for cp in cascade_paths:
-            if os.path.exists(cp):
-                detector = cv2.CascadeClassifier(cp)
-                detected = detector.detectMultiScale(gray, scaleFactor=1.08, minNeighbors=3, minSize=(50, 50))
-                for (x, y, fw, fh) in detected:
-                    center_x = x + fw / 2.0
-                    left_bonus = 2.0 if center_x < (w * 0.55) else 0.5
-                    score = (fw * fh) * left_bonus
-                    detected_boxes.append((score, (x, y, x + fw, y + fh)))
-                if detected_boxes:
-                    break
-
-    # Seleccionar la mejor caja facial (foto principal de la INE)
-    if detected_boxes:
-        detected_boxes.sort(key=lambda item: item[0], reverse=True)
-        face_box = detected_boxes[0][1]
-    else:
-        # Bounding box heurístico estándar para INE (Foto principal en el tercio izquierdo)
-        face_box = (int(w * 0.04), int(h * 0.12), int(w * 0.42), int(h * 0.88))
-
-    x1, y1, x2, y2 = face_box
+    x1, y1, x2, y2 = best_face["bbox"]
     fw = x2 - x1
     fh = y2 - y1
 
-    # Margen proporcional optimizado para primer cuadro tipo selfie / retrato KYC
-    # Proporción con espacio superior para cabello/frente y espacio inferior para cuello/hombros
-    pad_x = int(fw * 0.35)
-    pad_y_top = int(fh * 0.45)
-    pad_y_bottom = int(fh * 0.30)
+    # 2. Encuadre Óptimo Adaptativo (Headroom y Proporción Biométrica KYC)
+    if image_type == "ID_CARD":
+        pad_x = int(fw * 0.35)
+        pad_y_top = int(fh * 0.45)
+        pad_y_bottom = int(fh * 0.35)
+    else:
+        # Para Selfie / Retrato: preservar encuadre más amplio y natural
+        pad_x = int(fw * 0.40)
+        pad_y_top = int(fh * 0.50)
+        pad_y_bottom = int(fh * 0.45)
 
     cx1 = max(0, x1 - pad_x)
     cy1 = max(0, y1 - pad_y_top)
@@ -150,15 +223,18 @@ def process_id_card(
     if crop.size == 0:
         crop = img
 
-    # Guardar recorte inicial
     os.makedirs(os.path.dirname(os.path.abspath(output_crop_path)), exist_ok=True)
     cv2.imwrite(output_crop_path, crop)
 
-    # 2. Filtrado sutil de textura / De-moire antes de Super-Resolución
-    # Reduce las líneas guilloche del plástico del INE
-    denoised_crop = cv2.bilateralFilter(crop, d=7, sigmaColor=45, sigmaSpace=45)
+    # 3. Filtrado Adaptativo de Textura / De-moiré
+    if image_type == "ID_CARD":
+        # Suprimir patrones de muaré y líneas de seguridad plásticas
+        denoised_crop = cv2.bilateralFilter(crop, d=7, sigmaColor=50, sigmaSpace=50)
+    else:
+        # Suave reducción de ruido digital preservando poros y nitidez
+        denoised_crop = cv2.bilateralFilter(crop, d=5, sigmaColor=25, sigmaSpace=25)
 
-    # 3. Restauración Facial y Super-Resolución HD con GFPGAN / GPEN
+    # 4. Super-Resolución Facial con GFPGAN-1024 / GPEN
     gfpgan_model = os.path.join(models_dir, "gfpgan-1024.onnx")
     gpen_model = os.path.join(models_dir, "GPEN-BFR-512.onnx")
 
@@ -179,11 +255,11 @@ def process_id_card(
         enhanced_crop = cv2.resize(denoised_crop, (1024, 1024), interpolation=cv2.INTER_LANCZOS4)
         enhanced_crop = cv2.bilateralFilter(enhanced_crop, 9, 75, 75)
 
-    # Ajuste fino de color y balance de blancos para piel natural
-    # Corrige el tono lavado/grisáceo de fotos escaneadas de INE
+    # 5. Ajuste Fino de Iluminación y Balance de Piel (LAB CLAHE)
     lab = cv2.cvtColor(enhanced_crop, cv2.COLOR_BGR2LAB)
     l, a, b_chan = cv2.split(lab)
-    clahe = cv2.createCLAHE(clipLimit=1.8, tileGridSize=(8, 8))
+    clip_limit = 1.6 if image_type == "ID_CARD" else 1.2
+    clahe = cv2.createCLAHE(clipLimit=clip_limit, tileGridSize=(8, 8))
     cl = clahe.apply(l)
     enhanced_crop = cv2.cvtColor(cv2.merge((cl, a, b_chan)), cv2.COLOR_LAB2BGR)
 
@@ -192,6 +268,8 @@ def process_id_card(
 
     return {
         "success": True,
+        "image_type": image_type,
+        "type_label": type_label,
         "cropped_path": output_crop_path,
         "enhanced_path": output_enhanced_path,
         "original_crop_size": f"{crop.shape[1]}x{crop.shape[0]}",
@@ -202,7 +280,7 @@ def process_id_card(
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--image", required=True, help="Ruta de la credencial / INE")
+    parser.add_argument("--image", required=True, help="Ruta de la credencial o selfie")
     parser.add_argument("--output-crop", required=True, help="Ruta de salida del recorte")
     parser.add_argument("--output-enhanced", required=True, help="Ruta de salida del rostro HD restaurado")
     parser.add_argument("--models-dir", required=True, help="Directorio de modelos ONNX")

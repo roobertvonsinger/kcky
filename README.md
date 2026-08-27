@@ -1,72 +1,119 @@
-# 👁️ ONBOARDED — Suite de Inyección Biométrica & Auditoría KYC (v1.0 Soberano)
+# 👁️ K.C.K.Y. (KCKY v2.0) — Caja Negra de Inyección Biométrica & Auditoría KYC
 
-> **Plataforma soberana de generación de Liveness Sintético 3D, Face Swap asistido por DirectML (AMD Radeon RX 580), Evasión Sigilosa de WebRTC y Sniffer de Telemetría para proveedores KYC (Incode, Veriff, Truora, MetaMap, Jumio, Sumsub, Onfido).**
+> **Motor autónomo de restauración facial HD, liveness sintético 3D, face swap acelerado por GPU (DirectML/AMD/NVIDIA), spoofing de hardware WebRTC (Logitech C920) y puente de cámara virtual para pruebas de penetración y verificación de identidad KYC.**
 
 ---
 
-## ⚡ 1. Arquitectura del Sistema
+## ⚡ 1. Arquitectura del Sistema (Caja Negra por Pasos)
+
+KCKY opera como un pipeline lineal de 3 fases sin fricción:
 
 ```mermaid
-flowchart TD
-    A[Foto INE / Selfie] -->|Opción 1: Liveness 3D| B[Motor Sintético 3D\nMicro-movimiento Senoidal + CMOS]
-    A -->|Opción 2: Face Swap| C[Deep-Live-Cam\nDirectML AMD RX 580]
-    D[Video Base Gestos] --> C
-    
-    B --> E[Buffer Continuo Y4M\n90s Seamless Loop Buffer]
-    C --> E
-    
-    E --> F[Orbita Browser / GoLogin\nFlags de Inyección & Anti-Throttling]
-    G[webrtc_cam_spoof.js\nLogitech C920 / Integrated / HP Wide] --> F
-    H[kyc_sniffer.js\nInterceptador DOM, Canvas & WebRTC] --> F
-    
-    F --> I[Onboarding BetMexico / Proveedor KYC]
-    F -->|Telemetría WebSocket| J[Dashboard Obsidian Cyber Glass\nhttp://127.0.0.1:8765]
+graph TD
+    subgraph Paso 1: Identidad & Restauración
+        A[Input: Imagen / INE / Selfie] --> B{Clasificador Inteligente}
+        B -->|Credencial INE/ID| C[De-moiré + GFPGAN 1024 Super-Resolución]
+        B -->|Selfie / Retrato| D[Auto-Encuadre Biométrico KYC + Realce HD]
+    end
+
+    subgraph Paso 2: Dinámica Facial
+        C --> E{Modo de Generación}
+        D --> E
+        E -->|Opción A: 1 Sola Foto| F[Liveness Orgánico 3D<br>Parpadeo, Respiración y 3D Sway]
+        E -->|Opción B: Transferencia| G[Deep-Live-Cam DirectML<br>Video Base / Presets de Estudio]
+    end
+
+    subgraph Paso 3: Salida & Delivery
+        F --> H[Buffer Continuo Y4M / MP4]
+        G --> H
+        H --> I[🌐 Navegador Stealth WebRTC Logitech C920]
+        H --> J[🎥 Cámara Virtual Windows DirectShow / OBS]
+        H --> K[💾 Descarga Directa MP4 HD]
+    end
 ```
 
 ---
 
-## 🛡️ 2. Escudos Anti-Fraude & Evasión de Detección
+## 🛡️ 2. Capacidades y Escudos Anti-Fraude
 
-| Vector de Riesgo | Detección Tradicional | Solución Blindada en Onboarded |
+| Vector | Comportamiento | Solución en KCKY |
 | :--- | :--- | :--- |
-| **Foto Estática / Canvas Fijo** | El SDK detecta 0 varianza térmica y cancela el liveness pasivo. | **Liveness Sintético 3D:** Oscilación senoidal armónica (respiración/pulso) + micro-luz UVC + ruido CMOS. |
-| **Restricciones de Resolución** | `OverconstrainedError` si el SDK pide `exact: { width: 1920, height: 1080 }`. | **Shim Adaptativo WebRTC:** Modifica las restricciones en vuelo hacia las capacidades del buffer sin fallar. |
-| **Throttling en Segundo Plano** | Chromium congela los FPS si la ventana pierde foco. | **Flags Anti-Throttling:** `--disable-background-timer-throttling`, `--disable-renderer-backgrounding`. |
-| **Congelamiento de Video (Freeze)** | `--use-file-for-fake-video-capture` se congela al terminar el archivo. | **Ping-Pong Looping Buffer (90s+):** Bucle continuo normalizado a 30 FPS en espacio YUV420P. |
-| **Discrepancia de Hardware** | `fake_device_0` o nombres genéricos de emulador delatan la inyección. | **Hardware Personas:** Identidades legítimas de *Logitech C920*, *Integrated Camera* o *HP Wide Vision*. |
-| **Cambio de DeviceId** | Los GUIDs de cámara cambian al recargar la página o cambiar de iframe. | **Deterministic GUIDs:** Hash SHA256 fijo derivado del perfil para mantener consistencia 100%. |
+| **Fotos Degradadas / Trama INE** | Ruido de compresión o líneas guilloche del plástico del INE. | **De-Moiré + GFPGAN-1024:** Reconstruye iris, piel y facciones a resolución 1024x1024 sin deformar biometría. |
+| **Liveness Pasivo KYC** | SDKs detectan falta de varianza térmica o micro-gestos. | **Liveness 3D Sintético:** Inyecta parpadeo biométrico, micro-saccades oculares, oscilación senoidal (respiración) y micro-rotaciones. |
+| **Detección WebRTC** | SDKs detectan emuladores virtuales o nombres como `fake_device_0`. | **CDP Hardware Spoofing:** Inyecta identidades de hardware de alta confianza como **`Logitech HD Pro Webcam C920`**. |
+| **Cámaras Externas / OBS** | Aplicaciones que no aceptan argumentos de Chromium. | **Driver DirectShow VirtualCam:** Transmite el stream procesado a nivel de sistema operativo para cualquier software. |
 
 ---
 
-## 🚀 3. Inicio Rápido (1-Clic)
+## 🚀 3. Inicio Rápido
 
-### Modo Web Studio (Recomendado)
-Haz doble clic en **`onboarded.bat`** o ejecuta:
-```powershell
+### Requisitos Previos
+- **Python:** 3.10 o superior.
+- **FFmpeg:** Disponible en el `PATH` del sistema.
+- **Navegador:** Google Chrome, Chromium u Orbita (GoLogin).
+
+### Instalación & Auto-Descarga
+```bash
+git clone https://github.com/tu-usuario/kcky.git
+cd kcky
+pip install -r requirements.txt
+```
+
+### Ejecutar Servidor Web (K.C.K.Y. Studio)
+```bash
 python run.py
 ```
-* Abre automáticamente el dashboard en **`http://127.0.0.1:8765`**.
-* **Paso 1:** Carga la foto de la INE/Rostro y elige el modo (*Liveness 3D* o *Swap con DirectML*).
-* **Paso 2:** Inspecciona el video resultante en el monitor interactivo y selecciona tu persona de hardware.
-* **Paso 3:** Selecciona el perfil de Orbita, la URL destino (BetMexico) y presiona **Inyectar Cámara**.
+> **Nota:** Al ejecutar por primera vez, KCKY verifica e instala automáticamente cualquier paquete o modelo de IA faltante (`gfpgan-1024.onnx`, etc.) sin configuración manual.
+
+Abre automáticamente el estudio en: **`http://127.0.0.1:8765`**
 
 ---
 
-## 💻 4. Uso por Línea de Comandos (CLI)
+## 🤖 4. Integración con MCP, Mistral AI y Agentes Externos
 
-### Generar Liveness Sintético desde una foto:
-```powershell
-python run.py liveness "C:\ruta\selfie.jpg" -o "C:\ruta\stream.y4m" -d 90
+KCKY expone una API REST moderna basada en FastAPI y WebSockets, lo que permite consumirlo programáticamente desde cualquier plugin MCP, backend o agente LLM:
+
+### 📖 Documentación Swagger Interactiva
+Una vez iniciado el servidor, consulta la especificación OpenAPI completa en:
+- **Swagger UI:** `http://127.0.0.1:8765/docs`
+- **ReDoc:** `http://127.0.0.1:8765/redoc`
+
+### Endpoints Clave
+
+#### 1. Extracción y Restauración Facial
+```http
+POST /api/extract-id-face
+Content-Type: multipart/form-data
+Body: file=@credencial.jpg
+```
+* **Respuesta:** Clasificación automática (`ID_CARD` vs `PORTRAIT_SELFIE`), `crop_url`, `enhanced_url` y metadatos de resolución.
+
+#### 2. Generación de Liveness Orgánico 3D
+```http
+POST /api/generate-liveness
+Content-Type: application/x-www-form-urlencoded
+Body: face_path=data/uploads/enhanced_abc123.png&duration=90&width=1280&height=720&fps=30
+```
+* **Respuesta:** `y4m_path`, `preview_url`, duración y tamaño de buffer.
+
+#### 3. Face Swap con GPU DirectML
+```http
+POST /api/process-swap
+Content-Type: application/x-www-form-urlencoded
+Body: source_face_path=data/uploads/enhanced_abc123.png&target_video_path=data/presets/female_clean_kyc_base.mp4
 ```
 
-### Lanzar Navegador con inyección directa:
-```powershell
-python run.py launch "C:\ruta\stream.y4m" "https://webcamtests.com/"
+#### 4. Lanzamiento de Navegador con Spoofing
+```http
+POST /api/launch-browser
+Content-Type: application/x-www-form-urlencoded
+Body: y4m_path=C:\path\to\stream.y4m&target_url=https://webcamtests.com&hardware_persona=logitech_c920
 ```
 
-### Consultar estado de hardware:
-```powershell
-python run.py status
+#### 5. Cámara Virtual DirectShow (Sistema)
+```http
+POST /api/virtual-cam/start
+Body: media_path=data/buffers/preview_abc.mp4
 ```
 
 ---
@@ -74,28 +121,46 @@ python run.py status
 ## 📂 5. Estructura del Repositorio
 
 ```
-repos/onboarded/
-├── .gitignore
-├── README.md
-├── requirements.txt
-├── run.py                 # Punto de entrada unificado CLI/Web
-├── onboarded.bat           # Lanzador 1-clic
+repos/kcky/
+├── .gitignore               # Exclusiones estrictas de binarios y temporales
+├── README.md                # Documentación técnica central
+├── requirements.txt         # Especificación modular de dependencias
+├── run.py                   # Punto de entrada unificado CLI y Servidor Web
+├── kcky.bat                 # Lanzador rápido 1-clic para Windows
 ├── src/
 │   ├── __init__.py
-│   ├── config.py          # Configuración, rutas y hardware personas
-│   ├── liveness.py        # Motor FFmpeg de liveness y bucles 90s
-│   ├── face_swap.py       # Puente asíncrono con Deep-Live-Cam DirectML
-│   ├── browser.py         # Orquestador Orbita, flags y CDP bridge
-│   └── server.py          # FastAPI backend + WebSockets + REST API
+│   ├── config.py            # Rutas seguras, resolución de medios y perfiles de hardware
+│   ├── dependency_manager.py # Auto-instalador de paquetes y modelos ONNX
+│   ├── extract_id_engine.py # Clasificador INE vs Selfie + GFPGAN 1024 HD
+│   ├── id_extractor.py      # Conector asíncrono universal
+│   ├── organic_animator.py  # Motor de liveness 3D, micro-saccades y respiración
+│   ├── liveness.py          # Conversor FFmpeg y buffers Y4M continuos
+│   ├── face_swap.py         # Orquestador DirectML AMD/NVIDIA
+│   ├── browser.py           # Lanzador Chromium y puente CDP
+│   ├── virtual_cam_broadcaster.py # Driver pyvirtualcam para OBS / DirectShow
+│   └── server.py            # Backend FastAPI + WebSockets de telemetría
 ├── scripts/
-│   ├── webrtc_cam_spoof.js # Inyector WebRTC stealth para Chromium
-│   └── kyc_sniffer.js     # Detector de SDKs y capturas en vivo
+│   ├── webrtc_cam_spoof.js  # Script inyector WebRTC (Logitech C920 stealth)
+│   └── kyc_sniffer.js       # Sniffer de SDKs KYC (Incode, Veriff, MetaMap)
 ├── static/
-│   ├── index.html         # Web GUI Dark Glassmorphism con Stepper
-│   ├── style.css          # Estilos Obsidian Cyber Glass
-│   └── app.js             # Controlador reactivo frontend
-└── data/
-    ├── uploads/           # Fotos y videos cargados
-    ├── buffers/           # Streams .y4m y previews .mp4
-    └── sessions/          # Reportes y logs de auditoría
+│   ├── index.html           # UI minimalista de 3 pasos (Full-Space Cards)
+│   ├── style.css            # Tema Dark Luxury Minimalist
+│   └── app.js               # Controlador reactivo frontend
+└── tests/
+    ├── test_blackbox_pipeline.py # Suite de verificación automatizada de pipeline
+    └── ...
 ```
+
+---
+
+## 🧪 6. Suite de Pruebas Automatizadas
+
+Para validar la integridad de todo el pipeline:
+```bash
+python tests/test_blackbox_pipeline.py
+```
+
+---
+
+## 📄 Licencia y Uso Ético
+Desarrollado exclusivamente para auditorías de seguridad biométrica autorizadas, pruebas de penetración en sistemas KYC y desarrollo en entornos de laboratorio controlados.

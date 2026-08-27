@@ -1,14 +1,25 @@
+# ==============================================================================
+# ONBOARDED — Git Ignore Rules
+# ==============================================================================
+
+# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
+*.so
+
+# Logs & temporales
 *.log
+*.tmp
+*.y4m
 
 # Entornos virtuales
 venv/
 .venv/
 env/
+ENV/
 
-# Buffers de video pesados y fotos temporales
+# Directorios de datos efímeros
 data/uploads/*
 data/buffers/*
 data/sessions/*
@@ -16,8 +27,19 @@ data/sessions/*
 !data/buffers/.gitkeep
 !data/sessions/.gitkeep
 
-# IDE y sistema
+# Preservar presets de video base
+!data/presets/
+!data/presets/*.mp4
+
+# Modelos pesados ONNX (si se descargan localmente)
+models/*.onnx
+*.onnx
+
+# IDE, OS & Testing
 .vscode/
 .idea/
 .DS_Store
 Thumbs.db
+.pytest_cache/
+.coverage
+htmlcov/

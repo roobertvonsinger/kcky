@@ -12,7 +12,7 @@ import cv2
 import numpy as np
 from typing import Optional
 
-logger = logging.getLogger("Onboarded_VirtualCam")
+logger = logging.getLogger("KCKY_VirtualCam")
 
 _active_broadcaster: Optional["VirtualCamBroadcaster"] = None
 _broadcaster_lock = threading.Lock()
