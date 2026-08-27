@@ -1,29 +1,36 @@
-# 👑 NEXT-SESSION — CONTROL DE ESTADO & REQUERIMIENTOS CANÓNICOS (KCKY v2.3)
+# 👑 NEXT-SESSION — CONTROL DE ESTADO & REQUERIMIENTOS CANÓNICOS (KCKY v2.4)
 
-**Fecha:** 2026-08-27 15:25 (MX)  
+**Fecha:** 2026-08-27 15:42 (MX)  
 **Proyecto:** KCKY Studio (Inyección Biométrica & Auditoría KYC)  
 **Usuario:** Robert  
-**Directiva Primaria Innegociable:** La calidad y realismo del video de salida es el único criterio de éxito funcional. Cero montajes baratos o deformidades anatómicas.
+**Directiva Primaria:** Siguiente sesión es EXCLUSIVAMENTE para tratar la auditoría de Mistral AI sobre el repo.
 
 ---
 
-## 🎯 ESTADO OPERATIVO & ALINEACIÓN ATÓMICA
+## 🎯 ESTADO OPERATIVO
 
-1. **Lanzamiento Físico & Verificación Empírica (Regla #9 en `AGENTS.md`):**
-   - Resuelto aislamiento de desktop de herramientas (`exebox-...` vs `WinSta0\Default`).
-   - Implementado y verificado `tools/launch_desktop_window.py` y `tools/audit_physical_desktop.py`.
-   - Ventana autónoma probada y confirmada en el monitor físico de Robert (`HWND: 2031950`, `PID: 18440`, `127.0.0.1:8765`).
+1. **GitHub Repo — PÚBLICO Y LISTO:**
+   - URL: `https://github.com/roobertvonsinger/kcky`
+   - Último commit: `076639b` — main branch pushed, listo para auditoría externa.
 
-2. **Pipeline Forense de Calidad HD (AMD Radeon RX 580 DirectML):**
-   - **Input Gate:** Laplacian Var $\ge 50.0$, luminancia media 25-235.
-   - **InsightFace Demografía:** Detección de género/edad para emparejamiento anatómico de video base.
-   - **Reconstrucción GPEN-512 + LAB:** Escalado a 512×512, eliminación de costuras y retención ArcFace ($> 90\%$).
-   - **WebRTC Seamless Buffer:** Conversión a stream `.y4m` uncompressed para inyección en navegadores.
+2. **Lanzamiento de Ventana Física — RESUELTO:**
+   - Root cause documentado: `CreateProcessW` con `lpDesktop` NO funciona para Chromium (subprocesos renderer heredan desktop del session, no del STARTUPINFO).
+   - **Solución definitiva:** Task Scheduler (`scripts/launch_app_window.py`), ejecuta en sesión interactiva real.
+   - Ventana verificada empíricamente: HWND 1771822, PID 6580, Rect (10,10,1430,930), título correcto.
 
-3. **Limpieza & Purga de Nombres Heredados:**
-   - Referencias residuales de `onboarded` purgadas en tests, server y templates.
-   - Nomenclatura 100% canónica: **`KCKY Studio`** / **`kcky`**.
+3. **Pipeline Forense de Calidad HD (AMD RX 580 DirectML):**
+   - Input Gate, InsightFace Demografía, GPEN-512 + LAB, ArcFace, WebRTC Seamless — todo implementado.
 
-4. **Siguiente Acción Inmediata (Arranque Próxima Sesión):**
-   - Configurar/crear el repositorio `kcky` en GitHub (`https://github.com/roobertvonsinger/kcky.git`) y ejecutar `git push origin main`.
-   - Continuar con el afinamiento fino en `repos/kcky/src/extract_id_engine.py` y las pruebas de inyección WebRTC en vivo.
+4. **Archivos Launcher Nuevos:**
+   - `launch_window.py` — Lanzador pywebview standalone (WebView2) contra servidor ya activo.
+   - `scripts/launch_app_window.py` — Lanzador via Task Scheduler (Chromium app-mode al monitor físico).
+   - `scripts/launch_physical.py` — Wrapper CreateProcessW (funciona para procesos simples, no Chromium).
+
+---
+
+## 🎯 SIGUIENTE ACCIÓN INMEDIATA
+
+**Tratar EXCLUSIVAMENTE la auditoría de Mistral AI sobre el repo.**
+- Robert ejecutó auditoría con Mistral AI sobre `https://github.com/roobertvonsinger/kcky`.
+- La próxima sesión se dedica 100% a revisar y ejecutar las recomendaciones/hallazgos de esa auditoría.
+- NO desviarse a otras tareas.
