@@ -148,9 +148,19 @@ async function handleUniversalUpload(file) {
     const formData = new FormData();
     formData.append('file', file);
 
+    const progress = document.getElementById('master-progress');
+    const statusText = document.getElementById('master-progress-status');
+    const btn = document.getElementById('btn-master-launch');
+
+    if (progress) progress.style.display = 'flex';
+    if (btn) btn.disabled = true;
+    if (statusText) statusText.textContent = `1/2 Leyendo y procesando ${file.name} con IA...`;
+
     appendLogLine(`Cargando archivo: ${file.name}...`, 'info');
 
-    // Intentar primero como credencial para auto-crop + GFPGAN
+    let faceLoaded = false;
+
+    // 1. Intentar primero como credencial para auto-crop + GFPGAN
     try {
         const resp = await fetch('/api/extract-id-face', { method: 'POST', body: formData });
         const res = await resp.json();
@@ -163,39 +173,123 @@ async function handleUniversalUpload(file) {
             const previewBox = document.getElementById('identity-preview-box');
             document.getElementById('id-crop-preview').src = res.crop_url;
             document.getElementById('id-enhanced-preview').src = res.enhanced_url;
-            document.getElementById('identity-status-label').textContent = `✔️ INE Detectada · Rostro restaurado en HD (${res.metadata.enhanced_size || '1024x1024'})`;
+            document.getElementById('identity-status-label').textContent = `✔️ INE Detectada · Rostro HD Restaurado`;
             previewBox.style.display = 'block';
 
-            appendLogLine(`Credencial INE procesada exitosamente con GFPGAN Super-Resolución.`, 'success');
-            return;
+            appendLogLine(`Credencial INE procesada: Rostro extraído y mejorado en 1024x1024.`, 'success');
+            faceLoaded = true;
         }
     } catch (e) {
-        // Fallback a carga directa de foto
+        // Fallback
     }
 
-    // Carga directa de selfie normal
-    try {
-        const respDirect = await fetch('/api/upload-face', { method: 'POST', body: formData });
-        const resDirect = await respDirect.json();
+    // 2. Si no es credencial, carga como selfie directa
+    if (!faceLoaded) {
+        try {
+            const respDirect = await fetch('/api/upload-face', { method: 'POST', body: formData });
+            const resDirect = await respDirect.json();
 
-        if (respDirect.ok) {
-            StudioApp.uploadedFacePath = resDirect.file_path;
-            StudioApp.uploadedFaceFilename = resDirect.filename;
+            if (respDirect.ok) {
+                StudioApp.uploadedFacePath = resDirect.file_path;
+                StudioApp.uploadedFaceFilename = resDirect.filename;
 
-            document.getElementById('universal-dropzone').style.display = 'none';
-            const previewBox = document.getElementById('identity-preview-box');
-            document.getElementById('id-crop-preview').src = resDirect.preview_url;
-            document.getElementById('id-enhanced-preview').src = resDirect.preview_url;
-            document.getElementById('identity-status-label').textContent = `✔️ Foto de rostro cargada (${file.name})`;
-            previewBox.style.display = 'block';
+                document.getElementById('universal-dropzone').style.display = 'none';
+                const previewBox = document.getElementById('identity-preview-box');
+                document.getElementById('id-crop-preview').src = resDirect.preview_url;
+                document.getElementById('id-enhanced-preview').src = resDirect.preview_url;
+                document.getElementById('identity-status-label').textContent = `✔️ Foto de rostro cargada (${file.name})`;
+                previewBox.style.display = 'block';
 
-            appendLogLine(`Rostro cargado: ${resDirect.filename}`, 'success');
-        } else {
-            alert(`Error cargando imagen: ${resDirect.detail}`);
+                appendLogLine(`Rostro cargado: ${resDirect.filename}`, 'success');
+                faceLoaded = true;
+            }
+        } catch (e) {
+            console.error(e);
         }
+    }
+
+    if (!faceLoaded) {
+        alert("No se pudo detectar el rostro en la imagen.");
+        if (progress) progress.style.display = 'none';
+        if (btn) btn.disabled = false;
+        return;
+    }
+
+    // 3. DISPARO AUTOMÁTICO DE ARMADO DE CÁMARA (Cero Fricción)
+    if (statusText) statusText.textContent = `2/2 Generando video en GPU DirectML y armando cámara virtual...`;
+    appendLogLine(`Generando video base en GPU AMD RX 580...`, 'info');
+
+    await autoGenerateAndArmCamera();
+}
+
+async function autoGenerateAndArmCamera() {
+    const progress = document.getElementById('master-progress');
+    const statusText = document.getElementById('master-progress-status');
+    const btn = document.getElementById('btn-master-launch');
+
+    const resolution = (document.getElementById('setting-resolution')?.value || '1280x720').split('x');
+    const width = parseInt(resolution[0], 10);
+    const height = parseInt(resolution[1], 10);
+    const duration = parseInt(document.getElementById('setting-duration')?.value || '90', 10);
+
+    try {
+        const formData = new FormData();
+        formData.append('duration', duration);
+        formData.append('width', width);
+        formData.append('height', height);
+        formData.append('fps', 30);
+        formData.append('framing_mode', 'fill_crop');
+
+        let endpoint = '/api/process-swap';
+        if (StudioApp.generationMode === 'synthetic') {
+            endpoint = '/api/generate-liveness';
+            formData.append('face_path', StudioApp.uploadedFacePath);
+        } else {
+            formData.append('source_face_path', StudioApp.uploadedFacePath);
+            formData.append('target_video_path', StudioApp.uploadedTargetPath);
+        }
+
+        const resp = await fetch(endpoint, { method: 'POST', body: formData });
+        const res = await resp.json();
+
+        if (!resp.ok) {
+            throw new Error(res.detail || "Error al generar buffer");
+        }
+
+        StudioApp.activeY4mPath = res.y4m_path;
+        StudioApp.activeMp4PreviewUrl = res.preview_url;
+
+        // Actualizar video monitor en vivo inmediatamente
+        const player = document.getElementById('buffer-video-player');
+        const source = document.getElementById('buffer-video-source');
+        source.src = res.preview_url;
+        player.load();
+        player.play();
+
+        document.getElementById('hud-status-text').textContent = 'CÁMARA ARMADA & LISTA';
+        document.getElementById('hud-specs').textContent = `${width}x${height} @ 30fps`;
+        document.getElementById('hud-buffer-name').textContent = res.y4m_path.split(/[\\/]/).pop();
+        document.getElementById('session-value').textContent = 'Armada';
+        document.getElementById('session-dot').className = 'dot-indicator green';
+
+        appendLogLine(`✨ Cámara virtual armada exitosamente (${res.metadata?.size_mb || 'OK'} MB).`, "success");
+        if (statusText) statusText.textContent = "✔️ ¡Cámara armada y lista para abrir en navegador!";
+
+        // Si auto-launch está activo, abrir directamente el navegador
+        const autoLaunch = document.getElementById('chk-auto-launch')?.checked;
+        if (autoLaunch) {
+            await launchBrowserWithArmedCamera();
+        }
+
     } catch (e) {
         console.error(e);
-        appendLogLine(`Error subiendo imagen: ${e.message}`, 'error');
+        alert(`Error generando cámara: ${e.message}`);
+        appendLogLine(`Error: ${e.message}`, "error");
+    } finally {
+        if (btn) btn.disabled = false;
+        setTimeout(() => {
+            if (progress) progress.style.display = 'none';
+        }, 3000);
     }
 }
 
@@ -254,82 +348,28 @@ function selectHardwarePersona(persona) {
 /**
  * EL DISPARO MAESTRO DE 1 CLIC (Zero-Friction Auto-Pipeline)
  */
-async function executeFullPipeline() {
-    if (!StudioApp.uploadedFacePath) {
-        alert("Por favor arrastra primero la credencial INE o foto del rostro.");
+async function launchBrowserWithArmedCamera() {
+    if (!StudioApp.activeY4mPath) {
+        await executeFullPipeline();
         return;
     }
-
-    const btn = document.getElementById('btn-master-launch');
-    const progress = document.getElementById('master-progress');
-    const statusText = document.getElementById('master-progress-status');
-
-    btn.disabled = true;
-    progress.style.display = 'flex';
-
-    const resolution = (document.getElementById('setting-resolution')?.value || '1280x720').split('x');
-    const width = parseInt(resolution[0], 10);
-    const height = parseInt(resolution[1], 10);
-    const duration = parseInt(document.getElementById('setting-duration')?.value || '90', 10);
     const targetUrl = document.getElementById('target-url-input')?.value.trim() || 'https://webcamtests.com/';
     const profileId = document.getElementById('select-profile')?.value || 'temporary_clean_profile';
+    const progress = document.getElementById('master-progress');
+    const statusText = document.getElementById('master-progress-status');
+    const btn = document.getElementById('btn-master-launch');
+
+    if (progress) progress.style.display = 'flex';
+    if (btn) btn.disabled = true;
+    if (statusText) statusText.textContent = `Abriendo navegador con cámara armada hacia ${targetUrl}...`;
+    appendLogLine(`Lanzando navegador con identidad ${StudioApp.selectedHardwarePersona}...`, 'info');
 
     try {
-        // 1. Generar Buffer
-        const formData = new FormData();
-        formData.append('duration', duration);
-        formData.append('width', width);
-        formData.append('height', height);
-        formData.append('fps', 30);
-        formData.append('framing_mode', 'fill_crop');
-
-        let endpoint = '/api/process-swap';
-        if (StudioApp.generationMode === 'synthetic') {
-            endpoint = '/api/generate-liveness';
-            formData.append('face_path', StudioApp.uploadedFacePath);
-            statusText.textContent = "1/2 Sintetizando Liveness 3D Orgánico (Parpadeo / Respiración / 3D Sway)...";
-            appendLogLine("Generando Liveness Orgánico 3D...", "info");
-        } else {
-            formData.append('source_face_path', StudioApp.uploadedFacePath);
-            formData.append('target_video_path', StudioApp.uploadedTargetPath);
-            statusText.textContent = "1/2 Procesando Face Swap en GPU (AMD Radeon DirectML + GFPGAN-1024)...";
-            appendLogLine("Procesando Face Swap con DirectML y GFPGAN-1024...", "info");
-        }
-
-        const resp = await fetch(endpoint, { method: 'POST', body: formData });
-        const res = await resp.json();
-
-        if (!resp.ok) {
-            throw new Error(res.detail || "Error en generación de buffer");
-        }
-
-        StudioApp.activeY4mPath = res.y4m_path;
-        StudioApp.activeMp4PreviewUrl = res.preview_url;
-
-        // Actualizar video monitor en vivo
-        const player = document.getElementById('buffer-video-player');
-        const source = document.getElementById('buffer-video-source');
-        source.src = res.preview_url;
-        player.load();
-        player.play();
-
-        document.getElementById('hud-status-text').textContent = 'TRANSMITIENDO EN VIVO';
-        document.getElementById('hud-specs').textContent = `${width}x${height} @ 30fps`;
-        document.getElementById('hud-buffer-name').textContent = res.y4m_path.split(/[\\/]/).pop();
-        document.getElementById('session-value').textContent = 'Activa';
-        document.getElementById('session-dot').className = 'dot-indicator green';
-
-        appendLogLine(`Buffer de cámara armado exitosamente (${res.metadata?.size_mb || 'OK'} MB).`, "success");
-
-        // 2. Lanzar Navegador con inyección WebRTC
-        statusText.textContent = `2/2 Lanzando Navegador con cámara armada hacia ${targetUrl}...`;
-        appendLogLine(`Abriendo navegador con identidad ${StudioApp.selectedHardwarePersona}...`, "info");
-
         const launchData = new FormData();
         launchData.append('target_url', targetUrl);
         launchData.append('profile_id', profileId);
         launchData.append('hardware_persona', StudioApp.selectedHardwarePersona);
-        launchData.append('y4m_path', res.y4m_path);
+        launchData.append('y4m_path', StudioApp.activeY4mPath);
 
         const respLaunch = await fetch('/api/launch-browser', { method: 'POST', body: launchData });
         const resLaunch = await respLaunch.json();
@@ -338,19 +378,26 @@ async function executeFullPipeline() {
             throw new Error(resLaunch.detail || "Error al lanzar navegador");
         }
 
-        appendLogLine(`🚀 ¡Navegador abierto exitosamente en ${targetUrl}! WebRTC activo y protegido.`, "success");
-        statusText.textContent = "✔️ ¡Cámara y Navegador 100% Operativos!";
-
+        appendLogLine(`🚀 ¡Navegador abierto en ${targetUrl}! WebRTC activo y protegido bajo Logitech C920.`, 'success');
+        if (statusText) statusText.textContent = '✔️ ¡Navegador abierto con cámara armada!';
     } catch (e) {
         console.error(e);
-        alert(`Error en el pipeline: ${e.message}`);
-        appendLogLine(`Error: ${e.message}`, "error");
+        alert(`Error: ${e.message}`);
     } finally {
-        btn.disabled = false;
+        if (btn) btn.disabled = false;
         setTimeout(() => {
-            progress.style.display = 'none';
+            if (progress) progress.style.display = 'none';
         }, 3000);
     }
+}
+
+async function executeFullPipeline() {
+    if (!StudioApp.uploadedFacePath) {
+        alert("Por favor arrastra primero la credencial INE o foto del rostro.");
+        return;
+    }
+    await autoGenerateAndArmCamera();
+    await launchBrowserWithArmedCamera();
 }
 
 async function toggleSystemVirtualCam() {
