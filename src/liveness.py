@@ -3,6 +3,7 @@ liveness.py — Motor de Generación de Liveness Sintético 3D y Normalización 
 """
 
 import os
+import sys
 import subprocess
 from pathlib import Path
 from typing import Dict, Any, Optional
@@ -19,8 +20,9 @@ def generate_synthetic_liveness(
     framing_mode: str = "fill_crop"
 ) -> Dict[str, Any]:
     """
-    Genera un stream continuo de video .y4m y preview .mp4 con animación orgánica
-    (parpadeo natural, respiración senoidal, micro-saccades, 3D sway y ruido CMOS).
+    Genera un stream continuo y fotorealista de video .y4m y preview .mp4 desde la foto restaurada.
+    Aplica encuadre óptimo de estudio biométrico, micro-respiración senoidal (0.22 Hz) y ruido analógico CMOS,
+    preservando 100% la anatomía facial sin distorsiones ni deformaciones artificiales de malla.
     """
     if not os.path.exists(image_path):
         raise FileNotFoundError(f"Imagen no encontrada: {image_path}")
@@ -29,51 +31,67 @@ def generate_synthetic_liveness(
     if output_mp4_preview_path:
         os.makedirs(os.path.dirname(os.path.abspath(output_mp4_preview_path)), exist_ok=True)
 
-    # Ejecutar motor de animación orgánica usando el Python venv de Deep-Live-Cam
-    from src.face_swap import get_deep_live_cam_python
-    python_exec = get_deep_live_cam_python() or sys.executable
-    animator_script = Path(__file__).resolve().parent / "organic_animator.py"
-
-    cmd_anim = [
-        python_exec,
-        str(animator_script),
-        "--image", os.path.abspath(image_path),
-        "--output-y4m", os.path.abspath(output_y4m_path),
-        "--duration", str(duration),
-        "--width", str(width),
-        "--height", str(height),
-        "--fps", str(fps)
-    ]
-    if output_mp4_preview_path:
-        cmd_anim.extend(["--output-mp4", os.path.abspath(output_mp4_preview_path)])
-
-    try:
-        proc = subprocess.run(cmd_anim, capture_output=True, text=True, check=True)
-        lines = [l for l in proc.stdout.splitlines() if l.strip().startswith("{")]
-        if lines:
-            import json
-            return json.loads(lines[-1])
-    except Exception as err:
-        import logging
-        logging.getLogger("KCKY_Liveness").warning(f"Fallback a shader trigonométrico: {err}")
-
     total_frames = duration * fps
 
+    # Encuadre fotográfico de estudio (centrado natural con margen de hombros/pecho)
     if framing_mode == "fit_pad":
-        scale_pad_part = f"scale={width*2}:{height*2}:force_original_aspect_ratio=decrease,pad={width*2}:{height*2}:(ow-iw)/2:(oh-ih)/2,"
+        scale_part = f"scale={width}:{height}:force_original_aspect_ratio=decrease,pad={width}:{height}:(ow-iw)/2:(oh-ih)/2:color=0x12141a,"
     else:
-        scale_pad_part = f"scale={width*2}:{height*2}:force_original_aspect_ratio=increase,crop={width*2}:{height*2}:(iw-ow)/2:'max(0, (ih-oh)*0.20)',"
+        # Encuadre selfie con headroom superior natural
+        scale_part = f"scale={width*2}:{height*2}:force_original_aspect_ratio=increase,crop={width*2}:{height*2}:(iw-ow)/2:'max(0, (ih-oh)*0.20)',"
 
+    # Micro-movimientos cinemáticos senoidales (respiración y deriva analógica de 1-2px)
     vf_filter = (
-        f"{scale_pad_part}"
-        f"zoompan=z='1.02+0.015*sin(2*3.14159*on/({fps}*4.5))':"
-        f"x='iw/2-(iw/zoom/2)+2.0*sin(2*3.14159*on/({fps}*6.2))':"
-        f"y='ih/2-(ih/zoom/2)+1.5*cos(2*3.14159*on/({fps}*3.8))':"
+        f"{scale_part}"
+        f"zoompan=z='1.015+0.008*sin(2*3.14159*on/({fps}*4.5))':"
+        f"x='iw/2-(iw/zoom/2)+1.2*sin(2*3.14159*on/({fps}*6.2))':"
+        f"y='ih/2-(ih/zoom/2)+1.0*cos(2*3.14159*on/({fps}*4.0))':"
         f"d={total_frames}:fps={fps}:s={width}x{height},"
-        f"eq=brightness='0.004*sin(2*3.14159*t/8.0)':contrast='1.0+0.008*cos(2*3.14159*t/7.0)',"
-        f"noise=alls=3:allf=t+u,"
+        f"noise=alls=2:allf=t+u,"
         f"format=yuv420p"
     )
+
+    cmd_y4m = [
+        "ffmpeg",
+        "-y",
+        "-loop", "1",
+        "-i", image_path,
+        "-t", str(duration),
+        "-vf", vf_filter,
+        "-r", str(fps),
+        "-pix_fmt", "yuv420p",
+        output_y4m_path
+    ]
+
+    res_y4m = subprocess.run(cmd_y4m, capture_output=True, text=True)
+    if res_y4m.returncode != 0:
+        raise RuntimeError(f"Error generando Y4M con FFmpeg:\n{res_y4m.stderr}")
+
+    if output_mp4_preview_path:
+        cmd_mp4 = [
+            "ffmpeg",
+            "-y",
+            "-i", output_y4m_path,
+            "-t", "15",
+            "-c:v", "libx264",
+            "-preset", "ultrafast",
+            "-crf", "20",
+            "-pix_fmt", "yuv420p",
+            output_mp4_preview_path
+        ]
+        subprocess.run(cmd_mp4, capture_output=True, text=True)
+
+    size_mb = os.path.getsize(output_y4m_path) / (1024 * 1024) if os.path.exists(output_y4m_path) else 0
+    return {
+        "status": "success",
+        "y4m_path": output_y4m_path,
+        "mp4_preview_path": output_mp4_preview_path,
+        "duration": duration,
+        "resolution": f"{width}x{height}",
+        "fps": fps,
+        "framing": framing_mode,
+        "size_mb": round(size_mb, 2)
+    }
 
     cmd_y4m = [
         "ffmpeg",

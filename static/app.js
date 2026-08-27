@@ -8,7 +8,7 @@ const Studio = {
     uploadedCropUrl: null,
     uploadedEnhancedUrl: null,
     imageType: null,
-    generationMode: 'synthetic', // 'synthetic' | 'swap'
+    generationMode: 'swap', // 'swap' (Default Recomendado) | 'synthetic'
     targetPreset: 'female_clean_kyc_base.mp4',
     customVideoPath: null,
     activeY4mPath: null,
@@ -17,6 +17,24 @@ const Studio = {
     vcamActive: false,
     ws: null
 };
+
+async function safeFetchJson(url, options = {}) {
+    const resp = await fetch(url, options);
+    const text = await resp.text();
+    let data;
+    try {
+        data = JSON.parse(text);
+    } catch (e) {
+        if (!resp.ok) {
+            throw new Error(`Error del servidor (${resp.status}): ${text.slice(0, 120)}`);
+        }
+        throw new Error("Respuesta inválida del servidor");
+    }
+    if (!resp.ok) {
+        throw new Error(data.detail || data.message || `Error del servidor (${resp.status})`);
+    }
+    return data;
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     initWebSocket();
@@ -170,15 +188,10 @@ async function handleImageUpload(file) {
     formData.append('file', file);
 
     try {
-        const resp = await fetch('/api/extract-id-face', {
+        const res = await safeFetchJson('/api/extract-id-face', {
             method: 'POST',
             body: formData
         });
-
-        const res = await resp.json();
-        if (!resp.ok) {
-            throw new Error(res.detail || "Fallo en la extracción de la imagen.");
-        }
 
         Studio.uploadedFacePath = res.enhanced_file_path || res.crop_file_path;
         Studio.uploadedCropUrl = res.crop_url;
@@ -254,10 +267,7 @@ async function handleCustomVideoUpload(event) {
 
     try {
         showToast("Subiendo video conductor...", "success");
-        const resp = await fetch('/api/upload-target', { method: 'POST', body: formData });
-        const res = await resp.json();
-        if (!resp.ok) throw new Error(res.detail || "Error subiendo video");
-
+        const res = await safeFetchJson('/api/upload-target', { method: 'POST', body: formData });
         Studio.customVideoPath = res.file_path;
         showToast(`Video conductor cargado: ${res.filename}`, "success");
     } catch (err) {
@@ -296,12 +306,7 @@ async function startGenerationAndGoStep3() {
             formData.append('target_video_path', Studio.customVideoPath || Studio.targetPreset);
         }
 
-        const resp = await fetch(endpoint, { method: 'POST', body: formData });
-        const res = await resp.json();
-
-        if (!resp.ok) {
-            throw new Error(res.detail || "Error generando el flujo de video.");
-        }
+        const res = await safeFetchJson(endpoint, { method: 'POST', body: formData });
 
         Studio.activeY4mPath = res.y4m_path;
         Studio.activeMp4PreviewUrl = res.preview_url;
@@ -338,7 +343,11 @@ async function launchBrowserFlow() {
         return;
     }
 
-    const targetUrl = document.getElementById('target-url-input').value.trim() || 'https://webcamtests.com';
+    const targetUrlInput = document.getElementById('target-url-input');
+    const targetUrl = targetUrlInput ? targetUrlInput.value.trim() : 'https://webcamtests.com';
+    const personaSelect = document.getElementById('hardware-persona-select');
+    const hardwarePersona = personaSelect ? personaSelect.value : 'logitech_c920';
+
     const btn = document.getElementById('btn-launch-browser-action');
     btn.disabled = true;
     btn.textContent = 'Abriendo Navegador Seguro...';
@@ -346,17 +355,11 @@ async function launchBrowserFlow() {
     try {
         const formData = new FormData();
         formData.append('y4m_path', Studio.activeY4mPath);
-        formData.append('target_url', targetUrl);
-        formData.append('hardware_persona', 'logitech_c920');
+        formData.append('target_url', targetUrl || 'https://webcamtests.com');
+        formData.append('hardware_persona', hardwarePersona);
 
-        const resp = await fetch('/api/launch-browser', { method: 'POST', body: formData });
-        const res = await resp.json();
-
-        if (!resp.ok) {
-            throw new Error(res.detail || "Error al abrir el navegador");
-        }
-
-        showToast("🚀 Navegador lanzado con cámara Logitech C920 inyectada.", "success");
+        const res = await safeFetchJson('/api/launch-browser', { method: 'POST', body: formData });
+        showToast(`🚀 Navegador lanzado con cámara [${hardwarePersona}] armada.`, "success");
     } catch (err) {
         showToast(err.message || "Fallo al lanzar el navegador", "error");
     } finally {
@@ -383,8 +386,7 @@ async function toggleSystemVirtualCam() {
             formData.append('media_path', Studio.activeMp4PreviewUrl || Studio.activeY4mPath);
         }
 
-        const resp = await fetch(endpoint, { method: 'POST', body: shouldStart ? formData : undefined });
-        const res = await resp.json();
+        const res = await safeFetchJson(endpoint, { method: 'POST', body: shouldStart ? formData : undefined });
 
         if (shouldStart) {
             Studio.vcamActive = true;

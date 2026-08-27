@@ -137,40 +137,40 @@
 
                 <!-- Selector de Modo en 2 Grandes Tarjetas -->
                 <div class="motion-modes-grid">
-                    <!-- Opción 1: Liveness Orgánico 3D -->
-                    <div class="motion-card active" id="card-mode-synthetic" onclick="selectMotionMode('synthetic')">
+                    <!-- Opción 1: Transferencia Face Swap HD (Recomendada / Fotorealista) -->
+                    <div class="motion-card active" id="card-mode-swap" onclick="selectMotionMode('swap')">
                         <div class="card-radio-mark"></div>
-                        <div class="motion-card-badge">1 SOLA FOTO · ULTRA RÁPIDO</div>
-                        <h2 class="motion-card-title">Liveness Orgánico 3D</h2>
-                        <p class="motion-card-desc">Genera movimiento natural a partir de la foto restaurada. Inyecta parpadeo biométrico, respiración senoidal, micro-saccades oculares y micro-rotaciones 3D realistas.</p>
-                        <div class="motion-card-footer">
-                            <span class="feature-tag">Cero videos extra</span>
-                            <span class="feature-tag">Encuadre KYC Óvalo</span>
-                        </div>
-                    </div>
-
-                    <!-- Opción 2: Transferencia Face Swap HD -->
-                    <div class="motion-card" id="card-mode-swap" onclick="selectMotionMode('swap')">
-                        <div class="card-radio-mark"></div>
-                        <div class="motion-card-badge pro">ALTA FIDELIDAD · DIRECTML</div>
-                        <h2 class="motion-card-title">Transferencia de Rostro (Face Swap)</h2>
-                        <p class="motion-card-desc">Transfiere el rostro restaurado sobre un video conductor de estudio. Puedes usar los presets optimizados o subir tu propio video de referencia.</p>
+                        <div class="motion-card-badge pro">RECOMENDADO · FOTOREALISMO PURO</div>
+                        <h2 class="motion-card-title">Transferencia de Rostro (Face Swap HD)</h2>
+                        <p class="motion-card-desc">Transfiere el rostro restaurado sobre un video conductor de estudio real. Persona física con parpadeo real, cuello, hombros y respiración natural sin deformaciones.</p>
                         
-                        <!-- Sub-opciones de Face Swap (Presets / Upload / Record) -->
-                        <div class="swap-options-container" id="swap-sub-options" style="display: none;">
-                            <div class="sub-label">Seleccionar Video Base:</div>
+                        <!-- Sub-opciones de Face Swap (Presets / Upload) -->
+                        <div class="swap-options-container" id="swap-sub-options" style="display: block;">
+                            <div class="sub-label">Seleccionar Video Base de Estudio:</div>
                             <div class="preset-buttons-row">
                                 <button type="button" class="preset-btn active" id="btn-preset-clean" onclick="setSwapPreset('female_clean_kyc_base.mp4', event)">
-                                    👩 Base Limpia KYC
+                                    👩 Base Estudio KYC
                                 </button>
                                 <button type="button" class="preset-btn" id="btn-preset-alt" onclick="setSwapPreset('female_driving_alt.mp4', event)">
                                     🎬 Base Alternativa
                                 </button>
                                 <button type="button" class="preset-btn custom" onclick="triggerFileInput('custom-video-input', event)">
-                                    📁 Subir Video
+                                    📁 Subir Video Propio
                                 </button>
                                 <input type="file" id="custom-video-input" accept="video/mp4,video/webm,video/mov" style="display: none;" onchange="handleCustomVideoUpload(event)">
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Opción 2: Liveness Cinemático 3D Suave -->
+                    <div class="motion-card" id="card-mode-synthetic" onclick="selectMotionMode('synthetic')">
+                        <div class="card-radio-mark"></div>
+                        <div class="motion-card-badge">1 SOLA FOTO · DIRECTO</div>
+                        <h2 class="motion-card-title">Liveness Cinemático 3D (Foto)</h2>
+                        <p class="motion-card-desc">Genera un flujo de cámara desde la foto restaurada. Aplica micro-respiración senoidal de cámara (0.22 Hz) y ruido analógico de sensor CMOS sin jalonear la cara.</p>
+                        <div class="motion-card-footer">
+                            <span class="feature-tag">Cero videos extra</span>
+                            <span class="feature-tag">Encuadre KYC Limpio</span>
                         </div>
                     </div>
                 </div>
@@ -229,13 +229,26 @@
                             <div class="channel-header">
                                 <div class="channel-icon">🌐</div>
                                 <div class="channel-info">
-                                    <div class="channel-title">Navegador con Cámara Logitech C920</div>
-                                    <div class="channel-desc">Abre Chrome/Orbita en modo aislado con spoofing de hardware y bypass WebRTC activo.</div>
+                                    <div class="channel-title">Navegador con Cámara Inyectada (Hot & Ready)</div>
+                                    <div class="channel-desc">Lanza el navegador con auto-permiso concedido, cámara pre-seleccionada y spoofing de hardware.</div>
                                 </div>
                             </div>
 
-                            <div class="channel-input-row">
-                                <input type="url" id="target-url-input" class="target-url-field" value="https://webcamtests.com" placeholder="https://sitio-kyc-objetivo.com">
+                            <!-- Selector de Hardware Persona -->
+                            <div class="persona-selector-row" style="display: flex; gap: 8px; margin: 12px 0 8px 0;">
+                                <label style="font-size: 11px; color: var(--text-muted); align-self: center;">Dispositivo:</label>
+                                <select id="hardware-persona-select" class="target-url-field" style="padding: 6px 10px; font-size: 12px; flex: 1;">
+                                    <option value="logitech_c920" selected>Logitech HD Pro Webcam C920 (Bajo Riesgo)</option>
+                                    <option value="integrated">Integrated Camera OEM (Laptop)</option>
+                                    <option value="hp_wide">HP Wide Vision HD Camera</option>
+                                </select>
+                            </div>
+
+                            <div class="channel-input-row" style="display: flex; gap: 8px;">
+                                <input type="url" id="target-url-input" class="target-url-field" value="https://webcamtests.com" placeholder="https://sitio-kyc-objetivo.com" style="flex: 1;">
+                                <button type="button" class="preset-btn" style="padding: 6px 12px; font-size: 11px;" onclick="document.getElementById('target-url-input').value = '/static/test_cam.html'">
+                                    🧪 Test Local
+                                </button>
                             </div>
 
                             <button class="btn-launch-browser" id="btn-launch-browser-action" onclick="launchBrowserFlow()">

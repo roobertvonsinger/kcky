@@ -18,14 +18,77 @@ from src.browser import find_orbita_executable, launch_browser_process, find_fre
 from src.dependency_manager import run_preflight_checks
 
 
+def free_port_if_in_use(port: int):
+    """Detecta y termina procesos huérfanos que tengan ocupado el puerto especificado en Windows."""
+    try:
+        import subprocess
+        # Buscar PID en el puerto
+        cmd = f'powershell -NoProfile -Command "Get-NetTCPConnection -LocalPort {port} -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique"'
+        output = subprocess.check_output(cmd, shell=True, text=True).strip()
+        current_pid = os.getpid()
+        for line in output.splitlines():
+            line = line.strip()
+            if line and line.isdigit():
+                pid = int(line)
+                if pid != current_pid and pid != 0:
+                    print(f"[*] Liberando puerto {port} (Terminando proceso huérfano PID: {pid})...")
+                    subprocess.run(f"taskkill /F /PID {pid}", shell=True, capture_output=True)
+    except Exception as e:
+        print(f"[!] Nota sobre puerto: {e}")
+
+
+def find_app_browser_executable() -> Optional[str]:
+    """Busca un ejecutable compatible con el flag --app para ventana de escritorio nativa."""
+    candidates = [
+        r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+        r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe",
+        os.path.expanduser(r"~\AppData\Local\Google\Chrome\Application\chrome.exe"),
+        r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
+        r"C:\Program Files\Microsoft\Edge\Application\msedge.exe"
+    ]
+    for p in candidates:
+        if os.path.isfile(p):
+            return p
+    return None
+
+
+def open_desktop_window(url: str):
+    """Abre KCKY Studio en una ventana de aplicación de escritorio independiente (App Window)."""
+    import time
+    time.sleep(1.2)
+    
+    browser_exe = find_app_browser_executable()
+    if browser_exe:
+        import subprocess
+        app_user_dir = os.path.join(os.environ.get("TEMP", "/tmp"), "kcky_studio_app_profile")
+        os.makedirs(app_user_dir, exist_ok=True)
+        cmd = [
+            browser_exe,
+            f"--app={url}",
+            "--window-size=1380,880",
+            f"--user-data-dir={app_user_dir}",
+            "--no-first-run",
+            "--no-default-browser-check"
+        ]
+        try:
+            subprocess.Popen(cmd)
+            return
+        except Exception:
+            pass
+
+    # Fallback si no se encontró ejecutable con flag --app
+    webbrowser.open(url)
+
+
 def run_web_studio(host: str = DEFAULT_HOST, port: int = DEFAULT_PORT, auto_open: bool = True):
     """Inicia el servidor web FastAPI con Uvicorn de forma robusta."""
+    free_port_if_in_use(port)
     run_preflight_checks()
 
     import uvicorn
     from src.server import app
 
-    url = f"http://{host}:{port}"
+    url = f"http://127.0.0.1:{port}"
     print("======================================================================")
     print("  K.C.K.Y. — Suite de Inyeccion Biometrica & Auditoria KYC")
     print(f"  URL Backend: {url}")
@@ -33,12 +96,8 @@ def run_web_studio(host: str = DEFAULT_HOST, port: int = DEFAULT_PORT, auto_open
     print("======================================================================")
 
     if auto_open:
-        def _open():
-            import time
-            time.sleep(1.2)
-            webbrowser.open(f"http://127.0.0.1:{port}")
         import threading
-        threading.Thread(target=_open, daemon=True).start()
+        threading.Thread(target=open_desktop_window, args=(url,), daemon=True).start()
 
     uvicorn.run(app, host=host, port=port, log_level="info")
 

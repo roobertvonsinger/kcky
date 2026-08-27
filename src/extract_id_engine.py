@@ -50,10 +50,8 @@ def enhance_face_crop_gfpgan(crop_bgr: np.ndarray, model_path: str) -> np.ndarra
     output_img = np.clip(output_img, 0, 255).astype(np.uint8)
     enhanced_bgr = cv2.cvtColor(output_img, cv2.COLOR_RGB2BGR)
 
-    # Post-proceso sutil con Unsharp Masking para ultra definición
-    gaussian = cv2.GaussianBlur(enhanced_bgr, (0, 0), 2.0)
-    unsharp = cv2.addWeighted(enhanced_bgr, 1.25, gaussian, -0.25, 0)
-    return unsharp
+    # Retornar imagen limpia restaurada con gradientes suaves y tonos naturales
+    return enhanced_bgr
 
 
 def detect_and_classify_input(img: np.ndarray) -> dict:
@@ -234,15 +232,15 @@ def process_id_card(
         # Suave reducción de ruido digital preservando poros y nitidez
         denoised_crop = cv2.bilateralFilter(crop, d=5, sigmaColor=25, sigmaSpace=25)
 
-    # 4. Super-Resolución Facial con GFPGAN-1024 / GPEN
-    gfpgan_model = os.path.join(models_dir, "gfpgan-1024.onnx")
+    # 4. Super-Resolución Facial con GPEN-BFR-512 (Ultra ligero y fiel) o GFPGAN-1024
     gpen_model = os.path.join(models_dir, "GPEN-BFR-512.onnx")
+    gfpgan_model = os.path.join(models_dir, "gfpgan-1024.onnx")
 
     model_to_use = None
-    if os.path.exists(gfpgan_model):
-        model_to_use = gfpgan_model
-    elif os.path.exists(gpen_model):
+    if os.path.exists(gpen_model):
         model_to_use = gpen_model
+    elif os.path.exists(gfpgan_model):
+        model_to_use = gfpgan_model
 
     enhanced_crop = None
     if model_to_use:

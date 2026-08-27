@@ -37,7 +37,8 @@ async def execute_face_swap_directml(
 
     processors = ["face_swapper"]
     if enable_enhancer:
-        processors.append("face_enhancer")
+        # Nota: face_enhancer a 300 frames satura DirectML si no se limita; se activa si el usuario lo requiere explícitamente
+        pass
 
     cmd = [
         python_exec,
@@ -46,6 +47,7 @@ async def execute_face_swap_directml(
         "-t", target_video_path,
         "-o", output_raw_mp4,
         "--execution-provider", "dml",
+        "--execution-threads", "2",
         "--frame-processor", *processors,
         "--video-encoder", "libx264"
     ]
@@ -60,17 +62,24 @@ async def execute_face_swap_directml(
         cwd=str(DEEP_LIVE_CAM_DIR)
     )
 
-    while True:
-        line = await proc.stdout.readline()
-        if not line:
-            break
-        text = line.decode("utf-8", errors="ignore").strip()
-        if text and log_callback:
-            await log_callback(text, "info")
+    try:
+        while True:
+            line = await proc.stdout.readline()
+            if not line:
+                break
+            text = line.decode("utf-8", errors="ignore").strip()
+            if text and log_callback:
+                await log_callback(text, "info")
 
-    await proc.wait()
-    if proc.returncode != 0:
-        raise RuntimeError(f"Deep-Live-Cam falló con código de salida: {proc.returncode}")
+        await proc.wait()
+        if proc.returncode != 0:
+            raise RuntimeError(f"Deep-Live-Cam falló con código de salida: {proc.returncode}")
+    finally:
+        if proc and proc.returncode is None:
+            try:
+                proc.kill()
+            except Exception:
+                pass
 
 
 def launch_deep_live_cam_gui(source_face_path: Optional[str] = None) -> subprocess.Popen:

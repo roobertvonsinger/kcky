@@ -18,7 +18,7 @@ from fastapi.staticfiles import StaticFiles
 
 from src.config import (
     UPLOADS_DIR, BUFFERS_DIR, SESSIONS_DIR, PRESETS_DIR, STATIC_DIR,
-    DEFAULT_HOST, DEFAULT_PORT, HARDWARE_PERSONAS
+    DEFAULT_HOST, DEFAULT_PORT, HARDWARE_PERSONAS, resolve_media_path
 )
 from src.liveness import generate_synthetic_liveness, convert_video_to_seamless_y4m
 from src.face_swap import execute_face_swap_directml, get_deep_live_cam_python
@@ -44,18 +44,45 @@ app.add_middleware(
 )
 
 
+import atexit
+
 class AppState:
     def __init__(self):
         self.websockets: List[WebSocket] = []
         self.active_y4m: Optional[str] = None
         self.active_mp4_preview: Optional[str] = None
         self.browser_proc: Optional[subprocess.Popen] = None
+        self.active_subprocesses: List[subprocess.Popen] = []
         self.cdp_port: Optional[int] = None
         self.browser_running: bool = False
         self.is_processing: bool = False
         self.detected_sdks: List[Dict[str, Any]] = []
 
 state = AppState()
+
+
+def auto_cleanup_all_processes():
+    """Higiene estricta de procesos: termina inmediatamente navegadores, ffmpeg y procesos huérfanos."""
+    if state.browser_proc:
+        try:
+            kill_process_tree(state.browser_proc)
+            state.browser_proc = None
+        except Exception:
+            pass
+    for proc in state.active_subprocesses:
+        try:
+            kill_process_tree(proc)
+        except Exception:
+            pass
+    state.active_subprocesses.clear()
+    stop_system_virtual_cam()
+
+atexit.register(auto_cleanup_all_processes)
+
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    auto_cleanup_all_processes()
 
 
 async def broadcast_log(msg: str, level: str = "info", category: str = "system"):
@@ -516,6 +543,12 @@ app.mount("/data/uploads", StaticFiles(directory=str(UPLOADS_DIR)), name="upload
 app.mount("/data/buffers", StaticFiles(directory=str(BUFFERS_DIR)), name="buffers")
 app.mount("/data/presets", StaticFiles(directory=str(PRESETS_DIR)), name="presets")
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+async def favicon_view():
+    from fastapi.responses import Response
+    return Response(status_code=204)
 
 
 @app.get("/")
