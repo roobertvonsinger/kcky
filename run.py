@@ -18,56 +18,29 @@ from src.browser import find_orbita_executable, launch_browser_process, find_fre
 from src.dependency_manager import run_preflight_checks
 
 
-def run_native_app(host: str = DEFAULT_HOST, port: int = DEFAULT_PORT):
-    """Inicia el servidor backend y abre la interfaz de K.C.K.Y. Studio."""
-    # Ejecutar comprobaciones automáticas de dependencias y modelos
+def run_web_studio(host: str = DEFAULT_HOST, port: int = DEFAULT_PORT, auto_open: bool = True):
+    """Inicia el servidor web FastAPI con Uvicorn de forma robusta."""
     run_preflight_checks()
 
     import uvicorn
-    import threading
-    import time
     from src.server import app
 
     url = f"http://{host}:{port}"
     print("======================================================================")
-    print("  K.C.K.Y. — Suite de Inyeccion Biometrica & Auditoria KYC (Desktop)")
+    print("  K.C.K.Y. — Suite de Inyeccion Biometrica & Auditoria KYC")
     print(f"  URL Backend: {url}")
     print("  GPU: AMD Radeon RX 580 (DirectML Enabled)")
     print("======================================================================")
 
-    # Iniciar servidor Uvicorn en hilo secundario daemon
-    config = uvicorn.Config(app, host=host, port=port, log_level="warning")
-    server = uvicorn.Server(config)
-    server_thread = threading.Thread(target=server.run, daemon=True)
-    server_thread.start()
+    if auto_open:
+        def _open():
+            import time
+            time.sleep(1.2)
+            webbrowser.open(f"http://127.0.0.1:{port}")
+        import threading
+        threading.Thread(target=_open, daemon=True).start()
 
-    time.sleep(1.0)
-
-    try:
-        import webview
-        print("[*] Abriendo ventana nativa de escritorio...")
-        window = webview.create_window(
-            title="K.C.K.Y. — Suite de Inyección Biométrica & KYC (DirectML AMD RX 580)",
-            url=url,
-            width=1320,
-            height=860,
-            resizable=True,
-            min_size=(1040, 700)
-        )
-        webview.start()
-    except Exception as err:
-        print(f"[!] Abriendo en navegador web ({err})...")
-        webbrowser.open(url)
-        try:
-            while True:
-                time.sleep(1)
-        except KeyboardInterrupt:
-            pass
-
-
-def run_web_studio(host: str = DEFAULT_HOST, port: int = DEFAULT_PORT, auto_open: bool = True):
-    """Inicia el servidor web FastAPI con Uvicorn."""
-    run_native_app(host, port)
+    uvicorn.run(app, host=host, port=port, log_level="info")
 
 
 def main():
