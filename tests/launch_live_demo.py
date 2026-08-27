@@ -9,7 +9,7 @@ import subprocess
 import time
 from pathlib import Path
 
-BASE_DIR = Path(r"C:\Users\rober\Dropbox\TESTING DEV\repos\onboarded")
+BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(BASE_DIR))
 
 from src.config import SCRIPTS_DIR, HARDWARE_PERSONAS, BUFFERS_DIR
