@@ -199,11 +199,32 @@
 
                         <div class="target-video-box" id="target-video-box" style="display: none;">
                             <label class="section-label">Video Base Objetivo con Gestos (Target):</label>
+                            
+                            <div class="preset-videos-grid" id="preset-videos-container">
+                                <div class="preset-chip active" id="preset-chip-clean" onclick="selectPresetVideo('female_clean_kyc_base.mp4', 'data/presets/female_clean_kyc_base.mp4')">
+                                    <span class="preset-icon">👩</span>
+                                    <div class="preset-meta">
+                                        <span class="preset-name">Base Femenina Limpia HD</span>
+                                        <span class="preset-sub">Sin lentes · Parpadeo · Respiración natural</span>
+                                    </div>
+                                    <span class="preset-badge">PRESET</span>
+                                </div>
+                                <div class="preset-chip" id="preset-chip-alt" onclick="selectPresetVideo('female_driving_alt.mp4', 'data/presets/female_driving_alt.mp4')">
+                                    <span class="preset-icon">🎬</span>
+                                    <div class="preset-meta">
+                                        <span class="preset-name">Base Alternativa KYC</span>
+                                        <span class="preset-sub">Movimiento 3D · Enfoque frontal</span>
+                                    </div>
+                                    <span class="preset-badge">PRESET</span>
+                                </div>
+                            </div>
+
+                            <label class="section-label-sub">O sube tu propio video base:</label>
                             <div class="mini-dropzone" id="target-dropzone" onclick="triggerFileInput('target-file-input')">
                                 <input type="file" id="target-file-input" accept="video/mp4,video/mov,video/webm" style="display: none;">
                                 <div class="mini-drop-content">
-                                    <span class="mini-icon">🎬</span>
-                                    <span class="mini-text" id="target-file-name">Seleccionar video base (.mp4 con movimientos)</span>
+                                    <span class="mini-icon">📁</span>
+                                    <span class="mini-text" id="target-file-name">Subir video personalizado (.mp4, .webm)</span>
                                 </div>
                             </div>
                         </div>

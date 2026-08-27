@@ -22,6 +22,9 @@ document.addEventListener('DOMContentLoaded', () => {
     loadSystemStatus();
     loadProfiles();
     setupPanicButton();
+    // Preset por defecto para Face Swap
+    StudioApp.uploadedTargetPath = 'data/presets/female_clean_kyc_base.mp4';
+    StudioApp.uploadedTargetFilename = 'female_clean_kyc_base.mp4';
 });
 
 function initWebSocket() {
@@ -353,6 +356,24 @@ async function handleFaceUpload(file) {
     }
 }
 
+function selectPresetVideo(presetId, relativePath) {
+    StudioApp.uploadedTargetPath = relativePath;
+    StudioApp.uploadedTargetFilename = presetId;
+
+    document.querySelectorAll('.preset-chip').forEach(c => c.classList.remove('active'));
+    if (presetId.includes('clean')) {
+        const c = document.getElementById('preset-chip-clean');
+        if (c) c.classList.add('active');
+    } else {
+        const c = document.getElementById('preset-chip-alt');
+        if (c) c.classList.add('active');
+    }
+
+    const nameTag = document.getElementById('target-file-name');
+    if (nameTag) nameTag.textContent = `Preset Activo: ${presetId}`;
+    appendLogLine(`Preset de video seleccionado: ${presetId}`, 'info');
+}
+
 async function handleTargetUpload(file) {
     const formData = new FormData();
     formData.append('file', file);
@@ -366,6 +387,7 @@ async function handleTargetUpload(file) {
             StudioApp.uploadedTargetPath = res.file_path;
             StudioApp.uploadedTargetFilename = res.filename;
 
+            document.querySelectorAll('.preset-chip').forEach(c => c.classList.remove('active'));
             document.getElementById('target-file-name').textContent = `Video Cargado: ${file.name}`;
             appendLogLine(`Video base listo: ${res.filename}`, 'success');
         } else {

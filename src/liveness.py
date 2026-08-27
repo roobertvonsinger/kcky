@@ -19,10 +19,8 @@ def generate_synthetic_liveness(
     framing_mode: str = "fill_crop"
 ) -> Dict[str, Any]:
     """
-    Genera un stream continuo de video .y4m y preview .mp4 desde una imagen estática.
-    Soporta modos de encuadre:
-    - 'fill_crop': Llena todo el sensor de cámara recortando al centro sin barras negras ni distorsión.
-    - 'fit_pad': Mantiene imagen completa ajustada con padding centrado.
+    Genera un stream continuo de video .y4m y preview .mp4 con animación orgánica
+    (parpadeo natural, respiración senoidal, micro-saccades, 3D sway y ruido CMOS).
     """
     if not os.path.exists(image_path):
         raise FileNotFoundError(f"Imagen no encontrada: {image_path}")
@@ -31,12 +29,39 @@ def generate_synthetic_liveness(
     if output_mp4_preview_path:
         os.makedirs(os.path.dirname(os.path.abspath(output_mp4_preview_path)), exist_ok=True)
 
+    # Ejecutar motor de animación orgánica usando el Python venv de Deep-Live-Cam
+    from src.face_swap import get_deep_live_cam_python
+    python_exec = get_deep_live_cam_python() or sys.executable
+    animator_script = Path(__file__).resolve().parent / "organic_animator.py"
+
+    cmd_anim = [
+        python_exec,
+        str(animator_script),
+        "--image", os.path.abspath(image_path),
+        "--output-y4m", os.path.abspath(output_y4m_path),
+        "--duration", str(duration),
+        "--width", str(width),
+        "--height", str(height),
+        "--fps", str(fps)
+    ]
+    if output_mp4_preview_path:
+        cmd_anim.extend(["--output-mp4", os.path.abspath(output_mp4_preview_path)])
+
+    try:
+        proc = subprocess.run(cmd_anim, capture_output=True, text=True, check=True)
+        lines = [l for l in proc.stdout.splitlines() if l.strip().startswith("{")]
+        if lines:
+            import json
+            return json.loads(lines[-1])
+    except Exception as err:
+        import logging
+        logging.getLogger("Onboarded_Liveness").warning(f"Fallback a shader trigonométrico: {err}")
+
     total_frames = duration * fps
 
     if framing_mode == "fit_pad":
         scale_pad_part = f"scale={width*2}:{height*2}:force_original_aspect_ratio=decrease,pad={width*2}:{height*2}:(ow-iw)/2:(oh-ih)/2,"
     else:
-        # fill_crop (Primer cuadro selfie): llena el marco y deja headroom superior natural para frente/ojos
         scale_pad_part = f"scale={width*2}:{height*2}:force_original_aspect_ratio=increase,crop={width*2}:{height*2}:(iw-ow)/2:'max(0, (ih-oh)*0.20)',"
 
     vf_filter = (

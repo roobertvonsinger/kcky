@@ -17,7 +17,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from src.config import (
-    UPLOADS_DIR, BUFFERS_DIR, SESSIONS_DIR, STATIC_DIR,
+    UPLOADS_DIR, BUFFERS_DIR, SESSIONS_DIR, PRESETS_DIR, STATIC_DIR,
     DEFAULT_HOST, DEFAULT_PORT, HARDWARE_PERSONAS
 )
 from src.liveness import generate_synthetic_liveness, convert_video_to_seamless_y4m
@@ -162,6 +162,21 @@ async def list_profiles():
 @app.get("/api/hardware-personas")
 async def list_hardware_personas():
     return {"personas": HARDWARE_PERSONAS}
+
+
+@app.get("/api/presets")
+async def list_presets():
+    presets = []
+    if PRESETS_DIR.is_dir():
+        for p in PRESETS_DIR.glob("*.mp4"):
+            name = p.stem.replace("_", " ").title()
+            presets.append({
+                "id": p.name,
+                "name": name,
+                "path": str(p),
+                "preview_url": f"/data/presets/{p.name}"
+            })
+    return {"presets": presets}
 
 
 @app.post("/api/upload-face")
@@ -488,6 +503,7 @@ async def ws_telemetry_endpoint(websocket: WebSocket):
 
 app.mount("/data/uploads", StaticFiles(directory=str(UPLOADS_DIR)), name="uploads")
 app.mount("/data/buffers", StaticFiles(directory=str(BUFFERS_DIR)), name="buffers")
+app.mount("/data/presets", StaticFiles(directory=str(PRESETS_DIR)), name="presets")
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
 
