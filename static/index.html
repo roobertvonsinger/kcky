@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ONBOARDED | Suite de Inyección Biometríca & Auditoría KYC</title>
+    <title>ONBOARDED | Suite de Inyección Biométrica & Auditoría KYC</title>
     <meta name="description" content="Plataforma soberana de evasión WebRTC, síntesis de liveness 3D y auditoría biométrica para Orbita, GoLogin y BetMexico.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,8 +21,8 @@
                 <div class="pulse-ring"></div>
             </div>
             <div class="brand-text">
-                <h1 class="brand-title">ONBOARDED <span class="brand-badge">v1.0 SOBERANO</span></h1>
-                <p class="brand-subtitle">Media Injector & Auditoría Biometríca Anti-Fraude</p>
+                <h1 class="brand-title">ONBOARDED <span class="brand-badge">v2.0 SOBERANO</span></h1>
+                <p class="brand-subtitle">Media Injector & Auditoría Biométrica Anti-Fraude (Zero-Friction)</p>
             </div>
         </div>
 
@@ -34,13 +34,13 @@
             </div>
             <div class="status-pill" id="orbita-status-pill">
                 <span class="dot-indicator blue"></span>
-                <span class="pill-label">Orbita:</span>
-                <span class="pill-value" id="orbita-value">Detectado</span>
+                <span class="pill-label">Spoofing:</span>
+                <span class="pill-value" id="orbita-value">Logitech C920</span>
             </div>
             <div class="status-pill" id="session-status-pill">
                 <span class="dot-indicator gray" id="session-dot"></span>
-                <span class="pill-label">Sesión:</span>
-                <span class="pill-value" id="session-value">Inactiva</span>
+                <span class="pill-label">Estado:</span>
+                <span class="pill-value" id="session-value">Listo</span>
             </div>
             <button class="btn-panic" id="btn-panic-reset" title="Detener procesos, liberar VRAM y limpiar buffers">
                 <span class="btn-icon">⚡</span> PANIC RESET
@@ -48,538 +48,258 @@
         </div>
     </header>
 
-    <!-- Main Container -->
+    <!-- Main Container: Unified 2-Column Command Center -->
     <main class="studio-main-container">
         
-        <!-- Stepper Navigation Bar -->
-        <nav class="stepper-nav" aria-label="Pasos de configuración">
-            <div class="step-item active" id="step-btn-1" onclick="switchStep(1)">
-                <div class="step-number">01</div>
-                <div class="step-info">
-                    <span class="step-title">Identidad & Fuente</span>
-                    <span class="step-desc">Foto INE / Video Base</span>
-                </div>
-                <div class="step-connector"></div>
+        <div class="unified-command-grid">
+            
+            <!-- LEFT COLUMN: Input & 1-Click Action -->
+            <div class="command-column-left">
+
+                <!-- 1. Dropzone Inteligente Universal (INE / Foto) -->
+                <section class="glass-card main-input-card">
+                    <div class="card-header">
+                        <div class="header-icon">🪪</div>
+                        <div class="header-titles">
+                            <h2>1. Identidad del Sujeto</h2>
+                            <p>Arrastra la credencial INE o una foto de rostro. La IA detecta, recorta y restaura en HD automáticamente.</p>
+                        </div>
+                    </div>
+
+                    <div class="dropzone" id="universal-dropzone" onclick="triggerFileInput('universal-file-input')">
+                        <input type="file" id="universal-file-input" accept="image/jpeg,image/png,image/webp" style="display: none;">
+                        <div class="dropzone-content" id="dropzone-idle">
+                            <div class="upload-icon-anim">📸</div>
+                            <p class="drop-title">Arrastra la <strong>Credencial INE</strong> o <strong>Foto de Rostro</strong> aquí</p>
+                            <span class="drop-hint">La IA aplica Super-Resolución GFPGAN 1024x1024 y limpia líneas del INE al instante</span>
+                        </div>
+                    </div>
+
+                    <!-- Vista previa de extracción con Super-Resolución -->
+                    <div class="identity-preview-box" id="identity-preview-box" style="display: none;">
+                        <div class="identity-preview-grid">
+                            <div class="preview-mini-card">
+                                <span class="mini-tag">Recorte INE</span>
+                                <img id="id-crop-preview" src="" alt="Recorte original">
+                            </div>
+                            <div class="preview-arrow">➡️</div>
+                            <div class="preview-mini-card highlight">
+                                <span class="mini-tag hd">✨ GFPGAN 1024 HD</span>
+                                <img id="id-enhanced-preview" src="" alt="Rostro restaurado">
+                            </div>
+                        </div>
+                        <div class="identity-actions">
+                            <span class="identity-status-text" id="identity-status-label">✔️ Identidad activa lista para inyección</span>
+                            <button type="button" class="btn-text-action" onclick="triggerFileInput('universal-file-input', event)">Cambiar Foto</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. Selector de Modo Rápido -->
+                <section class="glass-card mode-quick-card">
+                    <div class="card-header">
+                        <div class="header-icon">🎭</div>
+                        <div class="header-titles">
+                            <h2>2. Modo de Generación</h2>
+                            <p>Selecciona cómo se transmitirá el flujo de cámara en vivo:</p>
+                        </div>
+                    </div>
+
+                    <div class="mode-toggle-group two-cols">
+                        <label class="mode-card active" id="mode-opt-swap">
+                            <input type="radio" name="generation-mode" value="swap" checked onchange="toggleGenMode('swap')">
+                            <div class="mode-card-content">
+                                <div class="mode-badge-pro">RECOMENDADO · ALTA FIDELIDAD</div>
+                                <div class="mode-card-title">🎭 Face Swap Estudio HD</div>
+                                <p class="mode-card-desc">Transfiere el rostro sobre video base sin lentes con GFPGAN 1024 (Acelerado DirectML AMD RX 580).</p>
+                            </div>
+                        </label>
+
+                        <label class="mode-card" id="mode-opt-synthetic">
+                            <input type="radio" name="generation-mode" value="synthetic" onchange="toggleGenMode('synthetic')">
+                            <div class="mode-card-content">
+                                <div class="mode-badge-rec">1 SOLA FOTO</div>
+                                <div class="mode-card-title">✨ Liveness Orgánico 3D</div>
+                                <p class="mode-card-desc">Inyecta parpadeo natural, respiración sinusoidal, micro-saccades y micro-rotaciones 3D desde la foto.</p>
+                            </div>
+                        </label>
+                    </div>
+
+                    <!-- Presets de Video Base para Swap -->
+                    <div class="preset-selector-container" id="swap-presets-container">
+                        <label class="section-label-sm">Video Base de Estudio (Target Preset):</label>
+                        <div class="preset-chips-flex">
+                            <button type="button" class="preset-chip-btn active" id="preset-btn-clean" onclick="selectPresetVideo('female_clean_kyc_base.mp4', 'data/presets/female_clean_kyc_base.mp4')">
+                                👩 Base Femenina Limpia HD <span class="chip-badge">Óptimo KYC</span>
+                            </button>
+                            <button type="button" class="preset-chip-btn" id="preset-btn-alt" onclick="selectPresetVideo('female_driving_alt.mp4', 'data/presets/female_driving_alt.mp4')">
+                                🎬 Base Alternativa <span class="chip-badge">3D Focus</span>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. Disparo Maestro y Lanzamiento de 1 Clic -->
+                <section class="glass-card launch-master-card">
+                    <div class="card-header">
+                        <div class="header-icon">🚀</div>
+                        <div class="header-titles">
+                            <h2>3. Lanzar Navegador con Cámara Armada</h2>
+                            <p>Procesa el buffer y abre el navegador con WebRTC Spoofing (Logitech C920) en 1 solo clic.</p>
+                        </div>
+                    </div>
+
+                    <div class="target-url-group">
+                        <label for="target-url-input" class="section-label-sm">URL Destino del Onboarding / Verificación:</label>
+                        <div class="url-input-wrapper">
+                            <input type="text" id="target-url-input" class="cyber-input" value="https://webcamtests.com/" placeholder="https://betmexico.mx/...">
+                        </div>
+                        <div class="quick-url-pills">
+                            <span class="url-pill" onclick="setQuickUrl('https://webcamtests.com/')">WebcamTests</span>
+                            <span class="url-pill" onclick="setQuickUrl('https://betmexico.mx/')">BetMexico</span>
+                            <span class="url-pill" onclick="setQuickUrl('http://127.0.0.1:8765/static/test_cam.html')">Monitor Local</span>
+                        </div>
+                    </div>
+
+                    <button class="btn-master-launch" id="btn-master-launch" onclick="executeFullPipeline()">
+                        <span class="btn-master-icon">🚀</span>
+                        <div class="btn-master-text">
+                            <span class="btn-master-title">PROCESAR & LANZAR NAVEGADOR</span>
+                            <span class="btn-master-sub" id="btn-master-sub">DirectML Swap + Logitech C920 Spoofing</span>
+                        </div>
+                    </button>
+
+                    <!-- Barra de progreso integrada -->
+                    <div class="master-progress-bar" id="master-progress" style="display: none;">
+                        <div class="progress-bar-track">
+                            <div class="progress-bar-fill indeterminate"></div>
+                        </div>
+                        <div class="progress-status-text" id="master-progress-status">Procesando y armando cámara virtual...</div>
+                    </div>
+
+                    <!-- Acordeón de Opciones Avanzadas (Cero Fricción) -->
+                    <details class="advanced-settings-accordion">
+                        <summary class="accordion-summary">
+                            <span>⚙️ Opciones Avanzadas (Resolución, Perfiles, Hardware)</span>
+                            <span class="accordion-arrow">▼</span>
+                        </summary>
+                        <div class="accordion-body">
+                            <div class="form-grid-2col">
+                                <div class="form-group">
+                                    <label for="setting-resolution">Resolución Stream</label>
+                                    <select id="setting-resolution" class="custom-select">
+                                        <option value="1280x720" selected>1280 x 720 (16:9 HD — Recomendado)</option>
+                                        <option value="960x720">960 x 720 (4:3 Classic)</option>
+                                        <option value="1920x1080">1920 x 1080 (16:9 Full HD)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="select-profile">Perfil Orbita / GoLogin</label>
+                                    <select id="select-profile" class="custom-select">
+                                        <option value="temporary_clean_profile" selected>Perfil Limpio Temporal</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="select-hw-persona">Hardware Persona Spoofing</label>
+                                    <select id="select-hw-persona" class="custom-select" onchange="selectHardwarePersona(this.value)">
+                                        <option value="logitech_c920" selected>Logitech HD Pro Webcam C920 (Menor Riesgo)</option>
+                                        <option value="integrated">Integrated Camera (Laptop OEM)</option>
+                                        <option value="hp_wide">HP Wide Vision HD Camera</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="setting-duration">Duración Bucle</label>
+                                    <select id="setting-duration" class="custom-select">
+                                        <option value="90" selected>90 Segundos</option>
+                                        <option value="45">45 Segundos</option>
+                                        <option value="120">120 Segundos</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </details>
+                </section>
+
             </div>
 
-            <div class="step-item" id="step-btn-2" onclick="switchStep(2)">
-                <div class="step-number">02</div>
-                <div class="step-info">
-                    <span class="step-title">Buffer & Hardware Persona</span>
-                    <span class="step-desc">Síntesis Liveness 3D / DirectML</span>
-                </div>
-                <div class="step-connector"></div>
+            <!-- RIGHT COLUMN: Live Monitor & Telemetry -->
+            <div class="command-column-right">
+
+                <!-- Monitor de Video en Vivo -->
+                <section class="glass-card live-monitor-card">
+                    <div class="card-header">
+                        <div class="header-icon">📹</div>
+                        <div class="header-titles">
+                            <h2>Monitor de Video Transmitido</h2>
+                            <p>Visualización en tiempo real del buffer Y4M inyectado en el navegador.</p>
+                        </div>
+                    </div>
+
+                    <div class="video-preview-wrapper">
+                        <video id="buffer-video-player" class="cyber-player" loop muted autoplay playsinline>
+                            <source id="buffer-video-source" src="" type="video/mp4">
+                            Tu navegador no soporta reproducción de video HTML5.
+                        </video>
+                        <div class="player-hud-overlay">
+                            <div class="hud-tag top-left">
+                                <span class="rec-dot"></span> <span id="hud-status-text">CÁMARA EN ESPERA</span>
+                            </div>
+                            <div class="hud-tag top-right" id="hud-specs">
+                                1280x720 @ 30fps
+                            </div>
+                            <div class="hud-tag bottom-left" id="hud-buffer-name">
+                                buffer_stream.y4m
+                            </div>
+                            <div class="hud-tag bottom-right" id="hud-duration">
+                                YUV420P Native
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DirectShow Virtual Camera Bar -->
+                    <div class="system-vcam-row">
+                        <div class="vcam-meta">
+                            <span class="vcam-title">📡 Cámara Virtual Windows (DirectShow / OBS)</span>
+                            <span class="vcam-sub">Transmite este stream a nivel de sistema para cualquier app externa</span>
+                        </div>
+                        <div class="vcam-controls">
+                            <span class="badge-vcam-status" id="vcam-status-badge">INACTIVO</span>
+                            <button class="btn-vcam-toggle" id="btn-toggle-vcam" onclick="toggleSystemVirtualCam()">
+                                TRANSMITIR
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- KYC Sniffer & Live Terminal -->
+                <section class="glass-card live-telemetry-card">
+                    <div class="card-header">
+                        <div class="header-icon">🛡️</div>
+                        <div class="header-titles">
+                            <h2>Sniffer KYC & Telemetría en Vivo</h2>
+                            <p>Detección automática de SDKs y llamadas a WebRTC / Canvas.</p>
+                        </div>
+                        <button class="btn-clear-logs" onclick="clearTerminalLogs()">Limpiar</button>
+                    </div>
+
+                    <div class="sdk-detectors-badges">
+                        <span class="sdk-pill" id="sdk-incode">Incode</span>
+                        <span class="sdk-pill" id="sdk-veriff">Veriff</span>
+                        <span class="sdk-pill" id="sdk-metamap">MetaMap</span>
+                        <span class="sdk-pill" id="sdk-sumsub">Sumsub</span>
+                        <span class="sdk-pill" id="sdk-onfido">Onfido</span>
+                    </div>
+
+                    <div class="terminal-container">
+                        <div class="terminal-body" id="terminal-body">
+                            <div class="term-line system"><span class="term-time">[00:00:00]</span> Onboarded Engine iniciado y listo para recibir instrucciones.</div>
+                        </div>
+                    </div>
+                </section>
+
             </div>
-
-            <div class="step-item" id="step-btn-3" onclick="switchStep(3)">
-                <div class="step-number">03</div>
-                <div class="step-info">
-                    <span class="step-title">Inyección & Auditoría KYC</span>
-                    <span class="step-desc">Orbita CDP + Sniffer en Vivo</span>
-                </div>
-            </div>
-        </nav>
-
-        <!-- Stepper Content Panels -->
-        <div class="stepper-panels-wrapper">
-
-            <!-- STEP 1: Identidad & Fuente -->
-            <section class="step-panel active" id="step-panel-1">
-                <div class="panel-grid-2col">
-                    
-                    <div class="glass-card">
-                        <div class="card-header">
-                            <div class="header-icon">👤</div>
-                            <div class="header-titles">
-                                <h2>1. Cargar Identidad del Sujeto</h2>
-                                <p>Sube la selfie o fotografía frontal de la identificación oficial (INE / Pasaporte).</p>
-                            </div>
-                        </div>
-
-                        <div class="upload-type-tabs">
-                            <button type="button" class="upload-tab active" id="tab-direct-face" onclick="switchUploadTab('direct')">
-                                <span class="tab-icon">📸</span> Foto de Rostro / Selfie Directa
-                            </button>
-                            <button type="button" class="upload-tab" id="tab-id-card" onclick="switchUploadTab('id_card')">
-                                <span class="tab-icon">🪪</span> Credencial / INE (Auto-Crop + AI HD Enhancer)
-                            </button>
-                        </div>
-
-                        <!-- 1A: Carga Directa de Foto -->
-                        <div class="upload-section-panel active" id="panel-upload-direct">
-                            <div class="dropzone" id="face-dropzone">
-                                <input type="file" id="face-file-input" accept="image/jpeg,image/png,image/webp" style="display: none;">
-                                <div class="dropzone-content" id="dropzone-idle">
-                                    <div class="upload-icon-anim">📸</div>
-                                    <p class="drop-title">Arrastra la foto de rostro aquí o <span class="browse-link">examinar archivo</span></p>
-                                    <span class="drop-hint">Formatos soportados: JPG, PNG, WEBP (Alta resolución recomendada)</span>
-                                </div>
-                                <div class="dropzone-preview" id="face-preview-container" style="display: none;">
-                                    <img id="face-preview-img" src="" alt="Vista previa de rostro">
-                                    <div class="preview-overlay">
-                                        <span class="file-name-tag" id="face-file-name">foto.jpg</span>
-                                        <button class="btn-change-file" onclick="triggerFileInput('face-file-input', event)">Cambiar Foto</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 1B: Carga de Credencial / INE con Extracción y Super-Resolución -->
-                        <div class="upload-section-panel" id="panel-upload-id" style="display: none;">
-                            <div class="dropzone id-dropzone" id="id-dropzone" onclick="triggerFileInput('id-file-input')">
-                                <input type="file" id="id-file-input" accept="image/jpeg,image/png,image/webp" style="display: none;">
-                                <div class="dropzone-content" id="id-dropzone-idle">
-                                    <div class="upload-icon-anim">🪪</div>
-                                    <p class="drop-title">Arrastra la imagen de la Credencial / INE o <span class="browse-link">examinar archivo</span></p>
-                                    <span class="drop-hint">La IA detectará automáticamente la foto tamaño credencial y la restaurará en Super-Resolución HD</span>
-                                </div>
-                            </div>
-
-                            <div class="id-extraction-results" id="id-extraction-results" style="display: none;">
-                                <div class="extraction-cards-grid">
-                                    <div class="extract-card">
-                                        <span class="extract-card-title">1. Recorte Original de INE</span>
-                                        <div class="extract-img-wrap">
-                                            <img id="id-crop-preview" src="" alt="Recorte INE">
-                                        </div>
-                                        <span class="extract-tag low-res" id="id-crop-dim">Original</span>
-                                    </div>
-
-                                    <div class="extract-divider">
-                                        <span class="divider-arrow">➡️</span>
-                                        <span class="ai-badge-pulse">GFPGAN AI</span>
-                                    </div>
-
-                                    <div class="extract-card highlight">
-                                        <span class="extract-card-title">2. ✨ Rostro Restaurado en HD</span>
-                                        <div class="extract-img-wrap">
-                                            <img id="id-enhanced-preview" src="" alt="Rostro HD Restaurado">
-                                        </div>
-                                        <span class="extract-tag hd-res" id="id-enhanced-dim">1024x1024 HD</span>
-                                    </div>
-                                </div>
-                                <div class="id-action-bar">
-                                    <span class="id-status-badge text-green">✔️ Rostro extraído y cargado como fuente activa</span>
-                                    <button class="btn-change-file" onclick="triggerFileInput('id-file-input', event)">Subir Otra Credencial</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="mode-selector-wrapper">
-                            <label class="section-label">Selecciona el Modo de Inyección & Generación:</label>
-                            <div class="mode-toggle-group three-cols">
-                                <label class="mode-card active" id="mode-opt-synthetic">
-                                    <input type="radio" name="generation-mode" value="synthetic" checked onchange="toggleGenMode('synthetic')">
-                                    <div class="mode-card-content">
-                                        <div class="mode-badge-rec">RECOMENDADO RÁPIDO</div>
-                                        <div class="mode-card-title">✨ Liveness Sintético 3D</div>
-                                        <p class="mode-card-desc">1 Sola Foto: Genera 90s con micro-movimiento senoidal armónico (respiración/pulso), micro-luz y ruido CMOS analógico.</p>
-                                    </div>
-                                </label>
-
-                                <label class="mode-card" id="mode-opt-swap">
-                                    <input type="radio" name="generation-mode" value="swap" onchange="toggleGenMode('swap')">
-                                    <div class="mode-card-content">
-                                        <div class="mode-badge-pro">DIRECTML PRO</div>
-                                        <div class="mode-card-title">🎭 Deep-Live Video Pregrabado</div>
-                                        <p class="mode-card-desc">Foto + Video Base: Procesa Face Swap cuadro por cuadro sobre un video pregrabado con gestos (AMD RX 580).</p>
-                                    </div>
-                                </label>
-
-                                <label class="mode-card" id="mode-opt-livecam">
-                                    <input type="radio" name="generation-mode" value="livecam" onchange="toggleGenMode('livecam')">
-                                    <div class="mode-card-content">
-                                        <div class="mode-badge-live">TIEMPO REAL</div>
-                                        <div class="mode-card-title">📹 Deep-Live Live Webcam</div>
-                                        <p class="mode-card-desc">Foto + Webcam en Vivo: Abre el motor en tiempo real para gesticular frente a tu cámara física con swap por GPU.</p>
-                                    </div>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="target-video-box" id="target-video-box" style="display: none;">
-                            <label class="section-label">Video Base Objetivo con Gestos (Target):</label>
-                            
-                            <div class="preset-videos-grid" id="preset-videos-container">
-                                <div class="preset-chip active" id="preset-chip-clean" onclick="selectPresetVideo('female_clean_kyc_base.mp4', 'data/presets/female_clean_kyc_base.mp4')">
-                                    <span class="preset-icon">👩</span>
-                                    <div class="preset-meta">
-                                        <span class="preset-name">Base Femenina Limpia HD</span>
-                                        <span class="preset-sub">Sin lentes · Parpadeo · Respiración natural</span>
-                                    </div>
-                                    <span class="preset-badge">PRESET</span>
-                                </div>
-                                <div class="preset-chip" id="preset-chip-alt" onclick="selectPresetVideo('female_driving_alt.mp4', 'data/presets/female_driving_alt.mp4')">
-                                    <span class="preset-icon">🎬</span>
-                                    <div class="preset-meta">
-                                        <span class="preset-name">Base Alternativa KYC</span>
-                                        <span class="preset-sub">Movimiento 3D · Enfoque frontal</span>
-                                    </div>
-                                    <span class="preset-badge">PRESET</span>
-                                </div>
-                            </div>
-
-                            <label class="section-label-sub">O sube tu propio video base:</label>
-                            <div class="mini-dropzone" id="target-dropzone" onclick="triggerFileInput('target-file-input')">
-                                <input type="file" id="target-file-input" accept="video/mp4,video/mov,video/webm" style="display: none;">
-                                <div class="mini-drop-content">
-                                    <span class="mini-icon">📁</span>
-                                    <span class="mini-text" id="target-file-name">Subir video personalizado (.mp4, .webm)</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="livecam-action-box" id="livecam-action-box" style="display: none;">
-                            <label class="section-label">Captura en Vivo con Webcam Física (Deep-Live-Cam DirectML):</label>
-                            <div class="livecam-inner-card">
-                                <div class="livecam-info">
-                                    <span class="livecam-badge">AMD RX 580 DML READY</span>
-                                    <p>Esta opción abre la ventana interactiva de Deep-Live-Cam conectada a tu webcam física. Tu rostro será reemplazado en tiempo real mientras hablas o te mueves.</p>
-                                </div>
-                                <button class="btn-livecam-launch" type="button" onclick="launchLiveWebcamWindow()">
-                                    <span class="btn-icon">⚡</span> ABRIR DEEP-LIVE-CAM EN VIVO CON WEBCAM
-                                </button>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="glass-card">
-                        <div class="card-header">
-                            <div class="header-icon">⚙️</div>
-                            <div class="header-titles">
-                                <h2>Parámetros del Buffer de Cámara</h2>
-                                <p>Configura las especificaciones del stream Y4M para cumplir los requisitos de WebRTC.</p>
-                            </div>
-                        </div>
-
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label for="setting-resolution">Resolución & Relación de Aspecto</label>
-                                <select id="setting-resolution" class="custom-select">
-                                    <option value="1280x720" selected>1280 x 720 (16:9 HD — Estándar Webcams)</option>
-                                    <option value="960x720">960 x 720 (4:3 Classic — Ideal Foto INE / Pasaporte)</option>
-                                    <option value="1920x1080">1920 x 1080 (16:9 Full HD)</option>
-                                    <option value="720x1280">720 x 1280 (9:16 Vertical Mobile)</option>
-                                    <option value="640x480">640 x 480 (4:3 VGA Standard)</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="setting-framing">Modo de Encuadre de la Captura</label>
-                                <select id="setting-framing" class="custom-select">
-                                    <option value="fill_crop" selected>Llenar Sensor & Auto-Centrado (Recomendado — Sin barras negras, encuadre 100% natural)</option>
-                                    <option value="fit_pad">Ajustar con Padding Centrado (Mantiene imagen original completa)</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="setting-duration">Duración del Bucle Continuo</label>
-                                <select id="setting-duration" class="custom-select">
-                                    <option value="90" selected>90 Segundos (Bucle Ping-Pong Extendido)</option>
-                                    <option value="120">120 Segundos (Auditoría Larga)</option>
-                                    <option value="45">45 Segundos (Prueba Rápida)</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="setting-fps">Tasa de Cuadros (FPS)</label>
-                                <select id="setting-fps" class="custom-select">
-                                    <option value="30" selected>30 FPS (Nativo WebRTC)</option>
-                                    <option value="25">25 FPS (Estándar PAL)</option>
-                                    <option value="60">60 FPS (Ultra Fluido)</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group" style="grid-column: 1 / -1;">
-                                <label>Protección de Sensor Físico</label>
-                                <div class="checkbox-pill-group">
-                                    <label class="custom-checkbox">
-                                        <input type="checkbox" id="chk-cmos-noise" checked>
-                                        <span class="checkmark"></span>
-                                        <span>Ruido Térmico CMOS Analógico</span>
-                                    </label>
-                                    <label class="custom-checkbox">
-                                        <input type="checkbox" id="chk-exposure-drift" checked>
-                                        <span class="checkmark"></span>
-                                        <span>Micro-variación de Auto-Exposición UVC</span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="action-footer">
-                            <button class="btn-primary-glow full-width" id="btn-process-stage1" onclick="processStage1()">
-                                <span class="btn-icon">⚡</span> GENERAR BUFFER & DEJAR CÁMARA ARMADA
-                            </button>
-                        </div>
-
-                        <div class="progress-container" id="stage1-progress" style="display: none;">
-                            <div class="progress-bar-track">
-                                <div class="progress-bar-fill indeterminate"></div>
-                            </div>
-                            <div class="progress-status-text" id="stage1-status-text">Sintetizando micro-movimiento y generando buffer Y4M...</div>
-                        </div>
-
-                    </div>
-
-                </div>
-            </section>
-
-            <!-- STEP 2: Buffer de Cámara & Hardware Persona -->
-            <section class="step-panel" id="step-panel-2">
-                <div class="panel-grid-2col">
-
-                    <div class="glass-card">
-                        <div class="card-header">
-                            <div class="header-icon">📹</div>
-                            <div class="header-titles">
-                                <h2>2. Monitor de Cámara Virtual en Vivo</h2>
-                                <p>Inspecciona la fluidez, resolución y naturalidad del stream antes de la inyección.</p>
-                            </div>
-                        </div>
-
-                        <div class="video-preview-wrapper">
-                            <video id="buffer-video-player" class="cyber-player" loop muted autoplay playsinline>
-                                <source id="buffer-video-source" src="" type="video/mp4">
-                                Tu navegador no soporta reproducción de video HTML5.
-                            </video>
-                            <div class="player-hud-overlay">
-                                <div class="hud-tag top-left">
-                                    <span class="rec-dot"></span> CÁMARA LISTA & ARMADA
-                                </div>
-                                <div class="hud-tag top-right" id="hud-specs">
-                                    1280x720 @ 30fps
-                                </div>
-                                <div class="hud-tag bottom-left" id="hud-buffer-name">
-                                    stream_active.y4m
-                                </div>
-                                <div class="hud-tag bottom-right" id="hud-duration">
-                                    90s Loop Ready
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="preview-metrics-row">
-                            <div class="metric-item">
-                                <span class="metric-label">Espacio de Color</span>
-                                <span class="metric-val">YUV420P (Chromium Native)</span>
-                            </div>
-                            <div class="metric-item">
-                                <span class="metric-label">Liveness Status</span>
-                                <span class="metric-val text-green">Activo (Micro-Drift OK)</span>
-                            </div>
-                            <div class="metric-item">
-                                <span class="metric-label">Encuadre Sensor</span>
-                                <span class="metric-val text-cyan" id="metric-framing-val">Sensor Real (Fill Crop)</span>
-                            </div>
-                        </div>
-
-                        <!-- Panel de Control de Cámara Virtual DirectShow del Sistema -->
-                        <div class="system-vcam-card" style="margin-top: 16px; background: rgba(0, 240, 144, 0.05); border: 1px solid rgba(0, 240, 144, 0.2); border-radius: 10px; padding: 14px;">
-                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-                                <div style="display: flex; align-items: center; gap: 8px;">
-                                    <span style="font-size: 1.2rem;">📡</span>
-                                    <div>
-                                        <strong style="color: #f0f6fc; font-size: 0.9rem;">Cámara Virtual del Sistema (OBS / DirectShow)</strong>
-                                        <div style="font-size: 0.75rem; color: #8b949e;">Transmite este video a nivel de Windows para cualquier app/navegador</div>
-                                    </div>
-                                </div>
-                                <span class="badge-vcam-status" id="vcam-status-badge" style="font-size: 0.72rem; padding: 3px 8px; border-radius: 12px; font-weight: 700; background: rgba(255,255,255,0.08); color: #8b949e;">INACTIVO</span>
-                            </div>
-                            <div style="display: flex; gap: 10px; margin-top: 10px;">
-                                <button class="btn-vcam-toggle" id="btn-toggle-vcam" onclick="toggleSystemVirtualCam()" style="flex: 1; padding: 8px 14px; background: #00f090; color: #06090e; font-weight: 700; border: none; border-radius: 6px; cursor: pointer;">
-                                    📡 TRANSMITIR A CÁMARA DEL SISTEMA
-                                </button>
-                                <a href="/static/test_cam.html" target="_blank" style="padding: 8px 14px; background: #161b22; color: #f0f6fc; border: 1px solid #30363d; border-radius: 6px; text-decoration: none; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 6px;">
-                                    👁️ Abrir Monitor
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="glass-card">
-                        <div class="card-header">
-                            <div class="header-icon">🛡️</div>
-                            <div class="header-titles">
-                                <h2>Identidad de Hardware (Camera Spoofing)</h2>
-                                <p>Selecciona el perfil de hardware UVC que el navegador reportará a las páginas web.</p>
-                            </div>
-                        </div>
-
-                        <div class="hardware-cards-list">
-                            <label class="hw-persona-card active" id="hw-opt-c920">
-                                <input type="radio" name="hw-persona" value="logitech_c920" checked onchange="selectHardwarePersona('logitech_c920')">
-                                <div class="hw-persona-content">
-                                    <div class="hw-icon">📹</div>
-                                    <div class="hw-details">
-                                        <span class="hw-title">Logitech HD Pro Webcam C920</span>
-                                        <span class="hw-specs">VID: 046D | PID: 082D | DirectShow + MediaFoundation</span>
-                                        <span class="hw-tag">La cámara más común y de menor scoring de riesgo en KYC</span>
-                                    </div>
-                                </div>
-                            </label>
-
-                            <label class="hw-persona-card" id="hw-opt-integrated">
-                                <input type="radio" name="hw-persona" value="integrated" onchange="selectHardwarePersona('integrated')">
-                                <div class="hw-persona-content">
-                                    <div class="hw-icon">💻</div>
-                                    <div class="hw-details">
-                                        <span class="hw-title">Integrated Camera (04f2:b614)</span>
-                                        <span class="hw-specs">Chicony OEM Built-in | Front-facing User Cam</span>
-                                        <span class="hw-tag">Ideal para perfiles de laptops Windows 10/11</span>
-                                    </div>
-                                </div>
-                            </label>
-
-                            <label class="hw-persona-card" id="hw-opt-hpwide">
-                                <input type="radio" name="hw-persona" value="hp_wide" onchange="selectHardwarePersona('hp_wide')">
-                                <div class="hw-persona-content">
-                                    <div class="hw-icon">🎥</div>
-                                    <div class="hw-details">
-                                        <span class="hw-title">HP Wide Vision HD Camera</span>
-                                        <span class="hw-specs">Realtek UVC HD | VID: 05C8 | PID: 03A2</span>
-                                        <span class="hw-tag">Emulación nativa de equipos HP Pavilion / Envy</span>
-                                    </div>
-                                </div>
-                            </label>
-                        </div>
-
-                        <div class="action-footer step-actions-split">
-                            <button class="btn-secondary" onclick="switchStep(1)">⬅️ Volver</button>
-                            <button class="btn-primary-glow" onclick="switchStep(3)">
-                                PASAR A INYECCIÓN Y AUDITORÍA ➡️
-                            </button>
-                        </div>
-                    </div>
-
-                </div>
-            </section>
-
-            <!-- STEP 3: Inyección en Orbita & Auditoría KYC -->
-            <section class="step-panel" id="step-panel-3">
-                <div class="panel-grid-2col">
-
-                    <div class="glass-card">
-                        <div class="card-header">
-                            <div class="header-icon">🚀</div>
-                            <div class="header-titles">
-                                <h2>3. Abrir Navegador con Cámara Armada</h2>
-                                <p>El navegador se abre con el stream inyectado a nivel de sistema. Listo para cualquier URL de selfie o formulario.</p>
-                            </div>
-                        </div>
-
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label for="select-profile">Perfil de GoLogin / Orbita</label>
-                                <select id="select-profile" class="custom-select">
-                                    <option value="temporary_clean_profile" selected>Perfil Limpio Temporal (Recomendado)</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="target-url-input">URL Inicial (Opcional — Puedes dejarlo en blanco o pegar cualquier URL)</label>
-                                <div class="url-input-wrapper">
-                                    <input type="text" id="target-url-input" class="custom-input" value="about:blank" placeholder="about:blank o pega cualquier enlace de selfie/onboarding">
-                                </div>
-                                <div class="url-presets-row">
-                                    <span class="preset-label">Presets Rápidos:</span>
-                                    <button class="btn-preset-chip" onclick="setUrlPreset('about:blank')">En Blanco (about:blank)</button>
-                                    <button class="btn-preset-chip" onclick="setUrlPreset('https://webcamtests.com/')">WebcamTests.com (Probar)</button>
-                                    <button class="btn-preset-chip" onclick="setUrlPreset('https://webcam-test.com/')">Webcam-Test</button>
-                                </div>
-                            </div>
-
-                            <div class="stealth-features-box">
-                                <div class="stealth-title">🛡️ Escudos Stealth & Inyección Activa:</div>
-                                <ul class="stealth-list">
-                                    <li>✔️ <strong>Cámara Armada en Background:</strong> Lista para activarse en cuanto cualquier página pida video.</li>
-                                    <li>✔️ <strong>Encuadre & Aspect Ratio Óptimos:</strong> Sin deformación facial ni franjas negras.</li>
-                                    <li>✔️ <strong>WebRTC Constraint Adapter:</strong> Previene <code>OverconstrainedError</code>.</li>
-                                    <li>✔️ <strong>Background Anti-Throttling:</strong> 30 FPS constantes en segundo plano.</li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <div class="action-footer">
-                            <button class="btn-launch-glow full-width" id="btn-launch-browser" onclick="launchBrowserInjection()">
-                                <span class="btn-icon">🌐</span> ABRIR NAVEGADOR CON CÁMARA ARMADA
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="glass-card">
-                        <div class="card-header">
-                            <div class="header-icon">📡</div>
-                            <div class="header-titles">
-                                <h2>HUD de Telemetría Biométrica en Vivo</h2>
-                                <p>Diagnóstico en tiempo real de SDKs, llamadas WebRTC y capturas de Canvas.</p>
-                            </div>
-                        </div>
-
-                        <div class="sdk-detector-box">
-                            <label class="section-label">SDKs KYC Monitoreados:</label>
-                            <div class="sdk-badges-grid">
-                                <div class="sdk-badge" id="sdk-incode">
-                                    <span class="sdk-icon">🔍</span>
-                                    <span class="sdk-name">Incode</span>
-                                </div>
-                                <div class="sdk-badge" id="sdk-veriff">
-                                    <span class="sdk-icon">🔍</span>
-                                    <span class="sdk-name">Veriff</span>
-                                </div>
-                                <div class="sdk-badge" id="sdk-truora">
-                                    <span class="sdk-icon">🔍</span>
-                                    <span class="sdk-name">Truora</span>
-                                </div>
-                                <div class="sdk-badge" id="sdk-metamap">
-                                    <span class="sdk-icon">🔍</span>
-                                    <span class="sdk-name">MetaMap / Mati</span>
-                                </div>
-                                <div class="sdk-badge" id="sdk-jumio">
-                                    <span class="sdk-icon">🔍</span>
-                                    <span class="sdk-name">Jumio</span>
-                                </div>
-                                <div class="sdk-badge" id="sdk-sumsub">
-                                    <span class="sdk-icon">🔍</span>
-                                    <span class="sdk-name">Sumsub</span>
-                                </div>
-                                <div class="sdk-badge" id="sdk-onfido">
-                                    <span class="sdk-icon">🔍</span>
-                                    <span class="sdk-name">Onfido</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="telemetry-feed-box">
-                            <label class="section-label">Registro de Eventos Biométricos Interceptados:</label>
-                            <div class="events-scroll-container" id="telemetry-events-list">
-                                <div class="empty-event-hint">Esperando inicio de sesión de navegación para interceptar eventos de WebRTC y Canvas...</div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                </div>
-            </section>
 
         </div>
-
-        <!-- Embedded Live Terminal Console -->
-        <section class="studio-terminal-section glass-card">
-            <div class="terminal-header">
-                <div class="terminal-title">
-                    <span class="terminal-icon">💻</span>
-                    <span>ONBOARDED TERMINAL LOG (DirectML × WebSockets × CDP)</span>
-                </div>
-                <div class="terminal-actions">
-                    <button class="btn-term-action" onclick="clearTerminalLogs()">Limpiar</button>
-                </div>
-            </div>
-            <div class="terminal-body" id="terminal-body">
-                <div class="term-line info"><span class="term-time">[00:00:00]</span> Onboarded v1.0 inicializado. Listo para operar.</div>
-            </div>
-        </section>
 
     </main>
 
