@@ -1,10 +1,9 @@
 @echo off
-title ONBOARDED — Media Injector & KYC Auditor
-chcp 65001 >nul
-cd /d "%~dp0"
+title ONBOARDED - Media Injector and KYC Auditor
+pushd "%~dp0"
 
 echo ======================================================================
-echo  👁️ ONBOARDED — SUITE DE INYECCIÓN BIOMÉTRICA & AUDITORÍA KYC
+echo  ONBOARDED - SUITE DE INYECCION BIOMETRICA Y AUDITORIA KYC
 echo  DirectML AMD RX 580 + WebRTC Stealth Spoofing + Sniffer en Vivo
 echo ======================================================================
 echo.
@@ -17,3 +16,5 @@ if %ERRORLEVEL% NEQ 0 (
     echo [!] Se detecto un error al ejecutar Onboarded.
     pause
 )
+
+popd
