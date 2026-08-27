@@ -22,15 +22,12 @@
 
 ## 🛠️ ESTADO DEL SISTEMA (AL CIERRE)
 
+- **Pipeline Forense de Restauración Completado:** `match_color_lab()` (transferencia LAB), `feather_blend_face()` (fusión elíptica 30px) y `verify_arcface_similarity()` (`w600k_r50.onnx`) implementados y probados en `src/extract_id_engine.py`.
+- **Badge Biométrico ArcFace en UI:** Integrado dinámicamente en el Paso 1 de KCKY Studio (`static/index.html` y `static/app.js`).
 - **Ventana Nativa Independiente:** KCKY Studio abre en ventana de escritorio aislada (`--app=http://127.0.0.1:8765`), sin pestañas de navegador ni mezclas con sesiones personales.
 - **Higiene de Procesos Blindada:** Hooks automáticos de ciclo de vida (`atexit` y `@app.on_event("shutdown")`) y `try/finally` para matar subprocesos y liberar VRAM/CPU al milisegundo.
-- **SmartPlan de Restauración Forense:** Documentado y estructurado en `implementation_plan.md`.
 
 ---
 
-## 🎯 ACCIÓN DICTADA AL ABRIR CON PUNTO (`.`)
-
-> **EJECUTAR DIRECTO:** Implementar el pipeline forense en `src/extract_id_engine.py`:
-> 1. Función `match_color_lab()` (transferencia de color e iluminación).
-> 2. Función `feather_blend_face()` (máscara elíptica feather 30px).
-> 3. Función `verify_arcface_similarity()` con `w600k_r50.onnx` y badge en tiempo real en la UI del Paso 1.
+## 🎯 SIGUIENTE ACCIÓN OPERATIVA
+> **Pruebas End-to-End en Vivo:** Iniciar KCKY Studio con `Iniciar_KYC_Studio.bat` o `python run.py`, cargar una credencial de prueba y verificar la transmisión fluida en la cámara virtual OBS/DirectShow.

@@ -7,6 +7,7 @@ import os
 import sys
 import webbrowser
 from pathlib import Path
+from typing import Optional
 
 # Agregar directorio actual al sys.path
 BASE_DIR = Path(__file__).resolve().parent

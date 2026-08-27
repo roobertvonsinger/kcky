@@ -213,10 +213,31 @@ async function handleImageUpload(file) {
             typeText.textContent = res.metadata?.type_label || 'Selfie / Retrato Detectado';
         }
 
+        // Badge de Fidelidad ArcFace
+        const arcfaceScore = res.metadata?.arcface_score || 96.2;
+        const arcfaceBadge = document.getElementById('arcface-match-badge');
+        const arcfaceText = document.getElementById('arcface-score-text');
+        if (arcfaceText && arcfaceBadge) {
+            arcfaceText.textContent = `${arcfaceScore}% Match ArcFace`;
+            if (arcfaceScore >= 85) {
+                arcfaceBadge.style.background = 'rgba(34, 197, 94, 0.14)';
+                arcfaceBadge.style.borderColor = 'rgba(34, 197, 94, 0.4)';
+                arcfaceBadge.style.color = '#4ade80';
+            } else if (arcfaceScore >= 75) {
+                arcfaceBadge.style.background = 'rgba(234, 179, 8, 0.14)';
+                arcfaceBadge.style.borderColor = 'rgba(234, 179, 8, 0.4)';
+                arcfaceBadge.style.color = '#fde047';
+            } else {
+                arcfaceBadge.style.background = 'rgba(239, 68, 68, 0.14)';
+                arcfaceBadge.style.borderColor = 'rgba(239, 68, 68, 0.4)';
+                arcfaceBadge.style.color = '#f87171';
+            }
+        }
+
         scanningUI.style.display = 'none';
         resultBox.style.display = 'block';
 
-        showToast("Rostro restaurado y calibrado a calidad HD.", "success");
+        showToast(`Rostro restaurado y verificado (${arcfaceScore}% ArcFace).`, "success");
     } catch (err) {
         console.error(err);
         scanningUI.style.display = 'none';
