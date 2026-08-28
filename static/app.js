@@ -469,14 +469,20 @@ async function handleCustomVideoUpload(event) {
 }
 
 /* ==========================================================================
-   PASO 3: GENERACIÓN Y SALIDA CON TELEMETRÍA EN VIVO
+   PASO 3: GENERACIÓN Y SALIDA CON TELEMETRÍA EN VIVO (3 ACCIONES)
    ========================================================================== */
-async function startGenerationAndGoStep3() {
+Studio.currentActionMode = 'generate_only';
+
+async function startGenerationAndGoStep3(actionMode = 'generate_only') {
+    Studio.currentActionMode = actionMode;
     goToStep(3);
 
     const progressLayer = document.getElementById('monitor-progress-layer');
     const hudBadge = document.getElementById('hud-status-badge');
     const downloadBtn = document.getElementById('btn-download-video');
+    const bmxCard = document.getElementById('bmx-selfie-modal-card');
+
+    if (bmxCard) bmxCard.style.display = 'none';
 
     progressLayer.style.display = 'flex';
     hudBadge.textContent = 'GENERANDO BUFFER';
@@ -485,9 +491,15 @@ async function startGenerationAndGoStep3() {
     // Iniciar polling de respaldo por si el WS se atrasa
     startProgressPolling();
 
+    const modeLabels = {
+        'generate_only': 'Iniciando generación de video en DirectML...',
+        'create_bmx': '⚡ Iniciando GPU + Creación BetMexico en 2do plano...',
+        'verify_bmx': '🪪 Preparando flujo de verificación BetMexico...'
+    };
+
     handleRenderProgress({
         percent: 4,
-        status_text: "Iniciando procesamiento DirectML...",
+        status_text: modeLabels[actionMode] || "Iniciando procesamiento DirectML...",
         current_frame: 0,
         total_frames: 0,
         eta_text: "Iniciando..."
@@ -500,6 +512,7 @@ async function startGenerationAndGoStep3() {
         formData.append('height', 720);
         formData.append('fps', 30);
         formData.append('framing_mode', 'fill_crop');
+        formData.append('action_mode', actionMode);
 
         let endpoint = '/api/generate-liveness';
         if (Studio.generationMode === 'synthetic') {
@@ -534,7 +547,16 @@ async function startGenerationAndGoStep3() {
         setTimeout(() => {
             progressLayer.style.display = 'none';
             hudBadge.textContent = 'CÁMARA ACTIVA';
-            showToast("✨ Flujo de cámara generado con éxito.", "success");
+            
+            if (actionMode === 'create_bmx' && bmxCard) {
+                bmxCard.style.display = 'block';
+                showToast("👑 Cuenta BMX lista. Elige modo de verificación abajo.", "success");
+            } else if (actionMode === 'verify_bmx') {
+                showToast("🪪 Buffer listo. Abriendo navegador para verificación...", "success");
+                launchBrowserFlow();
+            } else {
+                showToast("✨ Flujo de video generado con éxito.", "success");
+            }
         }, 500);
 
     } catch (err) {
@@ -545,6 +567,31 @@ async function startGenerationAndGoStep3() {
     } finally {
         Studio.isGenerating = false;
         stopProgressPolling();
+    }
+}
+
+async function handleBMXChoice(mode) {
+    const bmxCard = document.getElementById('bmx-selfie-modal-card');
+    if (bmxCard) bmxCard.style.display = 'none';
+
+    if (mode === 'manual') {
+        showToast("🖱️ Abriendo navegador en pantalla física para control manual...", "info");
+        await launchBrowserFlow();
+    } else {
+        showToast("⚡ Disparando verificación automática con subida de INE...", "info");
+        try {
+            if (Studio.activeIdentityId) {
+                const res = await safeFetchJson(`/api/identities/${Studio.activeIdentityId}/inject-documents-cdp`, {
+                    method: 'POST'
+                });
+                showToast("🎉 Documentos inyectados automáticamente con éxito.", "success");
+            } else {
+                await launchBrowserFlow();
+            }
+        } catch (e) {
+            // Fallback al navegador si no hay CDP directo listo
+            await launchBrowserFlow();
+        }
     }
 }
 

@@ -176,13 +176,37 @@
 
                 </div>
 
-                <!-- Botones de Navegación en Hotzone -->
-                <div class="hotzone-bottom row-gap">
-                    <button type="button" class="btn-action-secondary" onclick="goToStep(1)">← Volver</button>
-                    <button type="button" class="btn-action-primary flex-1" id="btn-generate-motion" onclick="startGenerationAndGoStep3()">
-                        <span>Generar Flujo</span>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                <!-- Selector de Acción de Flujo (3 Botones Claros) -->
+                <div class="action-modes-grid">
+                    <button type="button" class="btn-flow-action mode-video" id="btn-action-gen-video" onclick="startGenerationAndGoStep3('generate_only')">
+                        <span class="flow-icon">🎬</span>
+                        <div class="flow-texts">
+                            <span class="flow-title">Generar Video</span>
+                            <span class="flow-sub">Solo síntesis GPU & Buffer</span>
+                        </div>
                     </button>
+                    
+                    <button type="button" class="btn-flow-action mode-bmx" id="btn-action-create-bmx" onclick="startGenerationAndGoStep3('create_bmx')">
+                        <span class="flow-icon">👑</span>
+                        <div class="flow-texts">
+                            <span class="flow-title">Crear BMX</span>
+                            <span class="flow-sub">GPU + Registro 2do Plano</span>
+                        </div>
+                        <span class="flow-tag">AUTO</span>
+                    </button>
+
+                    <button type="button" class="btn-flow-action mode-verify" id="btn-action-verify-bmx" onclick="startGenerationAndGoStep3('verify_bmx')">
+                        <span class="flow-icon">🪪</span>
+                        <div class="flow-texts">
+                            <span class="flow-title">Verificar BMX</span>
+                            <span class="flow-sub">Inyectar en cuenta existente</span>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- Botones de Navegación en Hotzone -->
+                <div class="hotzone-bottom">
+                    <button type="button" class="btn-action-secondary" style="width: 100%;" onclick="goToStep(1)">← Volver a Identidad</button>
                 </div>
             </section>
 
@@ -243,6 +267,31 @@
                             </div>
                         </div>
 
+                    </div>
+                </div>
+
+                <!-- Tarjeta de Confirmación BMX (Manual vs Auto) -->
+                <div class="bmx-selfie-modal-card" id="bmx-selfie-modal-card" style="display: none;">
+                    <div class="bmx-modal-header">
+                        <span class="bmx-badge-pill">👑 BETMEXICO LISTO</span>
+                        <div class="bmx-modal-title">¿Cómo deseas completar la verificación?</div>
+                        <div class="bmx-modal-desc">El formulario de registro y el buffer de video están listos. Elige tu modo de ejecución:</div>
+                    </div>
+                    <div class="bmx-modal-actions-row">
+                        <button type="button" class="btn-bmx-choice manual" onclick="handleBMXChoice('manual')">
+                            <span class="choice-emoji">🖱️</span>
+                            <div class="choice-text-stack">
+                                <strong>Modo Manual</strong>
+                                <small>Abre Chrome en pantalla física</small>
+                            </div>
+                        </button>
+                        <button type="button" class="btn-bmx-choice auto" onclick="handleBMXChoice('auto')">
+                            <span class="choice-emoji">⚡</span>
+                            <div class="choice-text-stack">
+                                <strong>Modo Automático</strong>
+                                <small>Disparo selfie + Subida de INE</small>
+                            </div>
+                        </button>
                     </div>
                 </div>
 

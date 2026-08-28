@@ -1255,6 +1255,195 @@ body.theme-monochrome {
 }
 
 /* ==========================================================================
+   REJILLA DE ACCIONES DE FLUJO (3 BOTONES DE ACCIÓN EXPLÍCITA)
+   ========================================================================== */
+.action-modes-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+    margin-bottom: 12px;
+}
+
+.btn-flow-action {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-md);
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    text-align: left;
+    position: relative;
+    transition: var(--transition-smooth);
+    font-family: var(--font-main);
+    color: var(--text-pure);
+}
+
+.btn-flow-action:hover {
+    border-color: var(--border-focus);
+    background: var(--bg-surface-elevated);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+.btn-flow-action:active {
+    transform: scale(0.98);
+}
+
+.btn-flow-action .flow-icon {
+    font-size: 1.3rem;
+    flex-shrink: 0;
+}
+
+.btn-flow-action .flow-texts {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+}
+
+.btn-flow-action .flow-title {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--text-pure);
+}
+
+.btn-flow-action .flow-sub {
+    font-size: 0.68rem;
+    color: var(--text-secondary);
+}
+
+/* Estilo destacado para Crear BMX */
+.btn-flow-action.mode-bmx {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+.btn-flow-action.mode-bmx:hover {
+    border-color: #ffffff;
+    box-shadow: 0 0 16px rgba(255, 255, 255, 0.12);
+}
+
+.btn-flow-action .flow-tag {
+    font-size: 0.55rem;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    padding: 2px 6px;
+    border-radius: var(--radius-full);
+    background: var(--text-pure);
+    color: #000;
+    margin-left: auto;
+}
+
+/* ==========================================================================
+   TARJETA MODAL DE ELECCIÓN BMX (MANUAL VS AUTO)
+   ========================================================================== */
+.bmx-selfie-modal-card {
+    background: rgba(20, 20, 26, 0.95);
+    border: 1.5px solid rgba(255, 255, 255, 0.25);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+    margin-top: 14px;
+    margin-bottom: 12px;
+    backdrop-filter: blur(16px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7);
+    animation: toastIn 0.25s var(--ease-spring);
+}
+
+.bmx-modal-header {
+    margin-bottom: 12px;
+}
+
+.bmx-badge-pill {
+    display: inline-block;
+    font-size: 0.6rem;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+    background: #ffffff;
+    color: #000000;
+    margin-bottom: 6px;
+}
+
+.bmx-modal-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-pure);
+    margin-bottom: 4px;
+}
+
+.bmx-modal-desc {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    line-height: 1.35;
+}
+
+.bmx-modal-actions-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.btn-bmx-choice {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-hairline);
+    border-radius: var(--radius-md);
+    padding: 12px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 6px;
+    cursor: pointer;
+    font-family: var(--font-main);
+    color: var(--text-pure);
+    transition: var(--transition-smooth);
+}
+
+.btn-bmx-choice:hover {
+    background: var(--bg-surface-elevated);
+    border-color: var(--text-pure);
+    transform: translateY(-2px);
+}
+
+.btn-bmx-choice.auto {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.btn-bmx-choice.auto:hover {
+    background: #ffffff;
+    color: #000000;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+.btn-bmx-choice.auto:hover strong,
+.btn-bmx-choice.auto:hover small {
+    color: #000000;
+}
+
+.btn-bmx-choice .choice-emoji {
+    font-size: 1.4rem;
+}
+
+.btn-bmx-choice .choice-text-stack strong {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: inherit;
+}
+
+.btn-bmx-choice .choice-text-stack small {
+    display: block;
+    font-size: 0.62rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+/* ==========================================================================
    TOAST NOTIFICATIONS (Monocromático Limpio)
    ========================================================================== */
 .toast-container {

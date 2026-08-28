@@ -651,7 +651,8 @@ async def api_process_swap(
     width: int = Form(1280),
     height: int = Form(720),
     fps: int = Form(30),
-    framing_mode: str = Form("fill_crop")
+    framing_mode: str = Form("fill_crop"),
+    action_mode: str = Form("generate_only")  # "generate_only" | "create_bmx" | "verify_bmx"
 ):
     resolved_face = resolve_media_path(source_face_path)
     if not resolved_face or not os.path.exists(resolved_face):
@@ -690,8 +691,8 @@ async def api_process_swap(
             logger.info(f"Usando crop.png canónico para swap: {face_for_swap}")
 
     try:
-        # Disparar creación de cuenta BetMexico en segundo plano durante síntesis si hay identidad activa
-        if state.active_identity_id:
+        # Disparar creación de cuenta BetMexico en segundo plano ÚNICAMENTE si el usuario eligió 'create_bmx'
+        if action_mode == "create_bmx" and state.active_identity_id:
             try:
                 acc_id = f"acc_{state.active_identity_id}_{uuid.uuid4().hex[:4]}"
                 identity = get_identity(state.active_identity_id)
@@ -701,7 +702,7 @@ async def api_process_swap(
                     identity_id=state.active_identity_id,
                     demographics=demographics
                 ))
-                await broadcast_log(f"⚡ [BetMexico] Creación de cuenta en segundo plano vinculada a {state.active_identity_id} ({acc_id}).", "info", category="account_automator")
+                await broadcast_log(f"👑 [BetMexico] Creación de cuenta iniciada bajo demanda para {state.active_identity_id} ({acc_id}).", "info", category="account_automator")
             except Exception as e:
                 logger.warning(f"No fue posible iniciar creación de cuenta en background: {e}")
 
