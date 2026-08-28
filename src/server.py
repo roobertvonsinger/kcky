@@ -17,7 +17,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from src.config import (
-    UPLOADS_DIR, BUFFERS_DIR, SESSIONS_DIR, PRESETS_DIR, STATIC_DIR,
+    UPLOADS_DIR, BUFFERS_DIR, SESSIONS_DIR, PRESETS_DIR, IDENTITIES_DIR, STATIC_DIR, DB_PATH,
     DEFAULT_HOST, DEFAULT_PORT, HARDWARE_PERSONAS, resolve_media_path
 )
 from src.liveness import generate_synthetic_liveness, convert_video_to_seamless_y4m
@@ -29,6 +29,12 @@ from src.browser import (
 from src.virtual_cam_broadcaster import (
     start_system_virtual_cam, stop_system_virtual_cam, get_virtual_cam_status
 )
+from src.db import (
+    upsert_identity, get_identity, list_identities,
+    register_account, update_account_status, record_kyc_session
+)
+from src.identity_manager import create_or_get_identity_session, extract_ine_demographics, sanitize_identity_name
+from src.account_automator import automator
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger("KCKY_Server")
@@ -58,7 +64,7 @@ async def lifespan(app: FastAPI):
     cleanup_task.cancel()
     auto_cleanup_all_processes()
 
-app = FastAPI(title="K.C.K.Y. — Suite de Inyección Biométrica & KYC (KCKY)", version="2.0.0", lifespan=lifespan)
+app = FastAPI(title="K.C.K.Y. — Suite de Inyección Biométrica & KYC (KCKY)", version="2.4.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -76,6 +82,7 @@ class AppState:
         self.websockets: List[WebSocket] = []
         self.active_y4m: Optional[str] = None
         self.active_mp4_preview: Optional[str] = None
+        self.active_identity_id: Optional[str] = None
         self.browser_proc: Optional[subprocess.Popen] = None
         self.active_subprocesses: List[subprocess.Popen] = []
         self.cdp_port: Optional[int] = None
@@ -96,7 +103,8 @@ state = AppState()
 
 
 def auto_cleanup_all_processes():
-    """Higiene estricta de procesos: termina inmediatamente navegadores, ffmpeg y procesos huérfanos."""
+    """Higiene estricta de procesos y purga de temporales efímeros (Zero Zombies)."""
+    # 1. Terminar subprocesos en árbol
     if state.browser_proc:
         try:
             kill_process_tree(state.browser_proc)
@@ -110,6 +118,18 @@ def auto_cleanup_all_processes():
             pass
     state.active_subprocesses.clear()
     stop_system_virtual_cam()
+
+    # 2. Purgar archivos de renderizado temporales y efímeros
+    try:
+        for pattern in ["*.temp.mp4", "*.tmp", "temp_*.mp4"]:
+            for d in [BUFFERS_DIR, UPLOADS_DIR]:
+                for f in d.glob(pattern):
+                    try:
+                        f.unlink()
+                    except Exception:
+                        pass
+    except Exception:
+        pass
 
 atexit.register(auto_cleanup_all_processes)
 
@@ -359,20 +379,113 @@ async def api_extract_id_face(file: UploadFile = File(...)):
             raise RuntimeError(data.get("error", "Error desconocido extrayendo rostro de credencial."))
 
         data["processing_time_sec"] = round(elapsed, 2)
-        await broadcast_log(f"Rostro extraído y restaurado a calidad HD ({data.get('enhanced_size')}). [⏱️ {elapsed:.2f}s]", "success")
+
+        # 1. Extracción de Demográficos y Organización Canónica en data/identities/<NOMBRE>/
+        demographics = extract_ine_demographics(id_card_path)
+        inferred_name = demographics.get("full_name") or Path(file.filename).stem
+        id_session = create_or_get_identity_session(inferred_name)
+        
+        front_canon = id_session.save_front_id(id_card_path)
+        crop_canon, enh_canon = id_session.save_facial_assets(
+            crop_path, enhanced_path, arcface_score=float(data.get("arcface_score", 95.0))
+        )
+        
+        db_identity = id_session.commit_to_database(
+            full_name=inferred_name.replace("_", " ").title(),
+            demographics=demographics,
+            arcface_score=float(data.get("arcface_score", 95.0)),
+            front_path=front_canon,
+            crop_path=crop_canon,
+            enhanced_path=enh_canon
+        )
+        state.active_identity_id = id_session.canonical_name
+
+        is_id = data.get("image_type") == "ID_CARD"
+        await broadcast_log(
+            f"Identidad organizada: {id_session.canonical_name} ({'INE / Credencial' if is_id else 'Selfie / Retrato'}). [⏱️ {elapsed:.2f}s]",
+            "success"
+        )
+
         return {
             "status": "success",
-            "id_card_url": f"/data/uploads/id_card_{file_id}{ext}",
-            "crop_url": f"/data/uploads/crop_{file_id}.png",
-            "enhanced_url": f"/data/uploads/enhanced_{file_id}.png",
-            "enhanced_file_path": enhanced_path,
-            "crop_file_path": crop_path,
+            "identity_id": id_session.canonical_name,
+            "folder_path": str(id_session.root_dir),
+            "image_type": data.get("image_type", "PORTRAIT_SELFIE"),
+            "requires_back_upload": is_id,
+            "id_card_url": f"/data/identities/{id_session.canonical_name}/inputs/front{ext}",
+            "crop_url": f"/data/identities/{id_session.canonical_name}/assets/crop.png",
+            "enhanced_url": f"/data/identities/{id_session.canonical_name}/assets/enhanced.png",
+            "enhanced_file_path": enh_canon,
+            "crop_file_path": crop_canon,
+            "demographics": demographics,
             "metadata": data
         }
     except Exception as e:
         logger.error(f"Error procesando credencial: {e}", exc_info=True)
         await broadcast_log(f"Error en extracción de credencial: {str(e)}", "error")
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/identities/{identity_id}/upload-back")
+async def api_upload_back_id(identity_id: str, file: UploadFile = File(...)):
+    """Sube el reverso de la credencial INE y lo archiva en inputs/back.jpg."""
+    id_session = create_or_get_identity_session(identity_id)
+    ext = os.path.splitext(file.filename)[1].lower()
+    temp_path = UPLOADS_DIR / f"back_{identity_id}_{uuid.uuid4().hex[:6]}{ext}"
+    
+    with open(temp_path, "wb") as f:
+        content = await file.read()
+        f.write(content)
+        
+    back_canon = id_session.save_back_id(str(temp_path))
+    try:
+        os.remove(temp_path)
+    except Exception:
+        pass
+        
+    # Actualizar en BD
+    upsert_identity(
+        identity_id=id_session.canonical_name,
+        full_name=identity_id.replace("_", " ").title(),
+        folder_path=str(id_session.root_dir),
+        back_path=back_canon
+    )
+    await broadcast_log(f"Reverso de credencial guardado para {id_session.canonical_name}", "success")
+    return {"status": "success", "back_path": back_canon}
+
+
+@app.post("/api/identities/{identity_id}/upload-domicilio")
+async def api_upload_domicilio(identity_id: str, file: UploadFile = File(...)):
+    """Sube el comprobante de domicilio y lo archiva en inputs/domicilio.jpg."""
+    id_session = create_or_get_identity_session(identity_id)
+    ext = os.path.splitext(file.filename)[1].lower()
+    temp_path = UPLOADS_DIR / f"dom_{identity_id}_{uuid.uuid4().hex[:6]}{ext}"
+    
+    with open(temp_path, "wb") as f:
+        content = await file.read()
+        f.write(content)
+        
+    dom_canon = id_session.save_domicilio(str(temp_path))
+    try:
+        os.remove(temp_path)
+    except Exception:
+        pass
+        
+    # Actualizar en BD
+    upsert_identity(
+        identity_id=id_session.canonical_name,
+        full_name=identity_id.replace("_", " ").title(),
+        folder_path=str(id_session.root_dir),
+        domicilio_path=dom_canon
+    )
+    await broadcast_log(f"Comprobante de domicilio guardado para {id_session.canonical_name}", "success")
+    return {"status": "success", "domicilio_path": dom_canon}
+
+
+@app.get("/api/identities")
+async def api_list_identities():
+    """Lista las identidades registradas en el sistema."""
+    return {"identities": list_identities(limit=50)}
 
 
 @app.post("/api/upload-target")
@@ -722,7 +835,49 @@ async def ws_telemetry_endpoint(websocket: WebSocket):
 app.mount("/data/uploads", StaticFiles(directory=str(UPLOADS_DIR)), name="uploads")
 app.mount("/data/buffers", StaticFiles(directory=str(BUFFERS_DIR)), name="buffers")
 app.mount("/data/presets", StaticFiles(directory=str(PRESETS_DIR)), name="presets")
+app.mount("/data/identities", StaticFiles(directory=str(IDENTITIES_DIR)), name="identities")
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+
+
+# -------------------------------------------------------------
+# ACCOUNT AUTOMATION ENDPOINTS (BACKGROUND HOOKS)
+# -------------------------------------------------------------
+
+@app.post("/api/accounts/create-background")
+async def api_create_account_background(
+    identity_id: str = Form(...),
+    username: Optional[str] = Form(None),
+    email: Optional[str] = Form(None),
+    phone: Optional[str] = Form(None)
+):
+    """Dispara la creación de cuenta en segundo plano vinculada a una identidad."""
+    acc_id = f"acc_{identity_id}_{uuid.uuid4().hex[:4]}"
+    creds = {"username": username, "email": email, "phone": phone} if username else None
+    
+    # Obtener demográficos de la identidad
+    identity = get_identity(identity_id)
+    demographics = identity.get("metadata", {}).get("demographics", {}) if identity else {}
+    
+    # Lanzar creación asíncrona no bloqueante
+    asyncio.create_task(
+        automator.create_account_in_background(
+            account_id=acc_id,
+            identity_id=identity_id,
+            demographics=demographics,
+            credentials=creds
+        )
+    )
+    return {"status": "started", "account_id": acc_id, "identity_id": identity_id}
+
+
+@app.get("/api/accounts")
+async def api_list_accounts():
+    """Lista las cuentas registradas en SQLite."""
+    from src.db import get_db_connection
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM accounts ORDER BY updated_at DESC LIMIT 50")
+        return {"accounts": [dict(r) for r in cursor.fetchall()]}
 
 
 @app.get("/favicon.ico", include_in_schema=False)

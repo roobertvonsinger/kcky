@@ -16,16 +16,18 @@ UPLOADS_DIR = DATA_DIR / "uploads"
 BUFFERS_DIR = DATA_DIR / "buffers"
 SESSIONS_DIR = DATA_DIR / "sessions"
 PRESETS_DIR = DATA_DIR / "presets"
+IDENTITIES_DIR = DATA_DIR / "identities"
 MODELS_DIR = REPO_ROOT / "models"
 SCRIPTS_DIR = REPO_ROOT / "scripts"
 STATIC_DIR = REPO_ROOT / "static"
+DB_PATH = DATA_DIR / "kcky.db"
 
 # Repositorios Externos y Modelos
 DEEP_LIVE_CAM_DIR = WORKSPACE_ROOT / "repos" / "Deep-Live-Cam"
 RITA_DIR = WORKSPACE_ROOT / "repos" / "rita"
 
 # Crear directorios necesarios
-for d in [UPLOADS_DIR, BUFFERS_DIR, SESSIONS_DIR, PRESETS_DIR, MODELS_DIR, STATIC_DIR]:
+for d in [UPLOADS_DIR, BUFFERS_DIR, SESSIONS_DIR, PRESETS_DIR, IDENTITIES_DIR, MODELS_DIR, STATIC_DIR]:
     d.mkdir(parents=True, exist_ok=True)
 
 # Servidor Web

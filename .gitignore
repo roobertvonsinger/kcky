@@ -19,13 +19,18 @@ venv/
 env/
 ENV/
 
-# Directorios de datos efímeros
+# Directorios de datos efímeros y persistentes
 data/uploads/*
 data/buffers/*
 data/sessions/*
+data/identities/*
 !data/uploads/.gitkeep
 !data/buffers/.gitkeep
 !data/sessions/.gitkeep
+!data/identities/.gitkeep
+*.db
+*.db-wal
+*.db-shm
 
 # Preservar presets de video base
 !data/presets/

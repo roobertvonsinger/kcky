@@ -23,6 +23,7 @@ from tests.test_biometric_extraction import TestBiometricExtraction
 from tests.test_presets_validation import TestPresetsValidation
 from tests.test_progress_and_ui import TestProgressAndUI
 from tests.test_server_api import TestServerAPI
+from tests.test_identity_and_db import TestIdentityAndDB
 
 
 def run_test_suite():
@@ -37,7 +38,8 @@ def run_test_suite():
         ("Biometria & Input Gate", TestBiometricExtraction),
         ("Presets & Marca de Agua", TestPresetsValidation),
         ("Telemetria UI & Dom", TestProgressAndUI),
-        ("API REST & Endpoints", TestServerAPI)
+        ("API REST & Endpoints", TestServerAPI),
+        ("Identidades & BD SQLite", TestIdentityAndDB)
     ]
 
     total_tests = 0

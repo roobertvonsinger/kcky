@@ -106,7 +106,16 @@ def run_web_studio(host: str = DEFAULT_HOST, port: int = DEFAULT_PORT, auto_open
     import uvicorn
     import threading
     import time
-    from src.server import app
+    import signal
+    from src.server import app, auto_cleanup_all_processes
+
+    def _signal_handler(sig, frame):
+        print("\n[*] Cerrando KCKY Studio y liberando todos los procesos y buffers...")
+        auto_cleanup_all_processes()
+        sys.exit(0)
+
+    signal.signal(signal.SIGINT, _signal_handler)
+    signal.signal(signal.SIGTERM, _signal_handler)
 
     url = f"http://127.0.0.1:{port}"
     print("======================================================================")
@@ -121,8 +130,11 @@ def run_web_studio(host: str = DEFAULT_HOST, port: int = DEFAULT_PORT, auto_open
             open_autonomous_app_window(url)
         threading.Thread(target=_deferred_open, daemon=True).start()
 
-    # Uvicorn en hilo principal: NUNCA se cierra solo
-    uvicorn.run(app, host=host, port=port, log_level="error")
+    try:
+        # Uvicorn en hilo principal: NUNCA se cierra solo
+        uvicorn.run(app, host=host, port=port, log_level="error")
+    finally:
+        auto_cleanup_all_processes()
 
 
 def main():
