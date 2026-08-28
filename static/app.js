@@ -448,7 +448,6 @@ function setSwapPreset(presetName, event) {
     Studio.targetPreset = presetName;
     Studio.customVideoPath = null;
     renderPresetsCatalog();
-    showToast(`Base seleccionada: ${presetName}`, "success");
 }
 
 async function handleCustomVideoUpload(event) {
@@ -672,8 +671,8 @@ function showToast(message, type = 'info') {
 
     setTimeout(() => {
         toast.style.opacity = '0';
-        toast.style.transform = 'translateY(12px) scale(0.95)';
-        toast.style.transition = 'all 0.25s ease';
-        setTimeout(() => toast.remove(), 250);
-    }, 3200);
+        toast.style.transform = 'translateY(-6px) scale(0.96)';
+        toast.style.transition = 'all 0.2s ease';
+        setTimeout(() => toast.remove(), 200);
+    }, 2000);
 }

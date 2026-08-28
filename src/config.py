@@ -66,39 +66,54 @@ HARDWARE_PERSONAS = {
 def resolve_media_path(path_str: Optional[str]) -> Optional[str]:
     """
     Resuelve de forma tolerante a fallos cualquier ruta de archivo de medios en KCKY
-    (rutas absolutas, relativas a REPO_ROOT, relativas a DATA_DIR o nombres simples de presets).
+    (rutas absolutas Windows, relativas a REPO_ROOT, relativas a DATA_DIR, URLs web /data/... o nombres de presets).
     """
     if not path_str:
         return None
 
-    p = Path(path_str)
-    # 1. Si ya es ruta absoluta y existe
-    if p.is_absolute() and p.is_file():
-        return str(p)
+    clean_str = path_str.strip()
 
-    # 2. Relativo a REPO_ROOT (repos/kcky)
-    candidate = (REPO_ROOT / p).resolve()
-    if candidate.is_file():
-        return str(candidate)
+    # 1. Si es ruta absoluta Windows existente (ej. C:\...)
+    try:
+        p = Path(clean_str)
+        if p.is_absolute() and p.is_file():
+            return str(p)
+    except Exception:
+        pass
 
-    # 3. Relativo a DATA_DIR
-    candidate = (DATA_DIR / p).resolve()
-    if candidate.is_file():
-        return str(candidate)
+    # 2. Si viene como URL web (ej. "/data/identities/.../assets/enhanced.png" o "/data/presets/...")
+    norm_str = clean_str.replace("\\", "/")
+    if norm_str.startswith("/data/") or norm_str.startswith("data/"):
+        sub = norm_str.split("data/", 1)[1].lstrip("/")
+        cand = (DATA_DIR / sub).resolve()
+        if cand.is_file():
+            return str(cand)
 
-    # 4. En la carpeta de presets (por nombre de archivo)
-    candidate = (PRESETS_DIR / p.name).resolve()
-    if candidate.is_file():
-        return str(candidate)
+    # 3. Relativo directo a DATA_DIR
+    rel_clean = clean_str.lstrip("/\\")
+    cand = (DATA_DIR / rel_clean).resolve()
+    if cand.is_file():
+        return str(cand)
 
-    # 5. En la carpeta de uploads
-    candidate = (UPLOADS_DIR / p.name).resolve()
-    if candidate.is_file():
-        return str(candidate)
+    # 4. Relativo a REPO_ROOT
+    cand = (REPO_ROOT / rel_clean).resolve()
+    if cand.is_file():
+        return str(cand)
 
-    # 6. Fallback a presets por defecto si es target de video
-    default_preset = PRESETS_DIR / "female_clean_kyc_base.mp4"
-    if default_preset.is_file():
-        return str(default_preset)
+    # 5. Por nombre de archivo en PRESETS_DIR
+    try:
+        cand = (PRESETS_DIR / Path(clean_str).name).resolve()
+        if cand.is_file():
+            return str(cand)
+    except Exception:
+        pass
+
+    # 6. Por nombre de archivo en UPLOADS_DIR
+    try:
+        cand = (UPLOADS_DIR / Path(clean_str).name).resolve()
+        if cand.is_file():
+            return str(cand)
+    except Exception:
+        pass
 
     return None

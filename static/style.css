@@ -1259,37 +1259,41 @@ body.theme-monochrome {
    ========================================================================== */
 .toast-container {
     position: fixed;
-    bottom: 24px;
+    top: 14px;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 100;
+    z-index: 99999;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    align-items: center;
+    gap: 6px;
     pointer-events: none;
     width: 90%;
-    max-width: 380px;
+    max-width: 320px;
 }
 
 .toast {
-    background: rgba(18, 18, 22, 0.95);
-    border: 1px solid var(--border-subtle);
+    background: rgba(18, 18, 22, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(16px);
     color: var(--text-pure);
-    padding: 10px 14px;
-    border-radius: var(--radius-md);
-    font-size: 0.78rem;
-    font-weight: 500;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
-    animation: toastIn 0.25s var(--ease-spring);
+    padding: 6px 14px;
+    border-radius: var(--radius-full);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+    animation: toastIn 0.2s var(--ease-spring);
     pointer-events: auto;
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
+    gap: 6px;
+    text-align: center;
 }
 
 .toast.error {
-    border-color: rgba(239, 68, 68, 0.4);
+    border-color: rgba(239, 68, 68, 0.5);
     color: #fca5a5;
 }
 
@@ -1301,7 +1305,7 @@ body.theme-monochrome {
 @keyframes toastIn {
     from {
         opacity: 0;
-        transform: translateY(12px) scale(0.95);
+        transform: translateY(-8px) scale(0.96);
     }
     to {
         opacity: 1;

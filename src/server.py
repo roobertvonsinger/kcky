@@ -57,8 +57,16 @@ async def cleanup_old_files_task():
             logger.error(f"Error en cleanup_old_files_task: {e}")
         await asyncio.sleep(3600)
 
+def handle_asyncio_exception(loop, context):
+    exc = context.get("exception")
+    if isinstance(exc, (ConnectionResetError, BrokenPipeError)) or (exc and "10054" in str(exc)):
+        return  # Desconexión abrupta de cliente normal en Windows / WebSockets
+    loop.default_exception_handler(context)
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    loop = asyncio.get_running_loop()
+    loop.set_exception_handler(handle_asyncio_exception)
     cleanup_task = asyncio.create_task(cleanup_old_files_task())
     yield
     cleanup_task.cancel()
@@ -668,15 +676,18 @@ async def api_process_swap(
     def sync_progress_handler(prog_data: Dict[str, Any]):
         asyncio.run_coroutine_threadsafe(broadcast_progress(prog_data), loop)
 
-    # Prioridad biométrica: si se recibe enhanced_<id>.png, buscar su crop_<id>.png correspondiente
+    # Prioridad biométrica: si se recibe enhanced.png / enhanced_<id>.png, buscar su crop correspondiente
     # para que InsightFace extraiga la identidad pura de la credencial sin artefactos sintéticos de GAN
     face_for_swap = resolved_face
     p_face = Path(resolved_face)
-    if "enhanced_" in p_face.name:
-        candidate_crop = p_face.parent / p_face.name.replace("enhanced_", "crop_")
+    if "enhanced" in p_face.name:
+        candidate_crop = p_face.parent / p_face.name.replace("enhanced", "crop")
         if candidate_crop.is_file():
             face_for_swap = str(candidate_crop)
             logger.info(f"Usando recorte biométrico puro para swap: {face_for_swap}")
+        elif (p_face.parent / "crop.png").is_file():
+            face_for_swap = str(p_face.parent / "crop.png")
+            logger.info(f"Usando crop.png canónico para swap: {face_for_swap}")
 
     try:
         # Disparar creación de cuenta BetMexico en segundo plano durante síntesis si hay identidad activa
