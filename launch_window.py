@@ -12,22 +12,24 @@ if hasattr(sys.stdout, "reconfigure"):
 if hasattr(sys.stderr, "reconfigure"):
     sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
-# Verificar que el servidor esté activo antes de abrir la ventana
+import time
 import urllib.request
 
 PORT = 8765
 url = f"http://127.0.0.1:{PORT}"
 
-try:
-    resp = urllib.request.urlopen(f"{url}/api/status", timeout=3)
-    if resp.getcode() == 200:
-        print(f"[+] Servidor KCKY activo en {url}")
-    else:
-        print(f"[!] Servidor respondió con código {resp.getcode()}")
-        sys.exit(1)
-except Exception as e:
-    print(f"[!] Servidor KCKY no está activo en {url}: {e}")
-    print("[!] Primero ejecuta: python run.py --no-open")
+server_ready = False
+for _ in range(15):
+    try:
+        resp = urllib.request.urlopen(f"{url}/api/presets", timeout=1)
+        if resp.getcode() == 200:
+            server_ready = True
+            break
+    except Exception:
+        time.sleep(0.5)
+
+if not server_ready:
+    print(f"[!] Servidor KCKY no respondió en {url} tras 7.5s")
     sys.exit(1)
 
 # Lanzar ventana autónoma WebView2

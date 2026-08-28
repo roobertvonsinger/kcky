@@ -59,28 +59,17 @@ def find_standalone_browser() -> Optional[str]:
 
 def open_autonomous_app_window(url: str):
     """Lanza la ventana de aplicación autónoma independiente con medidas de smartphone (430x900)."""
-    import time
     import subprocess
+    import sys
     
-    # 1. Intentar lanzar vía pywebview / WebView2 si está instalado
-    try:
-        import webview
-        def _launch_webview():
-            win = webview.create_window(
-                title="KCKY Studio",
-                url=url,
-                width=430,
-                height=900,
-                resizable=True,
-                min_size=(380, 720)
-            )
-            webview.start(debug=False)
-        import threading
-        t = threading.Thread(target=_launch_webview, daemon=True)
-        t.start()
-        return
-    except Exception:
-        pass
+    # 1. Intentar lanzar WebView2 mediante subproceso interactivo independiente (hilo principal nativo propio)
+    launch_script = BASE_DIR / "launch_window.py"
+    if launch_script.is_file():
+        try:
+            subprocess.Popen([sys.executable, str(launch_script)])
+            return
+        except Exception:
+            pass
 
     # 2. Fallback a Standalone App Window nativa (Chrome/Edge sin marcos de navegador)
     browser_exe = find_standalone_browser()
@@ -100,6 +89,13 @@ def open_autonomous_app_window(url: str):
             return
         except Exception:
             pass
+
+    # 3. Fallback a navegador por defecto
+    try:
+        import webbrowser
+        webbrowser.open(url)
+    except Exception:
+        pass
 
 
 def run_web_studio(host: str = DEFAULT_HOST, port: int = DEFAULT_PORT, auto_open: bool = True):
