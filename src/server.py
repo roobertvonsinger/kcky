@@ -692,46 +692,18 @@ async def api_process_swap(
             progress_callback=broadcast_progress
         )
 
-        await broadcast_log("Face swap completado. Normalizando a buffer Y4M continuo...", "info")
-        await broadcast_progress({
-            "percent": 86,
-            "current_frame": 0,
-            "total_frames": duration * fps,
-            "eta_text": "2s",
-            "speed_text": "",
-            "status_text": "Normalizando buffer continuo Y4M (DirectShow ready)...",
-            "phase": "y4m_normalizing"
-        })
-
-        res = await asyncio.to_thread(
-            convert_video_to_seamless_y4m,
-            video_path=raw_swap_mp4,
-            output_y4m_path=out_y4m,
-            output_mp4_preview_path=out_mp4,
-            min_duration=duration,
-            width=width,
-            height=height,
-            fps=fps,
-            framing_mode=framing_mode,
-            progress_callback=sync_progress_handler
-        )
-
-        state.active_y4m = out_y4m
-        state.active_mp4_preview = out_mp4
-
         # ── Quality Gate Biométrico (post-swap, pre-entrega) ──────────────
         qg_result = None
+        active_video_for_y4m = raw_swap_mp4
         try:
             from src.quality_gate import run_quality_gate
             from src.config import DEEP_LIVE_CAM_DIR
 
             await broadcast_progress({
-                "percent": 92,
+                "percent": 86,
                 "current_frame": 0,
                 "total_frames": 0,
-                "eta_text": "3s",
-                "speed_text": "",
-                "status_text": "🧬 Ejecutando Quality Gate biométrico...",
+                "status_text": "🧬 Ejecutando Quality Gate biométrico (Auto-Encuadre & Contraste)...",
                 "phase": "quality_gate"
             })
 
@@ -765,14 +737,41 @@ async def api_process_swap(
                 rec = qg_result.get("recommendation", "Prueba con un preset diferente.")
                 await broadcast_log(f"🔴 Quality Gate FAIL — Similitud {qg_pct}%. {rec}", "error", "quality_gate")
 
-            # Si el QG produjo un video reframed, usar ese como preview
+            # Si el QG produjo un video reframed/boosted, usar ese para el Y4M final
             qg_final_video = qg_result.get("final_video_path")
-            if qg_final_video and qg_final_video != out_mp4 and os.path.exists(qg_final_video):
-                state.active_mp4_preview = qg_final_video
+            if qg_final_video and os.path.exists(qg_final_video):
+                active_video_for_y4m = qg_final_video
+                logger.info(f"Usando video procesado por Quality Gate para Y4M: {active_video_for_y4m}")
 
         except Exception as qg_err:
             logger.warning(f"Quality Gate no pudo ejecutarse: {qg_err}")
             await broadcast_log(f"⚠️ Quality Gate omitido: {str(qg_err)}", "warning")
+
+        # ── Conversión a Y4M continuo y MP4 preview ──────────────────────────
+        await broadcast_log("Normalizando a buffer Y4M continuo...", "info")
+        await broadcast_progress({
+            "percent": 92,
+            "current_frame": 0,
+            "total_frames": duration * fps,
+            "status_text": "Normalizando buffer continuo Y4M (DirectShow ready)...",
+            "phase": "y4m_normalizing"
+        })
+
+        res = await asyncio.to_thread(
+            convert_video_to_seamless_y4m,
+            video_path=active_video_for_y4m,
+            output_y4m_path=out_y4m,
+            output_mp4_preview_path=out_mp4,
+            min_duration=duration,
+            width=width,
+            height=height,
+            fps=fps,
+            framing_mode=framing_mode,
+            progress_callback=sync_progress_handler
+        )
+
+        state.active_y4m = out_y4m
+        state.active_mp4_preview = out_mp4
 
         await broadcast_progress({
             "percent": 100,

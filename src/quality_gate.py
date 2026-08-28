@@ -27,8 +27,8 @@ WARN_THRESHOLD = 0.75       # 75-82% → WARN (amarillo, intenta auto-boost)
 # Calibrados desde screenshot real de BetMexico (2026-08-28):
 # El marco es circular, la cara debe llenar ~65% de la altura del frame
 # y estar centrada ligeramente arriba del centro (45% desde arriba)
-OVAL_FACE_HEIGHT_RATIO = 0.65    # face_height / frame_height objetivo
-OVAL_FACE_CENTER_Y_RATIO = 0.45  # face_center_y / frame_height objetivo (0.5 = centro exacto)
+OVAL_FACE_HEIGHT_RATIO = 0.58    # face_height / frame_height objetivo
+OVAL_FACE_CENTER_Y_RATIO = 0.53  # face_center_y / frame_height objetivo (0.5 = centro exacto)
 OVAL_FACE_CENTER_X_RATIO = 0.50  # siempre centrado horizontal
 
 # Cuántos frames samplear del video para análisis
@@ -132,7 +132,8 @@ def analyze_video_similarity(
     source_face_path: str,
     video_path: str,
     models_dir: str,
-    frame_indices: Optional[List[int]] = None
+    frame_indices: Optional[List[int]] = None,
+    output_dir: Optional[str] = None
 ) -> Dict[str, Any]:
     """
     Analiza la similitud facial entre la imagen fuente y los frames del video de salida.
@@ -174,6 +175,10 @@ def analyze_video_similarity(
         return {"error": "No se pudieron extraer frames del video.", "verdict": "FAIL"}
 
     # Calcular similitud por frame
+    best_sim_idx = -1
+    best_sim_val = -1.0
+    best_face_crop = None
+
     per_frame_scores = []
     for i, frame in enumerate(frames):
         face_crop = _extract_face_crop_from_frame(frame)
@@ -189,6 +194,11 @@ def analyze_video_similarity(
             "match_pct": round(sim * 100.0, 1),
             "face_detected": True
         })
+
+        if sim > best_sim_val:
+            best_sim_val = sim
+            best_sim_idx = i
+            best_face_crop = face_crop
 
     # Calcular promedio ponderado (frames centrales pesan más)
     valid_scores = [s for s in per_frame_scores if s["face_detected"]]
@@ -226,6 +236,26 @@ def analyze_video_similarity(
     else:
         verdict = "FAIL"
 
+    # Guardar la mejor cara extraída si se solicita
+    best_face_url = None
+    if output_dir and best_face_crop is not None:
+        try:
+            os.makedirs(output_dir, exist_ok=True)
+            best_face_file = os.path.join(output_dir, "best_swap_face.jpg")
+            cv2.imwrite(best_face_file, best_face_crop, [cv2.IMWRITE_JPEG_QUALITY, 95])
+            
+            norm_out_dir = output_dir.replace("\\", "/")
+            if "data/buffers" in norm_out_dir:
+                rel = norm_out_dir.split("data/buffers")[-1].lstrip("/")
+                best_face_url = f"/data/buffers/{rel}/best_swap_face.jpg"
+            elif "data" in norm_out_dir:
+                rel = norm_out_dir.split("data")[-1].lstrip("/")
+                best_face_url = f"/data/{rel}/best_swap_face.jpg"
+            else:
+                best_face_url = f"/data/buffers/{os.path.basename(output_dir)}/best_swap_face.jpg"
+        except Exception as e:
+            logger.warning(f"No fue posible guardar el mejor recorte facial: {e}")
+
     return {
         "match_percentage": match_pct,
         "similarity": round(avg_sim, 4),
@@ -236,7 +266,8 @@ def analyze_video_similarity(
         "frames_with_face": len(valid_scores),
         "frames_total_sampled": len(frames),
         "per_frame_scores": per_frame_scores,
-        "thresholds": {"pass": PASS_THRESHOLD, "warn": WARN_THRESHOLD}
+        "thresholds": {"pass": PASS_THRESHOLD, "warn": WARN_THRESHOLD},
+        "best_face_url": best_face_url
     }
 
 
@@ -570,7 +601,7 @@ def run_quality_gate(
 
     # ── Etapa 2: Análisis de similitud ─────────────────────────────────────
     log("🧬 [QG] Analizando similitud biométrica ArcFace...")
-    analysis = analyze_video_similarity(source_face_path, active_video, models_dir)
+    analysis = analyze_video_similarity(source_face_path, active_video, models_dir, output_dir=output_dir)
 
     if analysis.get("error"):
         return {
@@ -611,7 +642,7 @@ def run_quality_gate(
 
             # Re-analizar con video boosteado
             log("🔄 [QG] Re-analizando similitud post-boost...")
-            re_analysis = analyze_video_similarity(source_face_path, active_video, models_dir)
+            re_analysis = analyze_video_similarity(source_face_path, active_video, models_dir, output_dir=output_dir)
 
             if not re_analysis.get("error"):
                 new_pct = re_analysis.get("match_percentage", 0.0)
@@ -666,5 +697,6 @@ def run_quality_gate(
         "stages": stages,
         "final_video_path": active_video,
         "recommendation": recommendation,
-        "thresholds": {"pass": PASS_THRESHOLD, "warn": WARN_THRESHOLD}
+        "thresholds": {"pass": PASS_THRESHOLD, "warn": WARN_THRESHOLD},
+        "best_face_url": analysis.get("best_face_url")
     }

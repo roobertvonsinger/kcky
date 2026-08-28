@@ -84,57 +84,70 @@ async def execute_face_swap_directml(
     simple_tqdm_regex = re.compile(r'(\d+)%')
     frame_ratio_regex = re.compile(r'(\d+)/(\d+)')
 
+    buffer = ""
     try:
         while True:
-            line = await proc.stdout.readline()
-            if not line:
+            chunk = await proc.stdout.read(1024)
+            if not chunk:
                 break
-            text = line.decode("utf-8", errors="ignore").strip()
-            if not text:
-                continue
+            buffer += chunk.decode("utf-8", errors="ignore")
+            
+            while "\r" in buffer or "\n" in buffer:
+                idx_r = buffer.find("\r")
+                idx_n = buffer.find("\n")
+                if idx_r != -1 and (idx_n == -1 or idx_r < idx_n):
+                    line = buffer[:idx_r]
+                    buffer = buffer[idx_r+1:]
+                else:
+                    line = buffer[:idx_n]
+                    buffer = buffer[idx_n+1:]
+                    
+                text = line.strip()
+                if not text:
+                    continue
 
-            if log_callback and not ("%" in text and "|" in text):
-                await log_callback(text, "info")
+                if log_callback and not ("%" in text and "|" in text):
+                    await log_callback(text, "info")
 
-            # Parsear progreso en tiempo real
-            m = tqdm_regex.search(text)
-            if m and progress_callback:
-                raw_pct = int(m.group(1))
-                curr = int(m.group(2))
-                tot = int(m.group(3))
-                elapsed = m.group(4).strip()
-                eta = m.group(5).strip()
-                speed = m.group(6).strip()
+                # Parsear progreso en tiempo real
+                m = tqdm_regex.search(text)
+                if m and progress_callback:
+                    raw_pct = int(m.group(1))
+                    curr = int(m.group(2))
+                    tot = int(m.group(3))
+                    elapsed = m.group(4).strip()
+                    eta = m.group(5).strip()
+                    speed = m.group(6).strip()
 
-                # Mapear de 5% a 85% para dejar margen a inicialización y Y4M seamless final
-                mapped_pct = int(5 + (raw_pct * 0.80))
-                await progress_callback({
-                    "percent": mapped_pct,
-                    "current_frame": curr,
-                    "total_frames": tot,
-                    "eta_text": eta,
-                    "speed_text": speed,
-                    "status_text": f"Sintetizando fotograma {curr} de {tot} ({speed})"
-                })
-            else:
-                m_simple = simple_tqdm_regex.search(text)
-                if m_simple and progress_callback:
-                    try:
-                        raw_pct = int(m_simple.group(1))
-                        mapped_pct = int(5 + (raw_pct * 0.80))
-                        m_ratio = frame_ratio_regex.search(text)
-                        curr = int(m_ratio.group(1)) if m_ratio else 0
-                        tot = int(m_ratio.group(2)) if m_ratio else 0
-                        await progress_callback({
-                            "percent": mapped_pct,
-                            "current_frame": curr,
-                            "total_frames": tot,
-                            "eta_text": "En proceso",
-                            "speed_text": "",
-                            "status_text": f"Procesando en GPU DirectML ({raw_pct}%)..."
-                        })
-                    except Exception:
-                        pass
+                    # Mapear de 5% a 85% para dejar margen a inicialización y Y4M seamless final
+                    mapped_pct = int(5 + (raw_pct * 0.80))
+                    await progress_callback({
+                        "percent": mapped_pct,
+                        "current_frame": curr,
+                        "total_frames": tot,
+                        "eta_text": eta,
+                        "speed_text": speed,
+                        "status_text": f"Sintetizando fotograma {curr} de {tot} ({speed})"
+                    })
+                else:
+                    m_simple = simple_tqdm_regex.search(text)
+                    if m_simple and progress_callback:
+                        try:
+                            raw_pct = int(m_simple.group(1))
+                            mapped_pct = int(5 + (raw_pct * 0.80))
+                            m_ratio = frame_ratio_regex.search(text)
+                            curr = int(m_ratio.group(1)) if m_ratio else 0
+                            tot = int(m_ratio.group(2)) if m_ratio else 0
+                            await progress_callback({
+                                "percent": mapped_pct,
+                                "current_frame": curr,
+                                "total_frames": tot,
+                                "eta_text": "En proceso",
+                                "speed_text": "",
+                                "status_text": f"Procesando en GPU DirectML ({raw_pct}%)..."
+                            })
+                        except Exception:
+                            pass
 
         await proc.wait()
         if proc.returncode != 0:

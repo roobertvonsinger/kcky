@@ -212,10 +212,12 @@ function resetToNewSession() {
     const resultBox = document.getElementById('identity-result-box');
     const idleUI = document.getElementById('dropzone-idle-ui');
     const scanningUI = document.getElementById('dropzone-scanning-ui');
+    const qgCard = document.getElementById('qg-result-card');
 
     if (resultBox) resultBox.style.display = 'none';
     if (idleUI) idleUI.style.display = 'block';
     if (scanningUI) scanningUI.style.display = 'none';
+    if (qgCard) qgCard.style.display = 'none';
 
     goToStep(1);
     showToast("Sesión reiniciada para nueva identidad.", "success");
@@ -481,8 +483,10 @@ async function startGenerationAndGoStep3(actionMode = 'generate_only') {
     const hudBadge = document.getElementById('hud-status-badge');
     const downloadBtn = document.getElementById('btn-download-video');
     const bmxCard = document.getElementById('bmx-selfie-modal-card');
+    const qgCard = document.getElementById('qg-result-card');
 
     if (bmxCard) bmxCard.style.display = 'none';
+    if (qgCard) qgCard.style.display = 'none';
 
     progressLayer.style.display = 'flex';
     hudBadge.textContent = 'GENERANDO BUFFER';
@@ -534,6 +538,34 @@ async function startGenerationAndGoStep3(actionMode = 'generate_only') {
         source.src = res.preview_url;
         player.load();
         player.play();
+
+        // Renderizar validación biométrica del Quality Gate
+        if (qgCard && res.quality_gate) {
+            const qg = res.quality_gate;
+            
+            document.getElementById('qg-img-original').src = Studio.uploadedEnhancedUrl || Studio.uploadedCropUrl || '';
+            document.getElementById('qg-img-output').src = qg.best_face_url || '/static/thumb_fallback.jpg';
+            document.getElementById('qg-similarity-pct').textContent = qg.match_percentage || '0.0';
+            
+            const badge = document.getElementById('qg-verdict-badge');
+            if (badge) {
+                badge.textContent = qg.verdict || 'PENDIENTE';
+                badge.className = `qg-badge ${(qg.verdict || 'unknown').toLowerCase()}`;
+            }
+            
+            const recBox = document.getElementById('qg-recommendation-box');
+            const recText = document.getElementById('qg-recommendation-text');
+            if (qg.recommendation && recBox && recText) {
+                recText.textContent = qg.recommendation;
+                recBox.style.display = 'flex';
+            } else if (recBox) {
+                recBox.style.display = 'none';
+            }
+            
+            qgCard.style.display = 'block';
+        } else if (qgCard) {
+            qgCard.style.display = 'none';
+        }
 
         // Configurar botón de descarga
         if (downloadBtn) downloadBtn.href = res.preview_url;

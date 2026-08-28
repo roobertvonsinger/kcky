@@ -202,15 +202,23 @@ class TestAccountAutomatorAndCDP(unittest.TestCase):
     def test_email_rotator_tracking_and_claiming(self):
         """Verifica la reserva atómica y tracking de alias en email_rotator_tracker."""
         from src.email_rotator import get_next_available_email, mark_email_as_used, get_and_claim_next_email
-        from src.db import get_db_connection
+        import sqlite3
         
-        with get_db_connection() as conn:
+        # Usar base de datos en memoria para aislamiento absoluto del test
+        conn = sqlite3.connect(":memory:")
+        cursor = conn.cursor()
+        cursor.execute("CREATE TABLE accounts (id TEXT PRIMARY KEY, email TEXT)")
+        conn.commit()
+        
+        try:
             claimed = get_and_claim_next_email(conn, account_id="acc_unit_test_claim")
             self.assertIn("@gmail.com", claimed["alias_email"])
             
             # El siguiente llamado debe retornar un alias distinto
             claimed_next = get_and_claim_next_email(conn, account_id="acc_unit_test_claim_2")
             self.assertNotEqual(claimed["alias_email"], claimed_next["alias_email"])
+        finally:
+            conn.close()
 
     def test_realistic_mx_phone_generation(self):
         """Verifica la generación de teléfonos celulares mexicanos válidos a 10 dígitos."""

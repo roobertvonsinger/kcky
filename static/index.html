@@ -270,6 +270,36 @@
                     </div>
                 </div>
 
+                <!-- Tarjeta de Validación Biométrica de Salida (Quality Gate) -->
+                <div class="qg-result-card" id="qg-result-card" style="display: none;">
+                    <div class="qg-header">
+                        <span class="qg-badge" id="qg-verdict-badge">PENDIENTE</span>
+                        <div class="qg-title">Validación Biométrica de Salida</div>
+                        <div class="qg-desc">Auditoría de similitud ArcFace (Rostro Original vs. Swapped)</div>
+                    </div>
+                    <div class="qg-comparison-box">
+                        <div class="qg-thumb">
+                            <span class="qg-thumb-tag">Rostro Original</span>
+                            <img id="qg-img-original" src="" alt="Rostro original">
+                        </div>
+                        <div class="qg-vs-pct">
+                            <div class="qg-score-display">
+                                <span id="qg-similarity-pct">0.0</span><span class="pct-sign">%</span>
+                            </div>
+                            <span class="qg-score-label">Similitud</span>
+                        </div>
+                        <div class="qg-thumb">
+                            <span class="qg-thumb-tag">Resultado Swap</span>
+                            <img id="qg-img-output" src="" alt="Rostro de salida" onerror="this.src='/static/thumb_fallback.jpg'">
+                        </div>
+                    </div>
+                    <!-- Recomendación si es FAIL/WARN -->
+                    <div class="qg-recommendation-box" id="qg-recommendation-box" style="display: none;">
+                        <span class="qg-rec-icon">⚠️</span>
+                        <span id="qg-recommendation-text"></span>
+                    </div>
+                </div>
+
                 <!-- Tarjeta de Confirmación BMX (Manual vs Auto) -->
                 <div class="bmx-selfie-modal-card" id="bmx-selfie-modal-card" style="display: none;">
                     <div class="bmx-modal-header">
