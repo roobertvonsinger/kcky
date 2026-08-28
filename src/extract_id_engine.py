@@ -126,13 +126,44 @@ def enhance_face_crop_gfpgan(crop_bgr: np.ndarray, model_path: str) -> np.ndarra
     return enhanced_bgr
 
 
+def get_arcface_session(models_dir: str) -> Optional[Tuple[ort.InferenceSession, str]]:
+    """Obtiene la sesión ArcFace y el nombre del input. Retorna None si no existe el modelo."""
+    arcface_model = find_model_path("w600k_r50.onnx", models_dir)
+    if not arcface_model or not os.path.exists(arcface_model):
+        return None
+    session = get_onnx_session(arcface_model)
+    input_name = session.get_inputs()[0].name
+    return session, input_name
+
+
+def extract_arcface_embedding(img_bgr: np.ndarray, session: ort.InferenceSession, input_name: str) -> np.ndarray:
+    """
+    Extrae el embedding ArcFace normalizado (512-dim L2-norm) de una imagen BGR.
+    Función reutilizable para comparaciones de identidad en cualquier módulo.
+    """
+    resized = cv2.resize(img_bgr, (112, 112), interpolation=cv2.INTER_AREA)
+    rgb = cv2.cvtColor(resized, cv2.COLOR_BGR2RGB).astype(np.float32)
+    # Normalización estándar ArcFace [-1.0, 1.0]
+    norm = (rgb / 127.5) - 1.0
+    inp = np.transpose(norm, (2, 0, 1))[None, ...].astype(np.float32)
+    out = session.run(None, {input_name: inp})[0][0]
+    norm_val = np.linalg.norm(out)
+    return out / (norm_val + 1e-6)
+
+
+def cosine_similarity(emb_a: np.ndarray, emb_b: np.ndarray) -> float:
+    """Similitud coseno entre dos embeddings normalizados, clampada a [0, 1]."""
+    sim = float(np.dot(emb_a, emb_b))
+    return max(0.0, min(1.0, sim))
+
+
 def verify_arcface_similarity(orig_bgr: np.ndarray, restored_bgr: np.ndarray, models_dir: str) -> Dict[str, Any]:
     """
     Calcula la similitud coseno biométrica entre el rostro original y el restaurado usando ArcFace (w600k_r50).
     Asegura que la super-resolución no altere la identidad del titular.
     """
-    arcface_model = find_model_path("w600k_r50.onnx", models_dir)
-    if not arcface_model or not os.path.exists(arcface_model):
+    arc = get_arcface_session(models_dir)
+    if arc is None:
         return {
             "verified": False,
             "similarity": 0.95,
@@ -142,32 +173,18 @@ def verify_arcface_similarity(orig_bgr: np.ndarray, restored_bgr: np.ndarray, mo
         }
 
     try:
-        session = get_onnx_session(arcface_model)
-        input_name = session.get_inputs()[0].name
+        session, input_name = arc
+        emb_orig = extract_arcface_embedding(orig_bgr, session, input_name)
+        emb_rest = extract_arcface_embedding(restored_bgr, session, input_name)
 
-        def extract_embedding(img: np.ndarray) -> np.ndarray:
-            resized = cv2.resize(img, (112, 112), interpolation=cv2.INTER_AREA)
-            rgb = cv2.cvtColor(resized, cv2.COLOR_BGR2RGB).astype(np.float32)
-            # Normalización estándar ArcFace [-1.0, 1.0]
-            norm = (rgb / 127.5) - 1.0
-            inp = np.transpose(norm, (2, 0, 1))[None, ...].astype(np.float32)
-            out = session.run(None, {input_name: inp})[0][0]
-            norm_val = np.linalg.norm(out)
-            return out / (norm_val + 1e-6)
-
-        emb_orig = extract_embedding(orig_bgr)
-        emb_rest = extract_embedding(restored_bgr)
-
-        # Similitud coseno entre embeddings normalizados
-        cosine_sim = float(np.dot(emb_orig, emb_rest))
-        cosine_sim = max(0.0, min(1.0, cosine_sim))
-        match_pct = round(cosine_sim * 100.0, 1)
+        sim = cosine_similarity(emb_orig, emb_rest)
+        match_pct = round(sim * 100.0, 1)
 
         return {
             "verified": True,
-            "similarity": round(cosine_sim, 4),
+            "similarity": round(sim, 4),
             "match_percentage": match_pct,
-            "passed": cosine_sim >= 0.75,
+            "passed": sim >= 0.75,
             "model": "ArcFace w600k_r50"
         }
     except Exception as e:
@@ -462,17 +479,18 @@ def process_id_card(
     if gender == "Hombre":
         if mean_lum < 95.0:
             rec_preset = "male_indoor_warm.mp4"
-            rec_reason = "Hombre · Iluminación Cálida / Interior"
+            rec_reason = "Hombre · Iluminación Cálida / Interior (9:16)"
         else:
             rec_preset = "male_hd_clear.mp4"
-            rec_reason = "Hombre · Iluminación Frontal Clara HD"
+            rec_reason = "Hombre · Iluminación Frontal Clara HD (4:5)"
     else:
-        if mean_lum >= 135.0:
-            rec_preset = "female_soft_light.mp4"
-            rec_reason = "Mujer · Iluminación Suave / Flash"
+        aspect_ratio = analysis.get("aspect_ratio", 1.0)
+        if aspect_ratio >= 1.25:
+            rec_preset = "female_clean_kyc_base.mp4"
+            rec_reason = "Mujer · Formato Horizontal / Webcam Estudio (16:9)"
         else:
             rec_preset = "female_mobile_natural.mp4"
-            rec_reason = "Mujer · Selfie Móvil Natural"
+            rec_reason = "Mujer · Formato Vertical / Selfie Móvil Natural (9:16)"
 
     return {
         "success": True,

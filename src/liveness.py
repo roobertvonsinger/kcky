@@ -98,13 +98,15 @@ def generate_synthetic_liveness(
     if framing_mode == "fit_pad":
         scale_part = f"scale={width}:{height}:force_original_aspect_ratio=decrease,pad={width}:{height}:(ow-iw)/2:(oh-ih)/2:color=0x12141a,"
     else:
-        # Encuadre selfie con headroom superior natural
-        scale_part = f"scale={width*2}:{height*2}:force_original_aspect_ratio=increase,crop={width*2}:{height*2}:(iw-ow)/2:'max(0, (ih-oh)*0.20)',"
+        # Encuadre selfie calibrado para marco circular KYC BetMexico
+        # headroom 0.38 baja la cara al centro-superior del marco (antes 0.20 dejaba cara MUY arriba)
+        scale_part = f"scale={width*2}:{height*2}:force_original_aspect_ratio=increase,crop={width*2}:{height*2}:(iw-ow)/2:'max(0, (ih-oh)*0.38)',"
 
     # Micro-movimientos cinemáticos senoidales (respiración y deriva analógica de 1-2px)
+    # Zoom base 1.06 para que la cara llene ~65% del frame (antes 1.015 dejaba cara pequeña)
     vf_filter = (
         f"{scale_part}"
-        f"zoompan=z='1.015+0.008*sin(2*3.14159*on/({fps}*4.5))':"
+        f"zoompan=z='1.06+0.008*sin(2*3.14159*on/({fps}*4.5))':"
         f"x='iw/2-(iw/zoom/2)+1.2*sin(2*3.14159*on/({fps}*6.2))':"
         f"y='ih/2-(ih/zoom/2)+1.0*cos(2*3.14159*on/({fps}*4.0))':"
         f"d={total_frames}:fps={fps}:s={width}x{height},"
@@ -187,23 +189,71 @@ def compute_smart_biometric_crop(
     target_h: int = 720
 ) -> str:
     """
-    Analiza los primeros frames del video selfie para detectar la posición del rostro
-    y calcula el recorte quirúrgico exacto para que encaje a la perfección en el óvalo KYC.
+    Analiza los primeros frames del video para detectar la posición del rostro con InsightFace
+    y calcula el recorte exacto para que cuadre con el marco circular KYC de BetMexico.
+
+    Calibración (marco circular BetMexico, 2026-08-28):
+    - face_h / frame_h ≈ 0.65 (la cara llena el marco)
+    - face_center_y / frame_h ≈ 0.45 (ligeramente arriba del centro)
+    - face_center_x / frame_w ≈ 0.50 (centrado horizontal)
     """
+    # Intentar usar quality_gate para el cálculo preciso
+    try:
+        from src.quality_gate import compute_oval_framing_crop
+        return compute_oval_framing_crop(video_path, target_w, target_h)
+    except Exception:
+        pass
+
+    # Fallback: cálculo directo con InsightFace
+    FACE_HEIGHT_RATIO = 0.65
+    FACE_CENTER_Y = 0.45
     target_ar = target_w / target_h
+
     try:
         import cv2
         import numpy as np
 
         cap = cv2.VideoCapture(video_path)
-        if cap.isOpened():
-            in_w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-            in_h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-            
-            face_boxes = []
+        if not cap.isOpened():
+            return _default_framing_fallback(target_w, target_h)
+
+        in_w = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+        in_h = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+        face_boxes = []
+        # Intentar InsightFace primero (reutilizando singleton para evitar re-carga de 340MB)
+        try:
+            try:
+                from src.quality_gate import _get_insightface_app
+                face_app = _get_insightface_app()
+            except Exception:
+                import insightface
+                global _liveness_insightface_cache
+                try:
+                    face_app = _liveness_insightface_cache
+                except NameError:
+                    face_app = insightface.app.FaceAnalysis(
+                        name='buffalo_l', providers=['CPUExecutionProvider'],
+                        allowed_modules=['detection']
+                    )
+                    face_app.prepare(ctx_id=0, det_size=(640, 640))
+                    _liveness_insightface_cache = face_app
+
+            for pos in [5, 15, 30, 45]:
+                cap.set(cv2.CAP_PROP_POS_FRAMES, pos)
+                ret, frame = cap.read()
+                if not ret:
+                    continue
+                faces = face_app.get(frame)
+                if faces:
+                    best = max(faces, key=lambda f: (f.bbox[2]-f.bbox[0])*(f.bbox[3]-f.bbox[1]))
+                    b = best.bbox.astype(int)
+                    face_boxes.append((int(b[0]), int(b[1]), int(b[2]-b[0]), int(b[3]-b[1])))
+        except Exception:
+            # Fallback a Haar Cascade
+            cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
             cascade_path = cv2.data.haarcascades + 'haarcascade_frontalface_default.xml'
             detector = cv2.CascadeClassifier(cascade_path) if cv2.data.haarcascades else None
-
             for _ in range(12):
                 ret, frame = cap.read()
                 if not ret:
@@ -213,45 +263,52 @@ def compute_smart_biometric_crop(
                     faces = detector.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=3, minSize=(60, 60))
                     if len(faces) > 0:
                         faces = sorted(faces, key=lambda f: f[2]*f[3], reverse=True)
-                        face_boxes.append(faces[0])
-            cap.release()
+                        face_boxes.append(tuple(faces[0]))
 
-            if face_boxes:
-                avg_x = int(np.median([b[0] for b in face_boxes]))
-                avg_y = int(np.median([b[1] for b in face_boxes]))
-                avg_fw = int(np.median([b[2] for b in face_boxes]))
-                avg_fh = int(np.median([b[3] for b in face_boxes]))
+        cap.release()
 
-                # El rostro debe ocupar ~58% de la altura vertical de la cámara de onboarding
-                desired_crop_h = int(avg_fh / 0.58)
+        if face_boxes:
+            avg_x = int(np.median([b[0] for b in face_boxes]))
+            avg_y = int(np.median([b[1] for b in face_boxes]))
+            avg_fw = int(np.median([b[2] for b in face_boxes]))
+            avg_fh = int(np.median([b[3] for b in face_boxes]))
+
+            face_cx = avg_x + avg_fw / 2.0
+            face_cy = avg_y + avg_fh / 2.0
+
+            # Calcular crop para que face_h/crop_h = FACE_HEIGHT_RATIO
+            desired_crop_h = int(avg_fh / FACE_HEIGHT_RATIO)
+            desired_crop_w = int(desired_crop_h * target_ar)
+
+            if desired_crop_w > in_w:
+                desired_crop_w = in_w
+                desired_crop_h = int(in_w / target_ar)
+            if desired_crop_h > in_h:
+                desired_crop_h = in_h
                 desired_crop_w = int(desired_crop_h * target_ar)
 
-                if desired_crop_w > in_w or desired_crop_h > in_h:
-                    if (in_w / in_h) > target_ar:
-                        desired_crop_h = in_h
-                        desired_crop_w = int(in_h * target_ar)
-                    else:
-                        desired_crop_w = in_w
-                        desired_crop_h = int(in_w / target_ar)
+            # Posicionar para que face_center esté a FACE_CENTER_Y del crop
+            crop_y = int(face_cy - (FACE_CENTER_Y * desired_crop_h))
+            crop_x = int(face_cx - desired_crop_w / 2.0)
 
-                face_center_x = avg_x + avg_fw / 2.0
-                crop_x = int(face_center_x - desired_crop_w / 2.0)
-                crop_y = int(avg_y - desired_crop_h * 0.22)
+            crop_x = max(0, min(in_w - desired_crop_w, crop_x))
+            crop_y = max(0, min(in_h - desired_crop_h, crop_y))
 
-                crop_x = max(0, min(in_w - desired_crop_w, crop_x))
-                crop_y = max(0, min(in_h - desired_crop_h, crop_y))
+            desired_crop_w = (desired_crop_w // 2) * 2
+            desired_crop_h = (desired_crop_h // 2) * 2
+            crop_x = (crop_x // 2) * 2
+            crop_y = (crop_y // 2) * 2
 
-                desired_crop_w = (desired_crop_w // 2) * 2
-                desired_crop_h = (desired_crop_h // 2) * 2
-                crop_x = (crop_x // 2) * 2
-                crop_y = (crop_y // 2) * 2
-
-                return f"crop={desired_crop_w}:{desired_crop_h}:{crop_x}:{crop_y},scale={target_w}:{target_h}"
+            return f"crop={desired_crop_w}:{desired_crop_h}:{crop_x}:{crop_y},scale={target_w}:{target_h}"
     except Exception:
         pass
 
-    # Fallback heurístico de encuadre selfie primer cuadro con headroom superior
-    return f"scale={target_w}:{target_h}:force_original_aspect_ratio=increase,crop={target_w}:{target_h}:(iw-ow)/2:'max(0, (ih-oh)*0.25)'"
+    return _default_framing_fallback(target_w, target_h)
+
+
+def _default_framing_fallback(target_w: int, target_h: int) -> str:
+    """Fallback heurístico calibrado para marco circular KYC (headroom 35%)."""
+    return f"scale={target_w}:{target_h}:force_original_aspect_ratio=increase,crop={target_w}:{target_h}:(iw-ow)/2:'max(0, (ih-oh)*0.35)'"
 
 
 def convert_video_to_seamless_y4m(
@@ -300,7 +357,8 @@ def convert_video_to_seamless_y4m(
         filter_args = ["-filter_complex", filter_complex]
     else:
         # Video horizontal o relación 16:9 / 4:3
-        vf_scale = f"scale={width}:{height}:force_original_aspect_ratio=increase,crop={width}:{height}:(iw-ow)/2:'max(0, (ih-oh)*0.15)'"
+        # Headroom 0.35 para centrar cara en marco circular KYC (antes 0.15 dejaba cara MUY arriba)
+        vf_scale = f"scale={width}:{height}:force_original_aspect_ratio=increase,crop={width}:{height}:(iw-ow)/2:'max(0, (ih-oh)*0.35)'"
         filter_args = ["-vf", f"{vf_scale},noise=alls=2:allf=t+u,format=yuv420p"]
 
     total_frames = min_duration * fps

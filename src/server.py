@@ -270,22 +270,6 @@ PRESET_METADATA = {
         "desc": "Encuadre elevado y centrado para óvalo KYC, sin lentes, sin reflejos ni marcas de agua",
         "is_primary": True
     },
-    "female_kyc_subecam_clean.mp4": {
-        "name": "Mujer · Ángulo Elevado WebCam",
-        "gender": "Mujer",
-        "resolution": "1280x720 (16:9)",
-        "badge": "Cámara Alta",
-        "desc": "Perspectiva frontal limpia simulando webcam física de monitor",
-        "is_primary": False
-    },
-    "female_kyc_cambia_clean.mp4": {
-        "name": "Mujer · Frontal Neutro Natural",
-        "gender": "Mujer",
-        "resolution": "1280x720 (16:9)",
-        "badge": "Luz Natural",
-        "desc": "Movimiento frontal sutil con iluminación uniforme",
-        "is_primary": False
-    },
     "female_mobile_natural.mp4": {
         "name": "Mujer · Selfie Móvil Natural",
         "gender": "Mujer",
@@ -294,21 +278,13 @@ PRESET_METADATA = {
         "desc": "Excelente para credenciales estándar y fotos de móvil",
         "is_primary": False
     },
-    "female_soft_light.mp4": {
-        "name": "Mujer · Luz Suave / Flash",
-        "gender": "Mujer",
-        "resolution": "960x1280 (3:4)",
-        "badge": "Alta Exposición",
-        "desc": "Para fotos claras, pálidas o con flash frontal",
-        "is_primary": False
-    },
     "male_hd_clear.mp4": {
         "name": "Hombre · Frontal HD Nítido",
         "gender": "Hombre",
         "resolution": "1080x1350 (4:5)",
         "badge": "HD Nítido",
         "desc": "Iluminación frontal clara, primer plano KYC óptimo",
-        "is_primary": False
+        "is_primary": True
     },
     "male_indoor_warm.mp4": {
         "name": "Hombre · Interior Cálido",
@@ -316,14 +292,6 @@ PRESET_METADATA = {
         "resolution": "1080x1920 (9:16)",
         "badge": "Luz Tenue",
         "desc": "Para credenciales oscuras o fotos con luz de habitación",
-        "is_primary": False
-    },
-    "female_driving_alt.mp4": {
-        "name": "Mujer · Alternativa Iluminada",
-        "gender": "Mujer",
-        "resolution": "720x1280 (9:16)",
-        "badge": "Dinámica",
-        "desc": "Movimiento suave con iluminación uniforme",
         "is_primary": False
     }
 }
@@ -750,6 +718,62 @@ async def api_process_swap(
 
         state.active_y4m = out_y4m
         state.active_mp4_preview = out_mp4
+
+        # ── Quality Gate Biométrico (post-swap, pre-entrega) ──────────────
+        qg_result = None
+        try:
+            from src.quality_gate import run_quality_gate
+            from src.config import DEEP_LIVE_CAM_DIR
+
+            await broadcast_progress({
+                "percent": 92,
+                "current_frame": 0,
+                "total_frames": 0,
+                "eta_text": "3s",
+                "speed_text": "",
+                "status_text": "🧬 Ejecutando Quality Gate biométrico...",
+                "phase": "quality_gate"
+            })
+
+            qg_models_dir = str(DEEP_LIVE_CAM_DIR / "models")
+            qg_output_dir = str(BUFFERS_DIR / f"qg_{stream_id}")
+
+            def sync_log(msg, level="info"):
+                asyncio.run_coroutine_threadsafe(broadcast_log(msg, level, "quality_gate"), loop)
+
+            qg_result = await asyncio.to_thread(
+                run_quality_gate,
+                source_face_path=face_for_swap,
+                video_path=raw_swap_mp4,
+                models_dir=qg_models_dir,
+                output_dir=qg_output_dir,
+                target_w=width,
+                target_h=height,
+                fps=fps,
+                apply_oval_framing=True,
+                log_callback=sync_log
+            )
+
+            qg_verdict = qg_result.get("verdict", "UNKNOWN")
+            qg_pct = qg_result.get("match_percentage", 0.0)
+
+            if qg_verdict == "PASS":
+                await broadcast_log(f"🟢 Quality Gate PASS — Similitud {qg_pct}%", "success", "quality_gate")
+            elif qg_verdict == "WARN":
+                await broadcast_log(f"🟡 Quality Gate WARN — Similitud {qg_pct}% (aceptable)", "warning", "quality_gate")
+            else:
+                rec = qg_result.get("recommendation", "Prueba con un preset diferente.")
+                await broadcast_log(f"🔴 Quality Gate FAIL — Similitud {qg_pct}%. {rec}", "error", "quality_gate")
+
+            # Si el QG produjo un video reframed, usar ese como preview
+            qg_final_video = qg_result.get("final_video_path")
+            if qg_final_video and qg_final_video != out_mp4 and os.path.exists(qg_final_video):
+                state.active_mp4_preview = qg_final_video
+
+        except Exception as qg_err:
+            logger.warning(f"Quality Gate no pudo ejecutarse: {qg_err}")
+            await broadcast_log(f"⚠️ Quality Gate omitido: {str(qg_err)}", "warning")
+
         await broadcast_progress({
             "percent": 100,
             "current_frame": duration * fps,
@@ -764,7 +788,8 @@ async def api_process_swap(
             "status": "success",
             "y4m_path": out_y4m,
             "preview_url": f"/data/buffers/preview_swap_{stream_id}.mp4",
-            "metadata": res
+            "metadata": res,
+            "quality_gate": qg_result
         }
     except Exception as e:
         logger.error(f"Error en Face Swap: {e}", exc_info=True)
