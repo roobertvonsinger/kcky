@@ -29,7 +29,7 @@ for d in [UPLOADS_DIR, BUFFERS_DIR, SESSIONS_DIR, PRESETS_DIR, MODELS_DIR, STATI
     d.mkdir(parents=True, exist_ok=True)
 
 # Servidor Web
-DEFAULT_HOST = "0.0.0.0"
+DEFAULT_HOST = "127.0.0.1"
 DEFAULT_PORT = 8765
 
 # Presets de Hardware de Cámara

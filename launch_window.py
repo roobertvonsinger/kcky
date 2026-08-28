@@ -33,13 +33,13 @@ except Exception as e:
 # Lanzar ventana autónoma WebView2
 import webview
 
-print(f"[*] Abriendo ventana autónoma K.C.K.Y. Studio (WebView2)...")
+print(f"[*] Abriendo ventana independiente KCKY Studio (Medidas Smartphone 430x900)...")
 window = webview.create_window(
-    title="K.C.K.Y. Studio - Suite Biometrica HD",
+    title="KCKY Studio",
     url=url,
-    width=1420,
-    height=920,
+    width=430,
+    height=900,
     resizable=True,
-    min_size=(1024, 700)
+    min_size=(380, 720)
 )
 webview.start(debug=False)

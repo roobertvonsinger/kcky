@@ -1,5 +1,5 @@
 /**
- * K.C.K.Y. — Blackbox Wizard Controller (Caja Negra Ejecutable v2.0)
+ * KCKY — Mobile-First Wizard Controller & Real-Time Render Telemetry
  */
 
 const Studio = {
@@ -8,14 +8,16 @@ const Studio = {
     uploadedCropUrl: null,
     uploadedEnhancedUrl: null,
     imageType: null,
-    generationMode: 'swap', // 'swap' (Default Recomendado) | 'synthetic'
+    generationMode: 'swap', // 'swap' (Recomendado) | 'synthetic'
     targetPreset: 'female_clean_kyc_base.mp4',
     customVideoPath: null,
     activeY4mPath: null,
     activeMp4PreviewUrl: null,
     isGenerating: false,
     vcamActive: false,
-    ws: null
+    ws: null,
+    progressPollInterval: null,
+    availablePresets: []
 };
 
 async function safeFetchJson(url, options = {}) {
@@ -57,9 +59,13 @@ function initWebSocket() {
         try {
             const data = JSON.parse(event.data);
             if (data.type === 'log') {
-                updateLiveStatus(data.message);
+                updateLiveLogMessage(data.message);
             } else if (data.type === 'telemetry') {
-                handleTelemetryEvent(data.event_type, data.data);
+                if (data.event_type === 'RENDER_PROGRESS') {
+                    handleRenderProgress(data.data);
+                } else {
+                    handleTelemetryEvent(data.event_type, data.data);
+                }
             }
         } catch (e) {
             console.error("WS Parse error:", e);
@@ -71,9 +77,9 @@ function initWebSocket() {
     };
 }
 
-function updateLiveStatus(message) {
+function updateLiveLogMessage(message) {
     const statusMsg = document.getElementById('progress-status-msg');
-    if (statusMsg) {
+    if (statusMsg && Studio.isGenerating) {
         statusMsg.textContent = message;
     }
 }
@@ -81,9 +87,76 @@ function updateLiveStatus(message) {
 function handleTelemetryEvent(eventType, eventData) {
     if (eventType === 'KYC_SDK_DETECTED') {
         const sdk = eventData.data?.sdkName || eventData.sdkName || 'SDK KYC';
-        showToast(`🔥 SDK Detectado en el sitio: ${sdk}`, 'success');
+        showToast(`🔥 SDK Detectado: ${sdk}`, 'success');
     } else if (eventType === 'GET_USER_MEDIA_GRANTED') {
-        showToast(`✔️ Cámara WebRTC inyectada bajo identidad Logitech C920`, 'success');
+        showToast(`✔️ Cámara WebRTC inyectada con éxito`, 'success');
+    }
+}
+
+/* ==========================================================================
+   BARRA DE PROGRESO CON PORCENTAJE REAL & ETA
+   ========================================================================== */
+function handleRenderProgress(prog) {
+    if (!prog) return;
+
+    const percent = Math.min(100, Math.max(0, prog.percent || 0));
+    const percentNum = document.getElementById('progress-percent-num');
+    const barFill = document.getElementById('progress-bar-fill');
+    const statusMsg = document.getElementById('progress-status-msg');
+    const framesTxt = document.getElementById('progress-frames-txt');
+    const etaTxt = document.getElementById('progress-eta-txt');
+
+    if (percentNum) percentNum.textContent = percent;
+    if (barFill) barFill.style.width = `${percent}%`;
+
+    if (statusMsg && prog.status_text) {
+        statusMsg.textContent = prog.status_text;
+    }
+
+    if (framesTxt) {
+        if (prog.total_frames && prog.total_frames > 0) {
+            framesTxt.textContent = `Frame ${prog.current_frame || 0} / ${prog.total_frames}`;
+        } else if (prog.speed_text) {
+            framesTxt.textContent = prog.speed_text;
+        } else {
+            framesTxt.textContent = "Procesando...";
+        }
+    }
+
+    if (etaTxt) {
+        if (prog.eta_text && prog.eta_text !== '0s' && prog.eta_text !== 'Iniciando...') {
+            etaTxt.textContent = `⏱️ Restante: ~${prog.eta_text}`;
+        } else if (percent >= 100) {
+            etaTxt.textContent = `✔️ Completado`;
+        } else {
+            etaTxt.textContent = `Calculando tiempo...`;
+        }
+    }
+}
+
+function startProgressPolling() {
+    stopProgressPolling();
+    Studio.progressPollInterval = setInterval(async () => {
+        if (!Studio.isGenerating) {
+            stopProgressPolling();
+            return;
+        }
+        try {
+            const resp = await fetch('/api/progress');
+            if (resp.ok) {
+                const data = await resp.json();
+                handleRenderProgress(data);
+            }
+        } catch (e) {
+            // Silencioso en polling
+        }
+    }, 400);
+}
+
+function stopProgressPolling() {
+    if (Studio.progressPollInterval) {
+        clearInterval(Studio.progressPollInterval);
+        Studio.progressPollInterval = null;
     }
 }
 
@@ -92,30 +165,37 @@ function handleTelemetryEvent(eventType, eventData) {
    ========================================================================== */
 function goToStep(stepNum) {
     if (stepNum === 2 && !Studio.uploadedFacePath) {
-        showToast("Primero sube una credencial o foto de rostro.", "error");
+        showToast("Sube una credencial o foto primero.", "error");
         return;
     }
     if (stepNum === 3 && !Studio.uploadedFacePath) {
-        showToast("Debes cargar una identidad antes de continuar.", "error");
+        showToast("Carga una identidad antes de continuar.", "error");
         return;
     }
 
     Studio.currentStep = stepNum;
 
-    // Actualizar visual del stepper
+    // Actualizar paneles
     for (let i = 1; i <= 3; i++) {
-        const nav = document.getElementById(`step-nav-i`.replace('i', i));
-        const panel = document.getElementById(`step-panel-i`.replace('i', i));
+        const seg = document.getElementById(`seg-${i}`);
+        const panel = document.getElementById(`step-panel-${i}`);
         
-        if (i === stepNum) {
-            nav.className = 'step-indicator active';
-            panel.className = 'step-panel active';
-        } else if (i < stepNum) {
-            nav.className = 'step-indicator completed';
-            panel.className = 'step-panel';
-        } else {
-            nav.className = 'step-indicator disabled';
-            panel.className = 'step-panel';
+        if (panel) {
+            if (i === stepNum) {
+                panel.classList.add('active');
+            } else {
+                panel.classList.remove('active');
+            }
+        }
+
+        if (seg) {
+            if (i === stepNum) {
+                seg.className = 'stepper-seg active';
+            } else if (i < stepNum) {
+                seg.className = 'stepper-seg completed';
+            } else {
+                seg.className = 'stepper-seg';
+            }
         }
     }
 }
@@ -127,10 +207,15 @@ function resetToNewSession() {
     Studio.activeY4mPath = null;
     Studio.activeMp4PreviewUrl = null;
     Studio.isGenerating = false;
+    stopProgressPolling();
 
-    document.getElementById('identity-result-box').style.display = 'none';
-    document.getElementById('dropzone-idle-ui').style.display = 'block';
-    document.getElementById('dropzone-scanning-ui').style.display = 'none';
+    const resultBox = document.getElementById('identity-result-box');
+    const idleUI = document.getElementById('dropzone-idle-ui');
+    const scanningUI = document.getElementById('dropzone-scanning-ui');
+
+    if (resultBox) resultBox.style.display = 'none';
+    if (idleUI) idleUI.style.display = 'block';
+    if (scanningUI) scanningUI.style.display = 'none';
 
     goToStep(1);
     showToast("Sesión reiniciada para nueva identidad.", "success");
@@ -148,6 +233,8 @@ function triggerFileInput(inputId, event) {
 function initDropzone() {
     const dropzone = document.getElementById('identity-dropzone');
     const fileInput = document.getElementById('identity-file-input');
+
+    if (!dropzone || !fileInput) return;
 
     ['dragenter', 'dragover'].forEach(name => {
         dropzone.addEventListener(name, (e) => {
@@ -201,73 +288,43 @@ async function handleImageUpload(file) {
         const detectedGender = res.metadata?.gender || 'Hombre';
         const detectedAge = res.metadata?.age || 35;
         const recommendedPreset = res.metadata?.recommended_preset || (detectedGender === 'Hombre' ? 'male_hd_clear.mp4' : 'female_mobile_natural.mp4');
-        const presetReason = res.metadata?.preset_reason || `${detectedGender} · Base recomendada`;
 
         // Mostrar vistas previas
         document.getElementById('img-crop-preview').src = res.crop_url;
         document.getElementById('img-enhanced-preview').src = res.enhanced_url;
 
         // Badge de tipo
-        const typeBadge = document.getElementById('identity-detected-badge');
         const typeText = document.getElementById('identity-type-text');
+        const typeIcon = document.getElementById('identity-icon');
         if (Studio.imageType === 'ID_CARD') {
-            typeBadge.querySelector('.badge-icon').textContent = '🪪';
-            typeText.textContent = res.metadata?.type_label || 'Credencial INE / ID Detectada';
+            if (typeIcon) typeIcon.textContent = '🪪';
+            if (typeText) typeText.textContent = res.metadata?.type_label || 'INE Detectada';
         } else {
-            typeBadge.querySelector('.badge-icon').textContent = '👤';
-            typeText.textContent = res.metadata?.type_label || 'Selfie / Retrato Detectado';
+            if (typeIcon) typeIcon.textContent = '👤';
+            if (typeText) typeText.textContent = res.metadata?.type_label || 'Selfie Detectada';
         }
 
-        // Badge de Género & Edad
-        const genderBadge = document.getElementById('gender-detected-badge');
-        const genderIcon = document.getElementById('gender-icon');
+        // Badge de Género
         const genderText = document.getElementById('gender-text');
-        if (genderBadge && genderText) {
-            genderBadge.style.display = 'inline-flex';
-            if (detectedGender === 'Hombre') {
-                genderIcon.textContent = '👨';
-                genderText.textContent = `Hombre (~${detectedAge} años)`;
-                genderBadge.style.background = 'rgba(59, 130, 246, 0.14)';
-                genderBadge.style.borderColor = 'rgba(59, 130, 246, 0.4)';
-                genderBadge.style.color = '#60a5fa';
-            } else {
-                genderIcon.textContent = '👩';
-                genderText.textContent = `Mujer (~${detectedAge} años)`;
-                genderBadge.style.background = 'rgba(236, 72, 153, 0.14)';
-                genderBadge.style.borderColor = 'rgba(236, 72, 153, 0.4)';
-                genderBadge.style.color = '#f472b6';
-            }
+        if (genderText) {
+            genderText.textContent = `${detectedGender} (~${detectedAge}a)`;
         }
 
-        // Auto-seleccionar Preset anatómico adecuado
+        // Auto-seleccionar Preset
         Studio.targetPreset = recommendedPreset;
         renderPresetsCatalog();
 
-        // Badge de Fidelidad ArcFace
+        // Badge ArcFace
         const arcfaceScore = res.metadata?.arcface_score || 96.2;
-        const arcfaceBadge = document.getElementById('arcface-match-badge');
         const arcfaceText = document.getElementById('arcface-score-text');
-        if (arcfaceText && arcfaceBadge) {
-            arcfaceText.textContent = `${arcfaceScore}% Match ArcFace`;
-            if (arcfaceScore >= 85) {
-                arcfaceBadge.style.background = 'rgba(34, 197, 94, 0.14)';
-                arcfaceBadge.style.borderColor = 'rgba(34, 197, 94, 0.4)';
-                arcfaceBadge.style.color = '#4ade80';
-            } else if (arcfaceScore >= 75) {
-                arcfaceBadge.style.background = 'rgba(234, 179, 8, 0.14)';
-                arcfaceBadge.style.borderColor = 'rgba(234, 179, 8, 0.4)';
-                arcfaceBadge.style.color = '#fde047';
-            } else {
-                arcfaceBadge.style.background = 'rgba(239, 68, 68, 0.14)';
-                arcfaceBadge.style.borderColor = 'rgba(239, 68, 68, 0.4)';
-                arcfaceBadge.style.color = '#f87171';
-            }
+        if (arcfaceText) {
+            arcfaceText.textContent = `${arcfaceScore}% ArcFace`;
         }
 
         scanningUI.style.display = 'none';
         resultBox.style.display = 'block';
 
-        showToast(`Identidad procesada: ${detectedGender} (~${detectedAge}a) · Base: ${recommendedPreset}`, "success");
+        showToast(`Identidad procesada: ${detectedGender} · Base: ${recommendedPreset}`, "success");
     } catch (err) {
         console.error(err);
         scanningUI.style.display = 'none';
@@ -279,8 +336,6 @@ async function handleImageUpload(file) {
 /* ==========================================================================
    CATÁLOGO DE PRESETS & DINÁMICA FACIAL
    ========================================================================== */
-Studio.availablePresets = [];
-
 async function loadPresetsCatalog() {
     try {
         const data = await safeFetchJson('/api/presets');
@@ -300,20 +355,20 @@ function renderPresetsCatalog() {
         const btn = document.createElement('button');
         btn.type = 'button';
         const isSelected = (Studio.targetPreset === p.id);
-        btn.className = `preset-btn ${isSelected ? 'active' : ''}`;
+        btn.className = `preset-chip ${isSelected ? 'active' : ''}`;
         btn.onclick = (e) => setSwapPreset(p.id, e);
         btn.innerHTML = `
             <span>${p.name}</span>
-            <span style="font-size: 9px; opacity: 0.75; display: block;">${p.resolution} · ${p.badge}</span>
+            <span style="font-size: 8px; opacity: 0.65; display: block;">${p.resolution} · ${p.badge}</span>
         `;
         container.appendChild(btn);
     });
 
     const customBtn = document.createElement('button');
     customBtn.type = 'button';
-    customBtn.className = `preset-btn custom ${Studio.customVideoPath ? 'active' : ''}`;
+    customBtn.className = `preset-chip custom ${Studio.customVideoPath ? 'active' : ''}`;
     customBtn.onclick = (e) => triggerFileInput('custom-video-input', e);
-    customBtn.innerHTML = `📁 Subir Propio`;
+    customBtn.innerHTML = `📁 Subir propio`;
     container.appendChild(customBtn);
 }
 
@@ -340,7 +395,7 @@ function setSwapPreset(presetName, event) {
     Studio.targetPreset = presetName;
     Studio.customVideoPath = null;
     renderPresetsCatalog();
-    showToast(`Base seleccionada: ${presetName}`, "success");
+    showToast(`Base: ${presetName}`, "success");
 }
 
 async function handleCustomVideoUpload(event) {
@@ -354,14 +409,15 @@ async function handleCustomVideoUpload(event) {
         showToast("Subiendo video conductor...", "success");
         const res = await safeFetchJson('/api/upload-target', { method: 'POST', body: formData });
         Studio.customVideoPath = res.file_path;
-        showToast(`Video conductor cargado: ${res.filename}`, "success");
+        showToast(`Video cargado: ${res.filename}`, "success");
+        renderPresetsCatalog();
     } catch (err) {
         showToast(err.message || "Error al subir video", "error");
     }
 }
 
 /* ==========================================================================
-   PASO 3: GENERACIÓN Y SALIDA
+   PASO 3: GENERACIÓN Y SALIDA CON TELEMETRÍA EN VIVO
    ========================================================================== */
 async function startGenerationAndGoStep3() {
     goToStep(3);
@@ -371,8 +427,19 @@ async function startGenerationAndGoStep3() {
     const downloadBtn = document.getElementById('btn-download-video');
 
     progressLayer.style.display = 'flex';
-    hudBadge.textContent = 'GENERANDO BUFFER...';
+    hudBadge.textContent = 'GENERANDO BUFFER';
     Studio.isGenerating = true;
+
+    // Iniciar polling de respaldo por si el WS se atrasa
+    startProgressPolling();
+
+    handleRenderProgress({
+        percent: 4,
+        status_text: "Iniciando procesamiento DirectML...",
+        current_frame: 0,
+        total_frames: 0,
+        eta_text: "Iniciando..."
+    });
 
     try {
         const formData = new FormData();
@@ -404,27 +471,37 @@ async function startGenerationAndGoStep3() {
         player.play();
 
         // Configurar botón de descarga
-        downloadBtn.href = res.preview_url;
+        if (downloadBtn) downloadBtn.href = res.preview_url;
 
-        progressLayer.style.display = 'none';
-        hudBadge.textContent = 'STREAM ACTIVO EN BUFFER';
-        showToast("✨ Flujo de cámara generado y armado con éxito.", "success");
+        handleRenderProgress({
+            percent: 100,
+            status_text: "¡Cámara lista en buffer!",
+            eta_text: "0s"
+        });
+
+        setTimeout(() => {
+            progressLayer.style.display = 'none';
+            hudBadge.textContent = 'CÁMARA ACTIVA';
+            showToast("✨ Flujo de cámara generado con éxito.", "success");
+        }, 500);
+
     } catch (err) {
         console.error(err);
         progressLayer.style.display = 'none';
-        hudBadge.textContent = 'ERROR EN PROCESO';
+        hudBadge.textContent = 'ERROR';
         showToast(err.message || "Error al procesar el flujo.", "error");
     } finally {
         Studio.isGenerating = false;
+        stopProgressPolling();
     }
 }
 
 /* ==========================================================================
    CANALES DE SALIDA
-   ========================================================================= */
+   ========================================================================== */
 async function launchBrowserFlow() {
     if (!Studio.activeY4mPath) {
-        showToast("El buffer aún se está generando. Por favor espera...", "error");
+        showToast("Genera el video primero antes de abrir el navegador.", "error");
         return;
     }
 
@@ -435,7 +512,7 @@ async function launchBrowserFlow() {
 
     const btn = document.getElementById('btn-launch-browser-action');
     btn.disabled = true;
-    btn.textContent = 'Abriendo Navegador Seguro...';
+    btn.innerHTML = '<span>Lanzando Navegador...</span>';
 
     try {
         const formData = new FormData();
@@ -444,12 +521,12 @@ async function launchBrowserFlow() {
         formData.append('hardware_persona', hardwarePersona);
 
         const res = await safeFetchJson('/api/launch-browser', { method: 'POST', body: formData });
-        showToast(`🚀 Navegador lanzado con cámara [${hardwarePersona}] armada.`, "success");
+        showToast(`🚀 Navegador lanzado con cámara [${hardwarePersona}].`, "success");
     } catch (err) {
         showToast(err.message || "Fallo al lanzar el navegador", "error");
     } finally {
         btn.disabled = false;
-        btn.textContent = '🚀 Abrir Navegador con Cámara Armada';
+        btn.innerHTML = '<span>🚀 Abrir Navegador Armado</span>';
     }
 }
 
@@ -501,41 +578,46 @@ async function checkVirtualCamStatus() {
                 btn.textContent = 'Detener';
             }
         }
-    } catch (e) {}
-}
-
-/* ==========================================================================
-   PANIC RESET & TOASTS
-   ========================================================================== */
-function initPanicReset() {
-    const btn = document.getElementById('btn-panic-reset');
-    if (btn) {
-        btn.addEventListener('click', async () => {
-            try {
-                await fetch('/api/panic-reset', { method: 'POST' });
-                resetToNewSession();
-                showToast("⚡ Memoria liberada y procesos detenidos.", "success");
-            } catch (e) {
-                showToast("Error en Panic Reset", "error");
-            }
-        });
+    } catch (e) {
+        // Silencioso
     }
 }
 
-function showToast(message, type = 'success') {
+function initPanicReset() {
+    const btn = document.getElementById('btn-panic-reset');
+    if (!btn) return;
+
+    btn.addEventListener('click', async () => {
+        try {
+            btn.style.opacity = '0.5';
+            await fetch('/api/panic-reset', { method: 'POST' });
+            showToast("🚨 Memoria y procesos liberados.", "success");
+            resetToNewSession();
+        } catch (e) {
+            showToast("Error en reinicio de emergencia", "error");
+        } finally {
+            btn.style.opacity = '1';
+        }
+    });
+}
+
+/* ==========================================================================
+   TOAST NOTIFICATIONS
+   ========================================================================== */
+function showToast(message, type = 'info') {
     const container = document.getElementById('toast-container');
     if (!container) return;
 
     const toast = document.createElement('div');
-    toast.className = `toast-item ${type}`;
+    toast.className = `toast ${type}`;
     toast.textContent = message;
 
     container.appendChild(toast);
 
     setTimeout(() => {
         toast.style.opacity = '0';
-        toast.style.transform = 'translateY(10px)';
-        toast.style.transition = 'all 0.3s ease';
-        setTimeout(() => toast.remove(), 300);
-    }, 4000);
+        toast.style.transform = 'translateY(12px) scale(0.95)';
+        toast.style.transition = 'all 0.25s ease';
+        setTimeout(() => toast.remove(), 250);
+    }, 3200);
 }

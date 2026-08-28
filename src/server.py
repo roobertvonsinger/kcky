@@ -33,7 +33,32 @@ from src.virtual_cam_broadcaster import (
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger("KCKY_Server")
 
-app = FastAPI(title="K.C.K.Y. — Suite de Inyección Biométrica & KYC (KCKY)", version="2.0.0")
+import time
+from contextlib import asynccontextmanager
+
+async def cleanup_old_files_task():
+    while True:
+        try:
+            now = time.time()
+            for directory in [UPLOADS_DIR, BUFFERS_DIR]:
+                for f in directory.glob("*"):
+                    if f.is_file() and f.name != ".gitkeep" and now - f.stat().st_mtime > 86400:
+                        try:
+                            f.unlink()
+                        except Exception:
+                            pass
+        except Exception as e:
+            logger.error(f"Error en cleanup_old_files_task: {e}")
+        await asyncio.sleep(3600)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    cleanup_task = asyncio.create_task(cleanup_old_files_task())
+    yield
+    cleanup_task.cancel()
+    auto_cleanup_all_processes()
+
+app = FastAPI(title="K.C.K.Y. — Suite de Inyección Biométrica & KYC (KCKY)", version="2.0.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -57,6 +82,15 @@ class AppState:
         self.browser_running: bool = False
         self.is_processing: bool = False
         self.detected_sdks: List[Dict[str, Any]] = []
+        self.current_progress: Dict[str, Any] = {
+            "percent": 0,
+            "current_frame": 0,
+            "total_frames": 0,
+            "eta_text": "0s",
+            "speed_text": "",
+            "status_text": "Listo",
+            "phase": "idle"
+        }
 
 state = AppState()
 
@@ -80,9 +114,7 @@ def auto_cleanup_all_processes():
 atexit.register(auto_cleanup_all_processes)
 
 
-@app.on_event("shutdown")
-async def shutdown_event():
-    auto_cleanup_all_processes()
+# Shutdown manejado en el lifespan de FastAPI
 
 
 async def broadcast_log(msg: str, level: str = "info", category: str = "system"):
@@ -121,9 +153,19 @@ async def broadcast_telemetry(event_type: str, data: Any):
             state.websockets.remove(d)
 
 
+async def broadcast_progress(data: Dict[str, Any]):
+    state.current_progress.update(data)
+    await broadcast_telemetry("RENDER_PROGRESS", state.current_progress)
+
+
 # -------------------------------------------------------------
 # REST ENDPOINTS
 # -------------------------------------------------------------
+
+@app.get("/api/progress")
+async def get_render_progress():
+    return state.current_progress
+
 
 @app.get("/api/status")
 async def get_status():
@@ -192,12 +234,40 @@ async def list_hardware_personas():
 
 
 PRESET_METADATA = {
+    "female_clean_kyc_base.mp4": {
+        "name": "👩 Mujer · Estudio KYC Limpio HD (Óvalo)",
+        "gender": "Mujer",
+        "resolution": "1280x720 (16:9)",
+        "badge": "Óvalo KYC HD",
+        "desc": "Encuadre elevado y centrado para óvalo KYC, sin lentes, sin reflejos ni marcas de agua"
+    },
+    "female_kyc_subecam_clean.mp4": {
+        "name": "👩 Mujer · Ángulo Elevado WebCam",
+        "gender": "Mujer",
+        "resolution": "1280x720 (16:9)",
+        "badge": "Cámara Alta",
+        "desc": "Perspectiva frontal limpia simulando webcam física de monitor"
+    },
+    "female_kyc_cambia_clean.mp4": {
+        "name": "👩 Mujer · Frontal Neutro Natural",
+        "gender": "Mujer",
+        "resolution": "1280x720 (16:9)",
+        "badge": "Luz Natural",
+        "desc": "Movimiento frontal sutil con iluminación uniforme"
+    },
     "female_mobile_natural.mp4": {
         "name": "👩 Mujer · Selfie Móvil Natural",
         "gender": "Mujer",
         "resolution": "478x850 (9:16)",
         "badge": "INE / Celular",
         "desc": "Excelente para credenciales estándar y fotos de móvil"
+    },
+    "female_soft_light.mp4": {
+        "name": "👩 Mujer · Luz Suave / Flash",
+        "gender": "Mujer",
+        "resolution": "960x1280 (3:4)",
+        "badge": "Alta Exposición",
+        "desc": "Para fotos claras, pálidas o con flash frontal"
     },
     "male_hd_clear.mp4": {
         "name": "👨 Hombre · Frontal HD Nítido",
@@ -212,20 +282,6 @@ PRESET_METADATA = {
         "resolution": "1080x1920 (9:16)",
         "badge": "Luz Tenue",
         "desc": "Para credenciales oscuras o fotos con luz de habitación"
-    },
-    "female_soft_light.mp4": {
-        "name": "👩 Mujer · Luz Suave / Flash",
-        "gender": "Mujer",
-        "resolution": "960x1280 (3:4)",
-        "badge": "Alta Exposición",
-        "desc": "Para fotos claras, pálidas o con flash frontal"
-    },
-    "female_clean_kyc_base.mp4": {
-        "name": "👩 Mujer · Estudio KYC Limpio",
-        "gender": "Mujer",
-        "resolution": "1280x720 (16:9)",
-        "badge": "Estudio HD",
-        "desc": "Fondo neutro de estudio e iluminación homogénea"
     }
 }
 
@@ -295,11 +351,15 @@ async def api_extract_id_face(file: UploadFile = File(...)):
 
     from src.id_extractor import extract_and_restore_id_face
     try:
+        t0 = time.time()
         data = await extract_and_restore_id_face(id_card_path, crop_path, enhanced_path)
+        elapsed = time.time() - t0
+        
         if not data.get("success"):
             raise RuntimeError(data.get("error", "Error desconocido extrayendo rostro de credencial."))
 
-        await broadcast_log(f"Rostro extraído y restaurado a calidad HD ({data.get('enhanced_size')}).", "success")
+        data["processing_time_sec"] = round(elapsed, 2)
+        await broadcast_log(f"Rostro extraído y restaurado a calidad HD ({data.get('enhanced_size')}). [⏱️ {elapsed:.2f}s]", "success")
         return {
             "status": "success",
             "id_card_url": f"/data/uploads/id_card_{file_id}{ext}",
@@ -353,8 +413,22 @@ async def api_generate_liveness(
     out_y4m = str(BUFFERS_DIR / f"stream_{stream_id}.y4m")
     out_mp4 = str(BUFFERS_DIR / f"preview_{stream_id}.mp4")
 
+    loop = asyncio.get_running_loop()
+    def sync_progress_handler(prog_data: Dict[str, Any]):
+        asyncio.run_coroutine_threadsafe(broadcast_progress(prog_data), loop)
+
     try:
+        await broadcast_progress({
+            "percent": 3,
+            "current_frame": 0,
+            "total_frames": duration * fps,
+            "eta_text": "Iniciando...",
+            "speed_text": "",
+            "status_text": f"Sintetizando Liveness 3D ({duration}s @ {fps}fps)...",
+            "phase": "rendering"
+        })
         await broadcast_log(f"Sintetizando Liveness 3D ({duration}s @ {fps}fps, {width}x{height}, encuadre: {framing_mode})...", "info")
+        t0 = time.time()
         res = await asyncio.to_thread(
             generate_synthetic_liveness,
             image_path=resolved_face,
@@ -364,11 +438,23 @@ async def api_generate_liveness(
             width=width,
             height=height,
             fps=fps,
-            framing_mode=framing_mode
+            framing_mode=framing_mode,
+            progress_callback=sync_progress_handler
         )
+        elapsed = time.time() - t0
+        res["processing_time_sec"] = round(elapsed, 2)
         state.active_y4m = out_y4m
         state.active_mp4_preview = out_mp4
-        await broadcast_log(f"Cámara lista en buffer: {res['size_mb']} MB ({width}x{height} @ {fps}fps).", "success")
+        await broadcast_progress({
+            "percent": 100,
+            "current_frame": duration * fps,
+            "total_frames": duration * fps,
+            "eta_text": "0s",
+            "speed_text": "",
+            "status_text": f"Flujo completado en {elapsed:.1f}s.",
+            "phase": "completed"
+        })
+        await broadcast_log(f"Cámara lista en buffer: {res['size_mb']} MB ({width}x{height} @ {fps}fps). [⏱️ {elapsed:.2f}s]", "success")
         return {
             "status": "success",
             "y4m_path": out_y4m,
@@ -412,15 +498,50 @@ async def api_process_swap(
     out_y4m = str(BUFFERS_DIR / f"stream_swap_{stream_id}.y4m")
     out_mp4 = str(BUFFERS_DIR / f"preview_swap_{stream_id}.mp4")
 
+    loop = asyncio.get_running_loop()
+    def sync_progress_handler(prog_data: Dict[str, Any]):
+        asyncio.run_coroutine_threadsafe(broadcast_progress(prog_data), loop)
+
+    # Prioridad biométrica: si se recibe enhanced_<id>.png, buscar su crop_<id>.png correspondiente
+    # para que InsightFace extraiga la identidad pura de la credencial sin artefactos sintéticos de GAN
+    face_for_swap = resolved_face
+    p_face = Path(resolved_face)
+    if "enhanced_" in p_face.name:
+        candidate_crop = p_face.parent / p_face.name.replace("enhanced_", "crop_")
+        if candidate_crop.is_file():
+            face_for_swap = str(candidate_crop)
+            logger.info(f"Usando recorte biométrico puro para swap: {face_for_swap}")
+
     try:
+        await broadcast_progress({
+            "percent": 3,
+            "current_frame": 0,
+            "total_frames": 0,
+            "eta_text": "Iniciando...",
+            "speed_text": "",
+            "status_text": "Iniciando Deep-Live-Cam DirectML...",
+            "phase": "swapping"
+        })
+
         await execute_face_swap_directml(
-            source_face_path=resolved_face,
+            source_face_path=face_for_swap,
             target_video_path=resolved_target,
             output_raw_mp4=raw_swap_mp4,
-            log_callback=broadcast_log
+            log_callback=broadcast_log,
+            progress_callback=broadcast_progress
         )
 
         await broadcast_log("Face swap completado. Normalizando a buffer Y4M continuo...", "info")
+        await broadcast_progress({
+            "percent": 86,
+            "current_frame": 0,
+            "total_frames": duration * fps,
+            "eta_text": "2s",
+            "speed_text": "",
+            "status_text": "Normalizando buffer continuo Y4M (DirectShow ready)...",
+            "phase": "y4m_normalizing"
+        })
+
         res = await asyncio.to_thread(
             convert_video_to_seamless_y4m,
             video_path=raw_swap_mp4,
@@ -430,11 +551,21 @@ async def api_process_swap(
             width=width,
             height=height,
             fps=fps,
-            framing_mode=framing_mode
+            framing_mode=framing_mode,
+            progress_callback=sync_progress_handler
         )
 
         state.active_y4m = out_y4m
         state.active_mp4_preview = out_mp4
+        await broadcast_progress({
+            "percent": 100,
+            "current_frame": duration * fps,
+            "total_frames": duration * fps,
+            "eta_text": "0s",
+            "speed_text": "",
+            "status_text": "¡Flujo de cámara Swapped listo y armado!",
+            "phase": "completed"
+        })
         await broadcast_log(f"Cámara Swapped lista: {res['size_mb']} MB ({width}x{height}).", "success")
         return {
             "status": "success",

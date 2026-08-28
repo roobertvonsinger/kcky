@@ -30,14 +30,14 @@ def start_server_thread():
 def main():
     start_server_thread()
     url = f"http://127.0.0.1:{DEFAULT_PORT}"
-    print(f"[*] Abriendo Ventana de Escritorio Nativa (WebView2) en: {url}")
+    print(f"[*] Abriendo Ventana de Escritorio Independiente (Medidas Smartphone 430x900) en: {url}")
     window = webview.create_window(
-        title="👑 K.C.K.Y. Studio — Suite Biométrica HD & Evasión KYC",
+        title="KCKY Studio",
         url=url,
-        width=1420,
-        height=920,
+        width=430,
+        height=900,
         resizable=True,
-        min_size=(1024, 700)
+        min_size=(380, 720)
     )
     webview.start(debug=False)
 

@@ -58,17 +58,42 @@ def find_standalone_browser() -> Optional[str]:
 
 
 def open_autonomous_app_window(url: str):
-    """Lanza la ventana de aplicación autónoma permanente."""
+    """Lanza la ventana de aplicación autónoma independiente con medidas de smartphone (430x900)."""
     import time
     import subprocess
     
+    # 1. Intentar lanzar vía pywebview / WebView2 si está instalado
+    try:
+        import webview
+        def _launch_webview():
+            win = webview.create_window(
+                title="KCKY Studio",
+                url=url,
+                width=430,
+                height=900,
+                resizable=True,
+                min_size=(380, 720)
+            )
+            webview.start(debug=False)
+        import threading
+        t = threading.Thread(target=_launch_webview, daemon=True)
+        t.start()
+        return
+    except Exception:
+        pass
+
+    # 2. Fallback a Standalone App Window nativa (Chrome/Edge sin marcos de navegador)
     browser_exe = find_standalone_browser()
     if browser_exe:
         cmd = [
             browser_exe,
             f"--app={url}",
-            "--window-size=1420,900",
-            "--new-window"
+            "--window-size=430,900",
+            "--window-position=500,50",
+            "--new-window",
+            "--disable-extensions",
+            "--disable-plugins",
+            "--disable-default-apps"
         ]
         try:
             subprocess.Popen(cmd)

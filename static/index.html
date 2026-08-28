@@ -2,301 +2,315 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K.C.K.Y. | Caja Negra de Inyección Biométrica KYC</title>
-    <meta name="description" content="K.C.K.Y. — Caja negra autónoma de restauración facial HD, liveness 3D y bypass WebRTC para verificación de identidad KYC.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>KCKY — Inyección Biométrica</title>
+    <meta name="description" content="KCKY Studio — Suite minimalista de restauración facial y bypass WebRTC biométrico KYC.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/style.css">
 </head>
-<body class="theme-blackbox">
+<body class="theme-monochrome">
+
     <div class="ambient-glow"></div>
 
-    <!-- Header Soberano -->
-    <header class="app-header">
-        <div class="brand">
-            <div class="brand-badge-dot"></div>
-            <div class="brand-title">K.C.K.Y. <span class="brand-tag">STUDIO</span></div>
-        </div>
+    <!-- Mobile Viewport Shell (Centrado en PC, Fullscreen nativo en Smartphones) -->
+    <div class="mobile-shell">
 
-        <!-- Stepper Visual -->
-        <nav class="stepper-nav">
-            <div class="step-indicator active" id="step-nav-1" onclick="goToStep(1)">
-                <span class="step-num">1</span>
-                <span class="step-text">Identidad</span>
+        <!-- Top App Bar -->
+        <header class="app-topbar">
+            <div class="brand-group">
+                <div class="brand-status-dot" id="system-status-dot" title="Sistema listo"></div>
+                <span class="brand-name">KCKY</span>
+                <span class="brand-sub">STUDIO</span>
             </div>
-            <div class="step-divider"></div>
-            <div class="step-indicator disabled" id="step-nav-2" onclick="goToStep(2)">
-                <span class="step-num">2</span>
-                <span class="step-text">Dinámica</span>
-            </div>
-            <div class="step-divider"></div>
-            <div class="step-indicator disabled" id="step-nav-3" onclick="goToStep(3)">
-                <span class="step-num">3</span>
-                <span class="step-text">Salida</span>
-            </div>
-        </nav>
 
-        <div class="header-actions">
-            <div class="gpu-badge" id="gpu-badge" title="Aceleración de hardware activa">
-                <span class="gpu-dot"></span>
-                <span>GPU DirectML (AMD RX 580)</span>
+            <!-- Stepper Segmentado Fino -->
+            <div class="stepper-track">
+                <div class="stepper-seg active" id="seg-1" onclick="goToStep(1)">
+                    <span class="seg-fill"></span>
+                </div>
+                <div class="stepper-seg" id="seg-2" onclick="goToStep(2)">
+                    <span class="seg-fill"></span>
+                </div>
+                <div class="stepper-seg" id="seg-3" onclick="goToStep(3)">
+                    <span class="seg-fill"></span>
+                </div>
             </div>
-            <button class="btn-icon-reset" id="btn-panic-reset" title="Reiniciar sesión y liberar memoria">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+
+            <!-- Reset Action -->
+            <button type="button" class="btn-topbar-icon" id="btn-panic-reset" title="Reiniciar sesión y limpiar memoria">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
             </button>
-        </div>
-    </header>
+        </header>
 
-    <!-- Main Wizard Container -->
-    <main class="wizard-container">
+        <!-- Main Step Flow -->
+        <main class="wizard-flow">
 
-        <!-- ==========================================
-             PASO 1: IDENTIDAD DEL SUJETO & RESTAURACIÓN
-             ========================================== -->
-        <section class="step-panel active" id="step-panel-1">
-            <div class="step-content-card">
-                <div class="step-hero">
-                    <span class="step-label-badge">Paso 1 de 3</span>
-                    <h1 class="step-heading">Identidad del Sujeto</h1>
-                    <p class="step-description">Arrastra la credencial INE, documento de identidad o fotografía de rostro. El sistema clasificará el origen y aplicará restauración facial profunda en HD.</p>
+            <!-- ==========================================
+                 PASO 1: IDENTIDAD DEL SUJETO
+                 ========================================== -->
+            <section class="step-screen active" id="step-panel-1">
+                <div class="screen-header">
+                    <span class="step-pill">1 · IDENTIDAD</span>
+                    <h1 class="screen-title">Identidad del Sujeto</h1>
+                    <p class="screen-caption">Sube la credencial INE, documento o selfie. Se detectará el tipo y aplicará restauración facial HD.</p>
                 </div>
 
-                <!-- Dropzone Universal -->
-                <div class="universal-dropzone" id="identity-dropzone" onclick="triggerFileInput('identity-file-input')">
+                <!-- Dropzone Táctil Monocromático -->
+                <div class="touch-dropzone" id="identity-dropzone" onclick="triggerFileInput('identity-file-input')">
                     <input type="file" id="identity-file-input" accept="image/jpeg,image/png,image/webp,image/bmp" style="display: none;">
-                    
-                    <div class="dropzone-idle-state" id="dropzone-idle-ui">
-                        <div class="upload-icon-wrapper">
-                            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+
+                    <div class="dropzone-idle" id="dropzone-idle-ui">
+                        <div class="dropzone-icon-box">
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
                         </div>
-                        <div class="drop-text-primary">Arrastra la credencial INE o foto aquí</div>
-                        <div class="drop-text-secondary">O haz clic para seleccionar archivo desde el explorador</div>
+                        <div class="dropzone-title">Toca o arrastra aquí</div>
+                        <div class="dropzone-desc">INE, pasaporte o fotografía de rostro</div>
                     </div>
 
-                    <!-- Escaneando / Procesando Animado -->
-                    <div class="dropzone-scanning-state" id="dropzone-scanning-ui" style="display: none;">
-                        <div class="scanner-laser"></div>
-                        <div class="scanning-spinner"></div>
-                        <div class="scanning-status" id="scanning-status-text">Analizando imagen y aplicando restauración AI GFPGAN 1024...</div>
+                    <!-- Escaneo con Láser Blanco Fino -->
+                    <div class="dropzone-scanning" id="dropzone-scanning-ui" style="display: none;">
+                        <div class="laser-beam"></div>
+                        <div class="micro-spinner"></div>
+                        <div class="scanning-label" id="scanning-status-text">Analizando y aplicando Super-Resolución...</div>
                     </div>
                 </div>
 
-                <!-- Resultado de Identidad & Comparativa HD -->
-                <div class="identity-result-card" id="identity-result-box" style="display: none;">
-                    <div class="result-header-bar">
-                        <div class="detected-type-tag" id="identity-detected-badge">
-                            <span class="badge-icon">🪪</span>
-                            <span id="identity-type-text">Credencial INE Detectada</span>
-                        </div>
-                        <div class="gender-detected-badge" id="gender-detected-badge" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 999px; background: rgba(59, 130, 246, 0.12); border: 1px solid rgba(59, 130, 246, 0.35); font-size: 0.8rem; font-weight: 600; color: #60a5fa;">
-                            <span id="gender-icon">👤</span>
-                            <span id="gender-text">Hombre (~35 años)</span>
-                        </div>
-                        <div class="arcface-match-badge" id="arcface-match-badge" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 999px; background: rgba(34, 197, 94, 0.12); border: 1px solid rgba(34, 197, 94, 0.35); font-size: 0.8rem; font-weight: 600; color: #4ade80;">
-                            <span>🛡️</span>
-                            <span id="arcface-score-text">96.4% Match ArcFace</span>
-                        </div>
-                        <button type="button" class="btn-link-subtle" onclick="triggerFileInput('identity-file-input', event)">Cambiar imagen</button>
+                <!-- Resultado de Identidad Compacto -->
+                <div class="identity-result-wrap" id="identity-result-box" style="display: none;">
+                    
+                    <!-- Chips de Detección -->
+                    <div class="chips-row">
+                        <span class="meta-chip" id="identity-detected-badge">
+                            <span class="chip-icon" id="identity-icon">🪪</span>
+                            <span id="identity-type-text">INE Detectada</span>
+                        </span>
+                        <span class="meta-chip" id="gender-detected-badge">
+                            <span id="gender-text">Hombre (~35a)</span>
+                        </span>
+                        <span class="meta-chip high" id="arcface-match-badge">
+                            <span id="arcface-score-text">96.4% ArcFace</span>
+                        </span>
                     </div>
 
-                    <div class="face-comparison-row">
-                        <div class="face-card original">
-                            <div class="face-card-tag">Recorte Extraído</div>
-                            <div class="face-img-wrap">
-                                <img id="img-crop-preview" src="" alt="Recorte original">
-                            </div>
+                    <!-- Comparativa Recorte vs HD -->
+                    <div class="preview-split-box">
+                        <div class="split-thumb">
+                            <span class="thumb-tag">Original</span>
+                            <img id="img-crop-preview" src="" alt="Recorte original">
                         </div>
-
-                        <div class="comparison-divider">
-                            <div class="arrow-circle">➜</div>
+                        <div class="split-divider">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                         </div>
-
-                        <div class="face-card enhanced">
-                            <div class="face-card-tag highlight">✨ Rostro HD Restaurado</div>
-                            <div class="face-img-wrap glow-border">
-                                <img id="img-enhanced-preview" src="" alt="Rostro HD">
-                            </div>
+                        <div class="split-thumb enhanced">
+                            <span class="thumb-tag highlight">Restaurado HD</span>
+                            <img id="img-enhanced-preview" src="" alt="Rostro HD">
                         </div>
                     </div>
 
-                    <div class="step-footer-actions">
-                        <button class="btn-primary-action" id="btn-goto-step-2" onclick="goToStep(2)">
-                            <span>Continuar a Dinámica Facial</span>
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    <!-- Cambio Rápido de Imagen -->
+                    <div class="action-sublink-row">
+                        <button type="button" class="btn-sublink" onclick="triggerFileInput('identity-file-input', event)">Cambiar imagen</button>
+                    </div>
+
+                    <!-- Botón Hotzone Inferior -->
+                    <div class="hotzone-bottom">
+                        <button type="button" class="btn-action-primary" id="btn-goto-step-2" onclick="goToStep(2)">
+                            <span>Continuar a Dinámica</span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                         </button>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
 
-        <!-- ==========================================
-             PASO 2: DINÁMICA FACIAL & GENERACIÓN
-             ========================================== -->
-        <section class="step-panel" id="step-panel-2">
-            <div class="step-content-card">
-                <div class="step-hero">
-                    <span class="step-label-badge">Paso 2 de 3</span>
-                    <h1 class="step-heading">Dinámica Facial</h1>
-                    <p class="step-description">Selecciona el video base conductor para transferir la identidad anatómica. El sistema auto-selecciona el video que mejor empata con el género e iluminación del sujeto.</p>
+            <!-- ==========================================
+                 PASO 2: DINÁMICA FACIAL
+                 ========================================== -->
+            <section class="step-screen" id="step-panel-2">
+                <div class="screen-header">
+                    <span class="step-pill">2 · DINÁMICA</span>
+                    <h1 class="screen-title">Dinámica Facial</h1>
+                    <p class="screen-caption">Elige el método de animación para inyectar movimiento realista en la cámara.</p>
                 </div>
 
-                <!-- Selector de Modo en 2 Grandes Tarjetas -->
-                <div class="motion-modes-grid">
-                    <!-- Opción 1: Transferencia Face Swap HD (Recomendada / Fotorealista) -->
+                <!-- Tarjetas de Selección de Modo -->
+                <div class="motion-cards-stack">
+                    
+                    <!-- Modo Face Swap -->
                     <div class="motion-card active" id="card-mode-swap" onclick="selectMotionMode('swap')">
-                        <div class="card-radio-mark"></div>
-                        <div class="motion-card-badge pro">RECOMENDADO · FOTOREALISMO PURO</div>
-                        <h2 class="motion-card-title">Transferencia de Rostro (Face Swap HD)</h2>
-                        <p class="motion-card-desc">Transfiere el rostro restaurado sobre una persona física real con parpadeo, respiración y micro-movimientos musculares continuos.</p>
-                        
-                        <!-- Sub-opciones de Face Swap (Presets / Upload) -->
-                        <div class="swap-options-container" id="swap-sub-options" style="display: block;">
-                            <div class="sub-label" id="preset-selection-label">Seleccionar Video Base Conductor:</div>
-                            <div class="preset-buttons-row" id="preset-buttons-row">
-                                <!-- Se renderiza dinámicamente con /api/presets -->
+                        <div class="card-radio-circle"></div>
+                        <div class="card-header-line">
+                            <span class="card-title">Face Swap HD</span>
+                            <span class="card-badge">FOTOREALISTA</span>
+                        </div>
+                        <p class="card-desc">Transfiere el rostro sobre una persona real con parpadeo y micro-gestos naturales.</p>
+
+                        <!-- Presets de Video -->
+                        <div class="presets-selector" id="swap-sub-options">
+                            <div class="presets-label">Video Conductor:</div>
+                            <div class="preset-chips-scroll" id="preset-buttons-row">
+                                <!-- Renderizado dinámico -->
                             </div>
                             <input type="file" id="custom-video-input" accept="video/mp4,video/webm,video/mov" style="display: none;" onchange="handleCustomVideoUpload(event)">
                         </div>
                     </div>
 
-                    <!-- Opción 2: Liveness Cinemático 3D Suave -->
+                    <!-- Modo Liveness 3D -->
                     <div class="motion-card" id="card-mode-synthetic" onclick="selectMotionMode('synthetic')">
-                        <div class="card-radio-mark"></div>
-                        <div class="motion-card-badge">1 SOLA FOTO · DIRECTO</div>
-                        <h2 class="motion-card-title">Liveness Cinemático 3D (Foto)</h2>
-                        <p class="motion-card-desc">Genera un flujo de cámara desde la foto restaurada. Aplica micro-respiración senoidal de cámara (0.22 Hz) y ruido analógico de sensor CMOS sin jalonear la cara.</p>
-                        <div class="motion-card-footer">
-                            <span class="feature-tag">Cero videos extra</span>
-                            <span class="feature-tag">Encuadre KYC Limpio</span>
+                        <div class="card-radio-circle"></div>
+                        <div class="card-header-line">
+                            <span class="card-title">Liveness Foto 3D</span>
+                            <span class="card-badge-muted">1 FOTO</span>
                         </div>
+                        <p class="card-desc">Genera el flujo directo desde la foto restaurada con respiración y deriva óptica senoidal.</p>
                     </div>
+
                 </div>
 
-                <!-- Footer de Paso 2 -->
-                <div class="step-nav-buttons">
-                    <button class="btn-secondary-action" onclick="goToStep(1)">← Volver</button>
-                    <button class="btn-primary-action" id="btn-generate-motion" onclick="startGenerationAndGoStep3()">
-                        <span>Generar Flujo Biométrico</span>
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                <!-- Botones de Navegación en Hotzone -->
+                <div class="hotzone-bottom row-gap">
+                    <button type="button" class="btn-action-secondary" onclick="goToStep(1)">← Volver</button>
+                    <button type="button" class="btn-action-primary flex-1" id="btn-generate-motion" onclick="startGenerationAndGoStep3()">
+                        <span>Generar Flujo</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                     </button>
                 </div>
-            </div>
-        </section>
+            </section>
 
 
-        <!-- ==========================================
-             PASO 3: SALIDA & ENTREGA (CAJA NEGRA)
-             ========================================== -->
-        <section class="step-panel" id="step-panel-3">
-            <div class="step-content-card">
-                <div class="step-hero">
-                    <span class="step-label-badge">Paso 3 de 3</span>
-                    <h1 class="step-heading">Salida y Entrega</h1>
-                    <p class="step-description">El flujo está listo en buffer continuo. Elige el canal de salida para completar tu verificación.</p>
+            <!-- ==========================================
+                 PASO 3: SALIDA & MONITOR DE CÁMARA
+                 ========================================== -->
+            <section class="step-screen" id="step-panel-3">
+                <div class="screen-header">
+                    <span class="step-pill">3 · SALIDA</span>
+                    <h1 class="screen-title">Salida y Transmisión</h1>
+                    <p class="screen-caption">Flujo listo para inyección en el navegador o transmisión al sistema.</p>
                 </div>
 
-                <!-- Grid de Salida: Monitor a la izquierda, Controles a la derecha -->
-                <div class="delivery-grid">
-                    
-                    <!-- Monitor de Video Transmitido -->
-                    <div class="monitor-container">
-                        <div class="monitor-screen">
-                            <video id="live-monitor-player" autoplay loop muted playsinline>
-                                <source id="live-monitor-source" src="" type="video/mp4">
-                            </video>
-                            <div class="monitor-overlay-hud">
-                                <div class="hud-tag live">
-                                    <span class="hud-pulse"></span>
-                                    <span id="hud-status-badge">GENERANDO BUFFER...</span>
-                                </div>
-                                <div class="hud-specs" id="hud-resolution-specs">1280x720 @ 30fps</div>
+                <!-- Monitor de Video Tipo Celular / Webcam -->
+                <div class="video-monitor-shell">
+                    <div class="monitor-aspect-frame">
+                        <video id="live-monitor-player" autoplay loop muted playsinline>
+                            <source id="live-monitor-source" src="" type="video/mp4">
+                        </video>
+
+                        <!-- HUD de Estado -->
+                        <div class="monitor-hud">
+                            <div class="hud-live-tag">
+                                <span class="hud-dot"></span>
+                                <span id="hud-status-badge">GENERANDO BUFFER</span>
                             </div>
-                            <div class="monitor-progress-layer" id="monitor-progress-layer">
-                                <div class="spinner-loader"></div>
-                                <div class="progress-status-msg" id="progress-status-msg">Procesando fotogramas en GPU DirectML...</div>
+                            <div class="hud-resolution" id="hud-resolution-specs">1280x720 @ 30fps</div>
+                        </div>
+
+                        <!-- CAPA DE CARGA CON PORCENTAJE REAL Y TIEMPO RESTANTE (ETA) -->
+                        <div class="render-progress-overlay" id="monitor-progress-layer">
+                            
+                            <!-- Porcentaje Numérico Grande y Claro -->
+                            <div class="progress-percent-display">
+                                <span id="progress-percent-num">0</span><span class="percent-symbol">%</span>
+                            </div>
+
+                            <!-- Barra de Carga Fina con Glow Blanco -->
+                            <div class="progress-bar-rail">
+                                <div class="progress-bar-fill" id="progress-bar-fill" style="width: 0%;"></div>
+                            </div>
+
+                            <!-- Textos de Estado Dinámicos -->
+                            <div class="progress-info-stack">
+                                <div class="progress-main-status" id="progress-status-msg">Iniciando motor DirectML...</div>
+                                <div class="progress-sub-metrics" id="progress-metrics-msg">
+                                    <span id="progress-frames-txt">Preparando fotogramas...</span>
+                                    <span class="metric-separator">·</span>
+                                    <span id="progress-eta-txt">Calculando tiempo restante...</span>
+                                </div>
+                            </div>
+
+                            <!-- Subtítulo Tranquilizador Anti-Freeze -->
+                            <div class="progress-safety-hint">
+                                <span class="pulse-icon">⚡</span>
+                                <span>Aceleración DirectML activa. El proceso avanza con normalidad.</span>
                             </div>
                         </div>
+
+                    </div>
+                </div>
+
+                <!-- Canales de Salida en Tarjetas Limpias -->
+                <div class="delivery-options-stack" id="delivery-options-box">
+                    
+                    <!-- Opción 1: Abrir Navegador (Acción Primaria) -->
+                    <div class="delivery-card main-delivery">
+                        <div class="card-top-info">
+                            <div class="delivery-icon">🌐</div>
+                            <div class="delivery-text-group">
+                                <div class="delivery-title">Navegador con Cámara Armada</div>
+                                <div class="delivery-desc">Inyección directa con auto-permiso concedido.</div>
+                            </div>
+                        </div>
+
+                        <!-- Selector Compacto de Hardware Persona & URL -->
+                        <div class="hardware-row">
+                            <select id="hardware-persona-select" class="minimal-select">
+                                <option value="logitech_c920" selected>Logitech HD Pro Webcam C920</option>
+                                <option value="integrated">Integrated Camera OEM (Laptop)</option>
+                                <option value="hp_wide">HP Wide Vision HD Camera</option>
+                            </select>
+                        </div>
+
+                        <div class="url-input-wrap">
+                            <input type="url" id="target-url-input" class="minimal-input" value="https://webcamtests.com" placeholder="https://sitio-kyc-objetivo.com">
+                            <button type="button" class="btn-chip-test" onclick="document.getElementById('target-url-input').value = '/static/test_cam.html'">🧪 Test</button>
+                        </div>
+
+                        <button type="button" class="btn-action-primary w-full" id="btn-launch-browser-action" onclick="launchBrowserFlow()">
+                            <span>🚀 Abrir Navegador Armado</span>
+                        </button>
                     </div>
 
-                    <!-- Canales de Salida -->
-                    <div class="delivery-channels">
-
-                        <!-- Canal 1: Navegador Seguro con WebRTC Spoofing (Principal) -->
-                        <div class="delivery-card active-card" id="channel-browser-card">
-                            <div class="channel-header">
-                                <div class="channel-icon">🌐</div>
-                                <div class="channel-info">
-                                    <div class="channel-title">Navegador con Cámara Inyectada (Hot & Ready)</div>
-                                    <div class="channel-desc">Lanza el navegador con auto-permiso concedido, cámara pre-seleccionada y spoofing de hardware.</div>
-                                </div>
+                    <!-- Fila de Acciones Secundarias (Cámara Virtual & Descarga) -->
+                    <div class="secondary-actions-row">
+                        
+                        <!-- Toggle Cámara Virtual -->
+                        <div class="delivery-mini-card">
+                            <div class="mini-card-text">
+                                <div class="mini-title">Cámara Virtual OBS</div>
+                                <div class="mini-sub">DirectShow / Sistema</div>
                             </div>
-
-                            <!-- Selector de Hardware Persona -->
-                            <div class="persona-selector-row" style="display: flex; gap: 8px; margin: 12px 0 8px 0;">
-                                <label style="font-size: 11px; color: var(--text-muted); align-self: center;">Dispositivo:</label>
-                                <select id="hardware-persona-select" class="target-url-field" style="padding: 6px 10px; font-size: 12px; flex: 1;">
-                                    <option value="logitech_c920" selected>Logitech HD Pro Webcam C920 (Bajo Riesgo)</option>
-                                    <option value="integrated">Integrated Camera OEM (Laptop)</option>
-                                    <option value="hp_wide">HP Wide Vision HD Camera</option>
-                                </select>
-                            </div>
-
-                            <div class="channel-input-row" style="display: flex; gap: 8px;">
-                                <input type="url" id="target-url-input" class="target-url-field" value="https://webcamtests.com" placeholder="https://sitio-kyc-objetivo.com" style="flex: 1;">
-                                <button type="button" class="preset-btn" style="padding: 6px 12px; font-size: 11px;" onclick="document.getElementById('target-url-input').value = '/static/test_cam.html'">
-                                    🧪 Test Local
-                                </button>
-                            </div>
-
-                            <button class="btn-launch-browser" id="btn-launch-browser-action" onclick="launchBrowserFlow()">
-                                <span>🚀 Abrir Navegador con Cámara Armada</span>
+                            <button type="button" class="btn-toggle-switch" id="btn-toggle-vcam" onclick="toggleSystemVirtualCam()">
+                                Activar
                             </button>
                         </div>
 
-                        <!-- Canal 2: Cámara Virtual de Windows DirectShow / OBS -->
-                        <div class="delivery-card" id="channel-vcam-card">
-                            <div class="channel-header">
-                                <div class="channel-icon">🎥</div>
-                                <div class="channel-info">
-                                    <div class="channel-title">Cámara Virtual DirectShow (OBS / Sistema)</div>
-                                    <div class="channel-desc">Transmite a nivel de sistema para cualquier app externa (OBS, AlterCam, Telegram).</div>
-                                </div>
-                                <button class="btn-toggle-vcam" id="btn-toggle-vcam" onclick="toggleSystemVirtualCam()">
-                                    Activar
-                                </button>
+                        <!-- Descargar MP4 -->
+                        <div class="delivery-mini-card">
+                            <div class="mini-card-text">
+                                <div class="mini-title">Video MP4 HD</div>
+                                <div class="mini-sub">Guardar archivo</div>
                             </div>
-                        </div>
-
-                        <!-- Canal 3: Descarga Directa de Video -->
-                        <div class="delivery-card" id="channel-download-card">
-                            <div class="channel-header">
-                                <div class="channel-icon">💾</div>
-                                <div class="channel-info">
-                                    <div class="channel-title">Descargar Video MP4 HD</div>
-                                    <div class="channel-desc">Guarda el archivo de video generado localmente en tu equipo.</div>
-                                </div>
-                                <a id="btn-download-video" class="btn-download-link" href="#" download="kyc_stream_hd.mp4">
-                                    Descargar
-                                </a>
-                            </div>
+                            <a id="btn-download-video" class="btn-icon-download" href="#" download="kyc_stream_hd.mp4" title="Descargar MP4">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            </a>
                         </div>
 
                     </div>
+
                 </div>
 
-                <!-- Footer de Paso 3 -->
-                <div class="step-nav-buttons justify-between">
-                    <button class="btn-secondary-action" onclick="goToStep(2)">← Cambiar Modo</button>
-                    <button class="btn-secondary-action" onclick="resetToNewSession()">↻ Nueva Identidad</button>
+                <!-- Footer Hotzone de Salida -->
+                <div class="hotzone-bottom justify-between">
+                    <button type="button" class="btn-action-secondary" onclick="goToStep(2)">← Cambiar Modo</button>
+                    <button type="button" class="btn-action-secondary" onclick="resetToNewSession()">↻ Nueva Identidad</button>
                 </div>
 
-            </div>
-        </section>
+            </section>
 
-    </main>
+        </main>
+
+    </div>
 
     <!-- Toast Notifications Floating Container -->
     <div id="toast-container" class="toast-container"></div>

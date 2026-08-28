@@ -13,9 +13,15 @@ import numpy as np
 import cv2
 import onnxruntime as ort
 
+_ONNX_CACHE: Dict[str, ort.InferenceSession] = {}
+_INSIGHTFACE_APP = None
 
 def get_onnx_session(model_path: str) -> ort.InferenceSession:
-    """Crea una sesión ONNX usando DirectML si está disponible o CPU."""
+    """Crea una sesión ONNX usando DirectML si está disponible o CPU. Utiliza caché para evitar recargas."""
+    global _ONNX_CACHE
+    if model_path in _ONNX_CACHE:
+        return _ONNX_CACHE[model_path]
+        
     available = ort.get_available_providers()
     providers = []
     if 'DmlExecutionProvider' in available:
@@ -24,7 +30,9 @@ def get_onnx_session(model_path: str) -> ort.InferenceSession:
     
     opts = ort.SessionOptions()
     opts.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
-    return ort.InferenceSession(model_path, sess_options=opts, providers=providers)
+    session = ort.InferenceSession(model_path, sess_options=opts, providers=providers)
+    _ONNX_CACHE[model_path] = session
+    return session
 
 
 def find_model_path(model_name: str, models_dir: str) -> Optional[str]:
@@ -183,11 +191,13 @@ def detect_and_classify_input(img: np.ndarray) -> dict:
     # 1. Detección y Atributos con InsightFace
     detected_gender = None
     detected_age = None
+    global _INSIGHTFACE_APP
     try:
         import insightface
-        fa = insightface.app.FaceAnalysis(name='buffalo_l', providers=['CPUExecutionProvider'], allowed_modules=['detection', 'genderage'])
-        fa.prepare(ctx_id=0, det_size=(640, 640))
-        faces = fa.get(img)
+        if _INSIGHTFACE_APP is None:
+            _INSIGHTFACE_APP = insightface.app.FaceAnalysis(name='buffalo_l', providers=['CPUExecutionProvider'], allowed_modules=['detection', 'genderage', 'landmark_3d_68'])
+            _INSIGHTFACE_APP.prepare(ctx_id=0, det_size=(640, 640))
+        faces = _INSIGHTFACE_APP.get(img)
         if faces:
             for f in faces:
                 b = f.bbox.astype(int)
@@ -204,7 +214,8 @@ def detect_and_classify_input(img: np.ndarray) -> dict:
                     "center_y": center_y,
                     "score": score,
                     "gender": "Hombre" if g_val == 1 else ("Mujer" if g_val == 0 else None),
-                    "age": int(a_val) if a_val is not None else None
+                    "age": int(a_val) if a_val is not None else None,
+                    "pose": getattr(f, 'pose', None)
                 })
     except Exception:
         pass
@@ -357,6 +368,20 @@ def process_id_card(
     x1, y1, x2, y2 = best_face["bbox"]
     fw = x2 - x1
     fh = y2 - y1
+
+    if fw < 80 or fh < 80:
+        return {
+            "success": False,
+            "error": f"Imagen rechazada: El rostro es demasiado pequeño ({fw}x{fh}px). Acércate más a la cámara."
+        }
+
+    if best_face.get("pose") is not None:
+        pitch, yaw, roll = best_face["pose"]
+        if abs(yaw) > 30 or abs(pitch) > 30:
+            return {
+                "success": False,
+                "error": f"Imagen rechazada: Pose extrema detectada (yaw={yaw:.1f}, pitch={pitch:.1f}). Mira de frente a la cámara."
+            }
 
     # 2. Encuadre Óptimo Adaptativo (Headroom y Proporción Biométrica KYC)
     if image_type == "ID_CARD":

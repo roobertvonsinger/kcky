@@ -1,12 +1,62 @@
-"""
-liveness.py — Motor de Generación de Liveness Sintético 3D y Normalización Y4M
-"""
-
 import os
 import sys
+import time
 import subprocess
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, Callable
+
+
+def run_ffmpeg_with_progress(
+    cmd: list,
+    total_frames: int,
+    progress_callback: Optional[Callable[[Dict[str, Any]], Any]] = None,
+    base_percent: int = 5,
+    max_percent: int = 90,
+    phase_name: str = "Procesando"
+) -> None:
+    """Ejecuta FFmpeg capturando el progreso fotograma a fotograma y computando ETA con precisión."""
+    cmd_with_prog = list(cmd)
+    if "-progress" not in cmd_with_prog:
+        idx = cmd_with_prog.index("-i") if "-i" in cmd_with_prog else 1
+        cmd_with_prog = cmd_with_prog[:idx] + ["-progress", "pipe:1", "-nostats"] + cmd_with_prog[idx:]
+
+    proc = subprocess.Popen(
+        cmd_with_prog,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        bufsize=1
+    )
+
+    t0 = time.time()
+    for line in proc.stdout:
+        line = line.strip()
+        if line.startswith("frame="):
+            try:
+                curr_frame = int(line.split("=")[1].strip())
+                if total_frames > 0 and progress_callback:
+                    ratio = min(1.0, curr_frame / float(total_frames))
+                    pct = int(base_percent + ratio * (max_percent - base_percent))
+                    elapsed = time.time() - t0
+                    fps_calc = curr_frame / max(0.1, elapsed)
+                    rem_frames = max(0, total_frames - curr_frame)
+                    eta_sec = round(rem_frames / max(0.1, fps_calc), 1)
+                    eta_str = f"{int(eta_sec)}s" if eta_sec < 60 else f"{int(eta_sec//60)}m {int(eta_sec%60)}s"
+                    progress_callback({
+                        "percent": pct,
+                        "current_frame": curr_frame,
+                        "total_frames": total_frames,
+                        "eta_text": eta_str,
+                        "speed_text": f"{fps_calc:.1f} fps",
+                        "status_text": f"{phase_name}: fotograma {curr_frame} de {total_frames} ({fps_calc:.1f} fps)"
+                    })
+            except Exception:
+                pass
+
+    proc.wait()
+    if proc.returncode != 0:
+        err = proc.stderr.read()
+        raise RuntimeError(f"Error en FFmpeg (código {proc.returncode}):\n{err}")
 
 
 def generate_synthetic_liveness(
@@ -17,7 +67,8 @@ def generate_synthetic_liveness(
     width: int = 1280,
     height: int = 720,
     fps: int = 30,
-    framing_mode: str = "fill_crop"
+    framing_mode: str = "fill_crop",
+    progress_callback: Optional[Callable[[Dict[str, Any]], Any]] = None
 ) -> Dict[str, Any]:
     """
     Genera un stream continuo y fotorealista de video .y4m y preview .mp4 desde la foto restaurada.
@@ -32,6 +83,16 @@ def generate_synthetic_liveness(
         os.makedirs(os.path.dirname(os.path.abspath(output_mp4_preview_path)), exist_ok=True)
 
     total_frames = duration * fps
+
+    if progress_callback:
+        progress_callback({
+            "percent": 5,
+            "current_frame": 0,
+            "total_frames": total_frames,
+            "eta_text": "Iniciando...",
+            "speed_text": "",
+            "status_text": "Generando matriz de liveness senoidal 3D..."
+        })
 
     # Encuadre fotográfico de estudio (centrado natural con margen de hombros/pecho)
     if framing_mode == "fit_pad":
@@ -63,11 +124,25 @@ def generate_synthetic_liveness(
         output_y4m_path
     ]
 
-    res_y4m = subprocess.run(cmd_y4m, capture_output=True, text=True)
-    if res_y4m.returncode != 0:
-        raise RuntimeError(f"Error generando Y4M con FFmpeg:\n{res_y4m.stderr}")
+    run_ffmpeg_with_progress(
+        cmd_y4m,
+        total_frames=total_frames,
+        progress_callback=progress_callback,
+        base_percent=5,
+        max_percent=85,
+        phase_name="Sintetizando Liveness 3D"
+    )
 
     if output_mp4_preview_path:
+        if progress_callback:
+            progress_callback({
+                "percent": 88,
+                "current_frame": total_frames,
+                "total_frames": total_frames,
+                "eta_text": "1s",
+                "speed_text": "",
+                "status_text": "Generando preview MP4 HD..."
+            })
         cmd_mp4 = [
             "ffmpeg",
             "-y",
@@ -81,6 +156,16 @@ def generate_synthetic_liveness(
         ]
         subprocess.run(cmd_mp4, capture_output=True, text=True)
 
+    if progress_callback:
+        progress_callback({
+            "percent": 100,
+            "current_frame": total_frames,
+            "total_frames": total_frames,
+            "eta_text": "0s",
+            "speed_text": "",
+            "status_text": "¡Flujo de cámara listo y armado!"
+        })
+
     size_mb = os.path.getsize(output_y4m_path) / (1024 * 1024) if os.path.exists(output_y4m_path) else 0
     return {
         "status": "success",
@@ -93,46 +178,7 @@ def generate_synthetic_liveness(
         "size_mb": round(size_mb, 2)
     }
 
-    cmd_y4m = [
-        "ffmpeg",
-        "-y",
-        "-loop", "1",
-        "-i", image_path,
-        "-t", str(duration),
-        "-vf", vf_filter,
-        "-r", str(fps),
-        "-pix_fmt", "yuv420p",
-        output_y4m_path
-    ]
 
-    res_y4m = subprocess.run(cmd_y4m, capture_output=True, text=True)
-    if res_y4m.returncode != 0:
-        raise RuntimeError(f"Error generando Y4M con FFmpeg:\n{res_y4m.stderr}")
-
-    if output_mp4_preview_path:
-        cmd_mp4 = [
-            "ffmpeg",
-            "-y",
-            "-i", output_y4m_path,
-            "-c:v", "libx264",
-            "-preset", "ultrafast",
-            "-crf", "22",
-            "-pix_fmt", "yuv420p",
-            output_mp4_preview_path
-        ]
-        subprocess.run(cmd_mp4, capture_output=True, text=True)
-
-    size_mb = os.path.getsize(output_y4m_path) / (1024 * 1024)
-    return {
-        "status": "success",
-        "y4m_path": output_y4m_path,
-        "mp4_preview_path": output_mp4_preview_path,
-        "duration": duration,
-        "resolution": f"{width}x{height}",
-        "fps": fps,
-        "framing": framing_mode,
-        "size_mb": round(size_mb, 2)
-    }
 
 
 def compute_smart_biometric_crop(
@@ -216,7 +262,8 @@ def convert_video_to_seamless_y4m(
     width: int = 1280,
     height: int = 720,
     fps: int = 30,
-    framing_mode: str = "fill_crop"
+    framing_mode: str = "fill_crop",
+    progress_callback: Optional[Callable[[Dict[str, Any]], Any]] = None
 ) -> Dict[str, Any]:
     """Normaliza, encuadra quirúrgicamente y extiende un video a un bucle continuo de 90s+ en formato Y4M."""
     if not os.path.exists(video_path):
@@ -256,6 +303,18 @@ def convert_video_to_seamless_y4m(
         vf_scale = f"scale={width}:{height}:force_original_aspect_ratio=increase,crop={width}:{height}:(iw-ow)/2:'max(0, (ih-oh)*0.15)'"
         filter_args = ["-vf", f"{vf_scale},noise=alls=2:allf=t+u,format=yuv420p"]
 
+    total_frames = min_duration * fps
+
+    if progress_callback:
+        progress_callback({
+            "percent": 86,
+            "current_frame": 0,
+            "total_frames": total_frames,
+            "eta_text": "2s",
+            "speed_text": "",
+            "status_text": "Normalizando buffer continuo Y4M..."
+        })
+
     cmd = [
         "ffmpeg",
         "-y",
@@ -268,11 +327,25 @@ def convert_video_to_seamless_y4m(
         output_y4m_path
     ]
 
-    res = subprocess.run(cmd, capture_output=True, text=True)
-    if res.returncode != 0:
-        raise RuntimeError(f"Error normalizando video con FFmpeg:\n{res.stderr}")
+    run_ffmpeg_with_progress(
+        cmd,
+        total_frames=total_frames,
+        progress_callback=progress_callback,
+        base_percent=86,
+        max_percent=96,
+        phase_name="Escribiendo Buffer Y4M"
+    )
 
     if output_mp4_preview_path:
+        if progress_callback:
+            progress_callback({
+                "percent": 97,
+                "current_frame": total_frames,
+                "total_frames": total_frames,
+                "eta_text": "1s",
+                "speed_text": "",
+                "status_text": "Generando preview MP4..."
+            })
         cmd_mp4 = [
             "ffmpeg",
             "-y",
@@ -284,6 +357,16 @@ def convert_video_to_seamless_y4m(
             output_mp4_preview_path
         ]
         subprocess.run(cmd_mp4, capture_output=True, text=True)
+
+    if progress_callback:
+        progress_callback({
+            "percent": 100,
+            "current_frame": total_frames,
+            "total_frames": total_frames,
+            "eta_text": "0s",
+            "speed_text": "",
+            "status_text": "¡Flujo de cámara generado y armado con éxito!"
+        })
 
     size_mb = os.path.getsize(output_y4m_path) / (1024 * 1024)
     return {
