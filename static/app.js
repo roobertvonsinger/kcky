@@ -548,13 +548,20 @@ async function startGenerationAndGoStep3(actionMode = 'generate_only') {
             progressLayer.style.display = 'none';
             hudBadge.textContent = 'CÁMARA ACTIVA';
             
+            const bmxCard = document.getElementById('bmx-selfie-modal-card');
+            const verifyCard = document.getElementById('bmx-verify-existing-card');
+            
             if (actionMode === 'create_bmx' && bmxCard) {
                 bmxCard.style.display = 'block';
+                if (verifyCard) verifyCard.style.display = 'none';
                 showToast("👑 Cuenta BMX lista. Elige modo de verificación abajo.", "success");
-            } else if (actionMode === 'verify_bmx') {
-                showToast("🪪 Buffer listo. Abriendo navegador para verificación...", "success");
-                launchBrowserFlow();
+            } else if (actionMode === 'verify_bmx' && verifyCard) {
+                verifyCard.style.display = 'block';
+                if (bmxCard) bmxCard.style.display = 'none';
+                showToast("🪪 Ingresa correo y contraseña para verificar la cuenta.", "info");
             } else {
+                if (bmxCard) bmxCard.style.display = 'none';
+                if (verifyCard) verifyCard.style.display = 'none';
                 showToast("✨ Flujo de video generado con éxito.", "success");
             }
         }, 500);
@@ -592,6 +599,28 @@ async function handleBMXChoice(mode) {
             // Fallback al navegador si no hay CDP directo listo
             await launchBrowserFlow();
         }
+    }
+}
+
+async function handleBMXVerifyChoice(mode) {
+    const verifyCard = document.getElementById('bmx-verify-existing-card');
+    if (verifyCard) verifyCard.style.display = 'none';
+
+    const emailInput = document.getElementById('bmx-verify-email');
+    const passInput = document.getElementById('bmx-verify-password');
+    const email = emailInput ? emailInput.value.trim() : '';
+    const password = passInput ? passInput.value.trim() : 'Kashau2022';
+
+    if (mode === 'manual') {
+        showToast("🖱️ Abriendo BetMexico con cámara armada para verificación manual...", "info");
+        const targetUrlInput = document.getElementById('target-url-input');
+        if (targetUrlInput) targetUrlInput.value = 'https://betmexico.mx';
+        await launchBrowserFlow();
+    } else {
+        showToast(`⚡ Verificando cuenta ${email || 'BMX'} en modo automático...`, "info");
+        const targetUrlInput = document.getElementById('target-url-input');
+        if (targetUrlInput) targetUrlInput.value = 'https://betmexico.mx';
+        await launchBrowserFlow();
     }
 }
 

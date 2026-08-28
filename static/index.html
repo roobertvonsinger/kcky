@@ -295,6 +295,35 @@
                     </div>
                 </div>
 
+                <!-- Tarjeta de Verificación para Cuenta Existente -->
+                <div class="bmx-selfie-modal-card" id="bmx-verify-existing-card" style="display: none;">
+                    <div class="bmx-modal-header">
+                        <span class="bmx-badge-pill">🪪 VERIFICAR CUENTA EXISTENTE</span>
+                        <div class="bmx-modal-title">Credenciales de la Cuenta BetMexico</div>
+                        <div class="bmx-modal-desc">Ingresa el correo y contraseña para login automático e inyección KYC:</div>
+                    </div>
+                    <div class="bmx-input-fields" style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px;">
+                        <input type="email" id="bmx-verify-email" class="minimal-text-input" placeholder="correo@gmail.com" value="" style="background: rgba(0,0,0,0.4); border: 1px solid var(--border-subtle); color: var(--text-pure); padding: 8px 12px; border-radius: var(--radius-sm); font-size: 0.8rem;">
+                        <input type="text" id="bmx-verify-password" class="minimal-text-input" placeholder="Contraseña" value="Kashau2022" style="background: rgba(0,0,0,0.4); border: 1px solid var(--border-subtle); color: var(--text-pure); padding: 8px 12px; border-radius: var(--radius-sm); font-size: 0.8rem;">
+                    </div>
+                    <div class="bmx-modal-actions-row">
+                        <button type="button" class="btn-bmx-choice manual" onclick="handleBMXVerifyChoice('manual')">
+                            <span class="choice-emoji">🖱️</span>
+                            <div class="choice-text-stack">
+                                <strong>Modo Manual</strong>
+                                <small>Abre Chrome con cámara armada</small>
+                            </div>
+                        </button>
+                        <button type="button" class="btn-bmx-choice auto" onclick="handleBMXVerifyChoice('auto')">
+                            <span class="choice-emoji">⚡</span>
+                            <div class="choice-text-stack">
+                                <strong>Auto (Login + KYC)</strong>
+                                <small>Login + Selfie + Subida INE</small>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
                 <!-- Canales de Salida en Tarjetas Limpias -->
                 <div class="delivery-options-stack" id="delivery-options-box">
                     
