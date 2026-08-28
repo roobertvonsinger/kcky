@@ -117,14 +117,40 @@
         }
     }
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', scanForSDKs);
-    } else {
+    // 4. Scanner de inputs de archivo y solicitudes documentales (Frente, Reverso, Domicilio)
+    let lastFileInputCount = 0;
+    function scanForFileInputs() {
+        const fileInputs = document.querySelectorAll('input[type="file"]');
+        if (fileInputs.length > 0 && fileInputs.length !== lastFileInputCount) {
+            lastFileInputCount = fileInputs.length;
+            const inputDetails = Array.from(fileInputs).map(inp => ({
+                id: inp.id || "",
+                name: inp.name || "",
+                accept: inp.accept || "",
+                ariaLabel: inp.getAttribute('aria-label') || ""
+            }));
+            emitEvent("KYC_FILE_INPUT_DETECTED", {
+                count: fileInputs.length,
+                inputs: inputDetails,
+                detectedAt: new Date().toISOString()
+            });
+            console.log(`%c[KYC Sniffer Alert]%c Detected ${fileInputs.length} file input elements for document upload!`, "background: #00ccff; color: #000; font-weight: bold; padding: 2px 6px; border-radius: 3px;", "");
+        }
+    }
+
+    function runAllAudits() {
         scanForSDKs();
+        scanForFileInputs();
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', runAllAudits);
+    } else {
+        runAllAudits();
     }
 
     const observer = new MutationObserver(() => {
-        scanForSDKs();
+        runAllAudits();
     });
 
     try {
@@ -134,5 +160,5 @@
         });
     } catch (e) { }
 
-    setInterval(scanForSDKs, 2000);
+    setInterval(runAllAudits, 2000);
 })();

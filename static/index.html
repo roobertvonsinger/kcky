@@ -147,11 +147,18 @@
                         </div>
                         <p class="card-desc">Transfiere el rostro sobre una persona real con parpadeo y micro-gestos naturales.</p>
 
-                        <!-- Presets de Video -->
+                        <!-- Presets de Video Visuales -->
                         <div class="presets-selector" id="swap-sub-options">
-                            <div class="presets-label">Video Conductor:</div>
-                            <div class="preset-chips-scroll" id="preset-buttons-row">
-                                <!-- Renderizado dinámico -->
+                            <div class="presets-header-row">
+                                <span class="presets-label">Video Conductor (Base KYC):</span>
+                                <div class="preset-filter-pills" id="preset-filter-pills">
+                                    <button type="button" class="pill-filter active" onclick="filterPresets('all', event)">Todos</button>
+                                    <button type="button" class="pill-filter" onclick="filterPresets('Mujer', event)">Mujer</button>
+                                    <button type="button" class="pill-filter" onclick="filterPresets('Hombre', event)">Hombre</button>
+                                </div>
+                            </div>
+                            <div class="preset-cards-grid" id="preset-buttons-row">
+                                <!-- Renderizado dinámico de tarjetas con thumbnails -->
                             </div>
                             <input type="file" id="custom-video-input" accept="video/mp4,video/webm,video/mov" style="display: none;" onchange="handleCustomVideoUpload(event)">
                         </div>

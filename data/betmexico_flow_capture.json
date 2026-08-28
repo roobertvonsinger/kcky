@@ -1,0 +1,3090 @@
+{
+  "recorded_at": "2026-08-28 02:11:42",
+  "target_email": {
+    "step": 0,
+    "base_email": "retirobetmex01@gmail.com",
+    "alias_email": "retirobetmex0.1@gmail.com",
+    "dot_position_from_right": 1,
+    "dot_index": 14
+  },
+  "inputs_detected": [
+    {
+      "selector": "input[name=\"email\"]",
+      "tag": "input",
+      "type": "email",
+      "name": "email",
+      "id": "",
+      "placeholder": "",
+      "sample_val": "retirobetmex0.1@gmail.com",
+      "last_seen": 1787904365.614208
+    },
+    {
+      "selector": "input[name=\"new-password\"]",
+      "tag": "input",
+      "type": "password",
+      "name": "new-password",
+      "id": "",
+      "placeholder": "",
+      "sample_val": "••••••••",
+      "last_seen": 1787904372.3064759
+    },
+    {
+      "selector": "input[name=\"confirm-new-password\"]",
+      "tag": "input",
+      "type": "password",
+      "name": "confirm-new-password",
+      "id": "",
+      "placeholder": "",
+      "sample_val": "••••••••",
+      "last_seen": 1787904375.1631534
+    },
+    {
+      "selector": "input[name=\"name\"]",
+      "tag": "input",
+      "type": "text",
+      "name": "name",
+      "id": "",
+      "placeholder": "",
+      "sample_val": "Norma Citlali",
+      "last_seen": 1787904412.592986
+    },
+    {
+      "selector": "input[name=\"lastname\"]",
+      "tag": "input",
+      "type": "text",
+      "name": "lastname",
+      "id": "",
+      "placeholder": "",
+      "sample_val": "Sandoval",
+      "last_seen": 1787904415.8884616
+    },
+    {
+      "selector": "input[name=\"maidenName\"]",
+      "tag": "input",
+      "type": "text",
+      "name": "maidenName",
+      "id": "",
+      "placeholder": "",
+      "sample_val": "Vazquez",
+      "last_seen": 1787904423.7731214
+    },
+    {
+      "selector": "#cellphone",
+      "tag": "input",
+      "type": "text",
+      "name": "cellphone",
+      "id": "cellphone",
+      "placeholder": "Ej. 1122223333",
+      "sample_val": "8112270303",
+      "last_seen": 1787904449.2903817
+    }
+  ],
+  "camera_kyc_events": [],
+  "events_count": 106,
+  "requests_count": 2177,
+  "events": [
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "email",
+      "id": "",
+      "name": "email",
+      "placeholder": "",
+      "selector": "input[name=\"email\"]",
+      "value_masked": "retir",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904356.492928
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "email",
+      "id": "",
+      "name": "email",
+      "placeholder": "",
+      "selector": "input[name=\"email\"]",
+      "value_masked": "retiro",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904356.5885327
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "email",
+      "id": "",
+      "name": "email",
+      "placeholder": "",
+      "selector": "input[name=\"email\"]",
+      "value_masked": "retirob",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904357.1803794
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "email",
+      "id": "",
+      "name": "email",
+      "placeholder": "",
+      "selector": "input[name=\"email\"]",
+      "value_masked": "retirobe",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904357.2687166
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "email",
+      "id": "",
+      "name": "email",
+      "placeholder": "",
+      "selector": "input[name=\"email\"]",
+      "value_masked": "retirobet",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904357.525105
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "email",
+      "id": "",
+      "name": "email",
+      "placeholder": "",
+      "selector": "input[name=\"email\"]",
+      "value_masked": "retirobetm",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904357.7562313
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "email",
+      "id": "",
+      "name": "email",
+      "placeholder": "",
+      "selector": "input[name=\"email\"]",
+      "value_masked": "retirobetme",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904357.8127515
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "email",
+      "id": "",
+      "name": "email",
+      "placeholder": "",
+      "selector": "input[name=\"email\"]",
+      "value_masked": "retirobetmez",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904358.38045
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "email",
+      "id": "",
+      "name": "email",
+      "placeholder": "",
+      "selector": "input[name=\"email\"]",
+      "value_masked": "retirobetme",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904359.2981598
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "email",
+      "id": "",
+      "name": "email",
+      "placeholder": "",
+      "selector": "input[name=\"email\"]",
+      "value_masked": "retirobetmex",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904359.5227501
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "email",
+      "id": "",
+      "name": "email",
+      "placeholder": "",
+      "selector": "input[name=\"email\"]",
+      "value_masked": "retirobetmex0",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904359.8346262
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "email",
+      "id": "",
+      "name": "email",
+      "placeholder": "",
+      "selector": "input[name=\"email\"]",
+      "value_masked": "retirobetmex01",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904359.9705358
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "email",
+      "id": "",
+      "name": "email",
+      "placeholder": "",
+      "selector": "input[name=\"email\"]",
+      "value_masked": "retirobetmex01@",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904360.6105812
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "email",
+      "id": "",
+      "name": "email",
+      "placeholder": "",
+      "selector": "input[name=\"email\"]",
+      "value_masked": "retirobetmex01@g",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904361.2584403
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "email",
+      "id": "",
+      "name": "email",
+      "placeholder": "",
+      "selector": "input[name=\"email\"]",
+      "value_masked": "retirobetmex01@gm",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904361.402618
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "email",
+      "id": "",
+      "name": "email",
+      "placeholder": "",
+      "selector": "input[name=\"email\"]",
+      "value_masked": "retirobetmex01@gma",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904361.5143275
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "email",
+      "id": "",
+      "name": "email",
+      "placeholder": "",
+      "selector": "input[name=\"email\"]",
+      "value_masked": "retirobetmex01@gmai",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904361.5944781
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "email",
+      "id": "",
+      "name": "email",
+      "placeholder": "",
+      "selector": "input[name=\"email\"]",
+      "value_masked": "retirobetmex01@gmail",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904361.762609
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "email",
+      "id": "",
+      "name": "email",
+      "placeholder": "",
+      "selector": "input[name=\"email\"]",
+      "value_masked": "retirobetmex01@gmail.",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904361.9063714
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "email",
+      "id": "",
+      "name": "email",
+      "placeholder": "",
+      "selector": "input[name=\"email\"]",
+      "value_masked": "retirobetmex01@gmail.c",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904361.9867694
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "email",
+      "id": "",
+      "name": "email",
+      "placeholder": "",
+      "selector": "input[name=\"email\"]",
+      "value_masked": "retirobetmex01@gmail.co",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904362.098358
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "email",
+      "id": "",
+      "name": "email",
+      "placeholder": "",
+      "selector": "input[name=\"email\"]",
+      "value_masked": "retirobetmex01@gmail.com",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904362.2503803
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "email",
+      "id": "",
+      "name": "email",
+      "placeholder": "",
+      "selector": "input[name=\"email\"]",
+      "value_masked": "retirobetmex0.1@gmail.com",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904365.224885
+    },
+    {
+      "type": "change",
+      "tag": "input",
+      "inputType": "email",
+      "id": "",
+      "name": "email",
+      "placeholder": "",
+      "selector": "input[name=\"email\"]",
+      "value_masked": "retirobetmex0.1@gmail.com",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904365.5518336
+    },
+    {
+      "type": "blur",
+      "tag": "input",
+      "inputType": "email",
+      "id": "",
+      "name": "email",
+      "placeholder": "",
+      "selector": "input[name=\"email\"]",
+      "value_masked": "retirobetmex0.1@gmail.com",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904365.614208
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "password",
+      "id": "",
+      "name": "new-password",
+      "placeholder": "",
+      "selector": "input[name=\"new-password\"]",
+      "value_masked": "••••••••",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904369.7535372
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "password",
+      "id": "",
+      "name": "new-password",
+      "placeholder": "",
+      "selector": "input[name=\"new-password\"]",
+      "value_masked": "••••••••",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904370.6644452
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "password",
+      "id": "",
+      "name": "new-password",
+      "placeholder": "",
+      "selector": "input[name=\"new-password\"]",
+      "value_masked": "••••••••",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904370.888305
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "password",
+      "id": "",
+      "name": "new-password",
+      "placeholder": "",
+      "selector": "input[name=\"new-password\"]",
+      "value_masked": "••••••••",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904371.1363153
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "password",
+      "id": "",
+      "name": "new-password",
+      "placeholder": "",
+      "selector": "input[name=\"new-password\"]",
+      "value_masked": "••••••••",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904371.2383976
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "password",
+      "id": "",
+      "name": "new-password",
+      "placeholder": "",
+      "selector": "input[name=\"new-password\"]",
+      "value_masked": "••••••••",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904371.3504128
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "password",
+      "id": "",
+      "name": "new-password",
+      "placeholder": "",
+      "selector": "input[name=\"new-password\"]",
+      "value_masked": "••••••••",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904371.5826173
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "password",
+      "id": "",
+      "name": "new-password",
+      "placeholder": "",
+      "selector": "input[name=\"new-password\"]",
+      "value_masked": "••••••••",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904371.8384273
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "password",
+      "id": "",
+      "name": "new-password",
+      "placeholder": "",
+      "selector": "input[name=\"new-password\"]",
+      "value_masked": "••••••••",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904371.918282
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "password",
+      "id": "",
+      "name": "new-password",
+      "placeholder": "",
+      "selector": "input[name=\"new-password\"]",
+      "value_masked": "••••••••",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904372.0464032
+    },
+    {
+      "type": "change",
+      "tag": "input",
+      "inputType": "password",
+      "id": "",
+      "name": "new-password",
+      "placeholder": "",
+      "selector": "input[name=\"new-password\"]",
+      "value_masked": "••••••••",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904372.3022423
+    },
+    {
+      "type": "blur",
+      "tag": "input",
+      "inputType": "password",
+      "id": "",
+      "name": "new-password",
+      "placeholder": "",
+      "selector": "input[name=\"new-password\"]",
+      "value_masked": "••••••••",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904372.3064759
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "password",
+      "id": "",
+      "name": "confirm-new-password",
+      "placeholder": "",
+      "selector": "input[name=\"confirm-new-password\"]",
+      "value_masked": "••••••••",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904373.0865803
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "password",
+      "id": "",
+      "name": "confirm-new-password",
+      "placeholder": "",
+      "selector": "input[name=\"confirm-new-password\"]",
+      "value_masked": "••••••••",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904373.4147618
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "password",
+      "id": "",
+      "name": "confirm-new-password",
+      "placeholder": "",
+      "selector": "input[name=\"confirm-new-password\"]",
+      "value_masked": "••••••••",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904373.5264037
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "password",
+      "id": "",
+      "name": "confirm-new-password",
+      "placeholder": "",
+      "selector": "input[name=\"confirm-new-password\"]",
+      "value_masked": "••••••••",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904373.6784847
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "password",
+      "id": "",
+      "name": "confirm-new-password",
+      "placeholder": "",
+      "selector": "input[name=\"confirm-new-password\"]",
+      "value_masked": "••••••••",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904373.7505827
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "password",
+      "id": "",
+      "name": "confirm-new-password",
+      "placeholder": "",
+      "selector": "input[name=\"confirm-new-password\"]",
+      "value_masked": "••••••••",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904373.8705475
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "password",
+      "id": "",
+      "name": "confirm-new-password",
+      "placeholder": "",
+      "selector": "input[name=\"confirm-new-password\"]",
+      "value_masked": "••••••••",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904374.0384288
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "password",
+      "id": "",
+      "name": "confirm-new-password",
+      "placeholder": "",
+      "selector": "input[name=\"confirm-new-password\"]",
+      "value_masked": "••••••••",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904374.21437
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "password",
+      "id": "",
+      "name": "confirm-new-password",
+      "placeholder": "",
+      "selector": "input[name=\"confirm-new-password\"]",
+      "value_masked": "••••••••",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904374.294407
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "password",
+      "id": "",
+      "name": "confirm-new-password",
+      "placeholder": "",
+      "selector": "input[name=\"confirm-new-password\"]",
+      "value_masked": "••••••••",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904374.4226806
+    },
+    {
+      "type": "change",
+      "tag": "input",
+      "inputType": "password",
+      "id": "",
+      "name": "confirm-new-password",
+      "placeholder": "",
+      "selector": "input[name=\"confirm-new-password\"]",
+      "value_masked": "••••••••",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904375.1580963
+    },
+    {
+      "type": "blur",
+      "tag": "input",
+      "inputType": "password",
+      "id": "",
+      "name": "confirm-new-password",
+      "placeholder": "",
+      "selector": "input[name=\"confirm-new-password\"]",
+      "value_masked": "••••••••",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904375.1631534
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "text",
+      "id": "",
+      "name": "name",
+      "placeholder": "",
+      "selector": "input[name=\"name\"]",
+      "value_masked": "N",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904409.69399
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "text",
+      "id": "",
+      "name": "name",
+      "placeholder": "",
+      "selector": "input[name=\"name\"]",
+      "value_masked": "No",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904410.0038223
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "text",
+      "id": "",
+      "name": "name",
+      "placeholder": "",
+      "selector": "input[name=\"name\"]",
+      "value_masked": "Nor",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904410.1797009
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "text",
+      "id": "",
+      "name": "name",
+      "placeholder": "",
+      "selector": "input[name=\"name\"]",
+      "value_masked": "Norm",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904410.2755282
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "text",
+      "id": "",
+      "name": "name",
+      "placeholder": "",
+      "selector": "input[name=\"name\"]",
+      "value_masked": "Norma",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904410.499595
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "text",
+      "id": "",
+      "name": "name",
+      "placeholder": "",
+      "selector": "input[name=\"name\"]",
+      "value_masked": "Norma ",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904410.6756723
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "text",
+      "id": "",
+      "name": "name",
+      "placeholder": "",
+      "selector": "input[name=\"name\"]",
+      "value_masked": "Norma C",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904411.195825
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "text",
+      "id": "",
+      "name": "name",
+      "placeholder": "",
+      "selector": "input[name=\"name\"]",
+      "value_masked": "Norma Ci",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904411.4838865
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "text",
+      "id": "",
+      "name": "name",
+      "placeholder": "",
+      "selector": "input[name=\"name\"]",
+      "value_masked": "Norma Cit",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904411.7639
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "text",
+      "id": "",
+      "name": "name",
+      "placeholder": "",
+      "selector": "input[name=\"name\"]",
+      "value_masked": "Norma Citl",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904411.9157033
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "text",
+      "id": "",
+      "name": "name",
+      "placeholder": "",
+      "selector": "input[name=\"name\"]",
+      "value_masked": "Norma Citla",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904412.0520575
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "text",
+      "id": "",
+      "name": "name",
+      "placeholder": "",
+      "selector": "input[name=\"name\"]",
+      "value_masked": "Norma Citlal",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904412.315865
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "text",
+      "id": "",
+      "name": "name",
+      "placeholder": "",
+      "selector": "input[name=\"name\"]",
+      "value_masked": "Norma Citlali",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904412.4757357
+    },
+    {
+      "type": "change",
+      "tag": "input",
+      "inputType": "text",
+      "id": "",
+      "name": "name",
+      "placeholder": "",
+      "selector": "input[name=\"name\"]",
+      "value_masked": "Norma Citlali",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904412.587282
+    },
+    {
+      "type": "blur",
+      "tag": "input",
+      "inputType": "text",
+      "id": "",
+      "name": "name",
+      "placeholder": "",
+      "selector": "input[name=\"name\"]",
+      "value_masked": "Norma Citlali",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904412.592986
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "text",
+      "id": "",
+      "name": "lastname",
+      "placeholder": "",
+      "selector": "input[name=\"lastname\"]",
+      "value_masked": "S",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904413.1558087
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "text",
+      "id": "",
+      "name": "lastname",
+      "placeholder": "",
+      "selector": "input[name=\"lastname\"]",
+      "value_masked": "Sa",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904414.475712
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "text",
+      "id": "",
+      "name": "lastname",
+      "placeholder": "",
+      "selector": "input[name=\"lastname\"]",
+      "value_masked": "San",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904414.7077742
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "text",
+      "id": "",
+      "name": "lastname",
+      "placeholder": "",
+      "selector": "input[name=\"lastname\"]",
+      "value_masked": "Sand",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904414.9237735
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "text",
+      "id": "",
+      "name": "lastname",
+      "placeholder": "",
+      "selector": "input[name=\"lastname\"]",
+      "value_masked": "Sando",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904415.0437968
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "text",
+      "id": "",
+      "name": "lastname",
+      "placeholder": "",
+      "selector": "input[name=\"lastname\"]",
+      "value_masked": "Sandov",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904415.3238456
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "text",
+      "id": "",
+      "name": "lastname",
+      "placeholder": "",
+      "selector": "input[name=\"lastname\"]",
+      "value_masked": "Sandova",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904415.435683
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "text",
+      "id": "",
+      "name": "lastname",
+      "placeholder": "",
+      "selector": "input[name=\"lastname\"]",
+      "value_masked": "Sandoval",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904415.563787
+    },
+    {
+      "type": "change",
+      "tag": "input",
+      "inputType": "text",
+      "id": "",
+      "name": "lastname",
+      "placeholder": "",
+      "selector": "input[name=\"lastname\"]",
+      "value_masked": "Sandoval",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904415.8831885
+    },
+    {
+      "type": "blur",
+      "tag": "input",
+      "inputType": "text",
+      "id": "",
+      "name": "lastname",
+      "placeholder": "",
+      "selector": "input[name=\"lastname\"]",
+      "value_masked": "Sandoval",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904415.8884616
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "text",
+      "id": "",
+      "name": "maidenName",
+      "placeholder": "",
+      "selector": "input[name=\"maidenName\"]",
+      "value_masked": "V",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904416.3859472
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "text",
+      "id": "",
+      "name": "maidenName",
+      "placeholder": "",
+      "selector": "input[name=\"maidenName\"]",
+      "value_masked": "Va",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904416.6901033
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "text",
+      "id": "",
+      "name": "maidenName",
+      "placeholder": "",
+      "selector": "input[name=\"maidenName\"]",
+      "value_masked": "Vaz",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904422.9360814
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "text",
+      "id": "",
+      "name": "maidenName",
+      "placeholder": "",
+      "selector": "input[name=\"maidenName\"]",
+      "value_masked": "Vazq",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904423.1121662
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "text",
+      "id": "",
+      "name": "maidenName",
+      "placeholder": "",
+      "selector": "input[name=\"maidenName\"]",
+      "value_masked": "Vazqu",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904423.2079675
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "text",
+      "id": "",
+      "name": "maidenName",
+      "placeholder": "",
+      "selector": "input[name=\"maidenName\"]",
+      "value_masked": "Vazque",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904423.287748
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "text",
+      "id": "",
+      "name": "maidenName",
+      "placeholder": "",
+      "selector": "input[name=\"maidenName\"]",
+      "value_masked": "Vazquez",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904423.5120924
+    },
+    {
+      "type": "change",
+      "tag": "input",
+      "inputType": "text",
+      "id": "",
+      "name": "maidenName",
+      "placeholder": "",
+      "selector": "input[name=\"maidenName\"]",
+      "value_masked": "Vazquez",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904423.7674148
+    },
+    {
+      "type": "blur",
+      "tag": "input",
+      "inputType": "text",
+      "id": "",
+      "name": "maidenName",
+      "placeholder": "",
+      "selector": "input[name=\"maidenName\"]",
+      "value_masked": "Vazquez",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904423.7731214
+    },
+    {
+      "type": "click",
+      "tag": "button",
+      "text": "Año",
+      "selector": "#headlessui-listbox-button-v-1-0-0",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904428.664188
+    },
+    {
+      "type": "click",
+      "tag": "button",
+      "text": "Mes",
+      "selector": "#headlessui-listbox-button-v-1-1-0",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904434.8803098
+    },
+    {
+      "type": "click",
+      "tag": "button",
+      "text": "Día",
+      "selector": "#headlessui-listbox-button-v-1-2-0",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904437.019162
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "text",
+      "id": "cellphone",
+      "name": "cellphone",
+      "placeholder": "Ej. 1122223333",
+      "selector": "#cellphone",
+      "value_masked": "8",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904444.1710331
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "text",
+      "id": "cellphone",
+      "name": "cellphone",
+      "placeholder": "Ej. 1122223333",
+      "selector": "#cellphone",
+      "value_masked": "81",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904444.3942964
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "text",
+      "id": "cellphone",
+      "name": "cellphone",
+      "placeholder": "Ej. 1122223333",
+      "selector": "#cellphone",
+      "value_masked": "811",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904444.538558
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "text",
+      "id": "cellphone",
+      "name": "cellphone",
+      "placeholder": "Ej. 1122223333",
+      "selector": "#cellphone",
+      "value_masked": "8112",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904446.9065676
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "text",
+      "id": "cellphone",
+      "name": "cellphone",
+      "placeholder": "Ej. 1122223333",
+      "selector": "#cellphone",
+      "value_masked": "81122",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904447.0425315
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "text",
+      "id": "cellphone",
+      "name": "cellphone",
+      "placeholder": "Ej. 1122223333",
+      "selector": "#cellphone",
+      "value_masked": "811227",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904447.2427008
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "text",
+      "id": "cellphone",
+      "name": "cellphone",
+      "placeholder": "Ej. 1122223333",
+      "selector": "#cellphone",
+      "value_masked": "8112270",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904447.426513
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "text",
+      "id": "cellphone",
+      "name": "cellphone",
+      "placeholder": "Ej. 1122223333",
+      "selector": "#cellphone",
+      "value_masked": "81122703",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904447.6264942
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "text",
+      "id": "cellphone",
+      "name": "cellphone",
+      "placeholder": "Ej. 1122223333",
+      "selector": "#cellphone",
+      "value_masked": "811227030",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904447.9944215
+    },
+    {
+      "type": "input",
+      "tag": "input",
+      "inputType": "text",
+      "id": "cellphone",
+      "name": "cellphone",
+      "placeholder": "Ej. 1122223333",
+      "selector": "#cellphone",
+      "value_masked": "8112270303",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904448.122675
+    },
+    {
+      "type": "change",
+      "tag": "input",
+      "inputType": "text",
+      "id": "cellphone",
+      "name": "cellphone",
+      "placeholder": "Ej. 1122223333",
+      "selector": "#cellphone",
+      "value_masked": "8112270303",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904449.2831843
+    },
+    {
+      "type": "blur",
+      "tag": "input",
+      "inputType": "text",
+      "id": "cellphone",
+      "name": "cellphone",
+      "placeholder": "Ej. 1122223333",
+      "selector": "#cellphone",
+      "value_masked": "8112270303",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904449.2903817
+    },
+    {
+      "type": "click",
+      "tag": "button",
+      "text": "Continuar",
+      "selector": "#register",
+      "url": "https://betmexico.mx/registro",
+      "timestamp": 1787904457.6687727
+    },
+    {
+      "type": "click",
+      "tag": "button",
+      "text": "Jugar ahora",
+      "selector": "div#app > section > div > div:nth-of-type(2) > button",
+      "url": "https://betmexico.mx/onboard-success",
+      "timestamp": 1787904461.4722607
+    }
+  ],
+  "requests": [
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://betmexico.freshchat.com/app/services/app/webchat/6075ba75-898e-43ee-bd85-07a0130baf54/config?domain=aHR0cHM6Ly9iZXRtZXhpY28ubXg=",
+      "post_data": null,
+      "headers": {
+        "sec-ch-ua-platform": "\"Windows\"",
+        "referer": "https://betmexico.freshchat.com/widget/config_iframe.html?host=https://betmexico.freshchat.com&token=6075ba75-898e-43ee-bd85-07a0130baf54&origin=https://betmexico.mx",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "sec-ch-ua-mobile": "?0"
+      },
+      "timestamp": 1787904527.489657
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://betmexico.mx/assets/banner_promo_desktop-CNQXMpBy.webp",
+      "post_data": null,
+      "headers": {
+        "sec-ch-ua-platform": "\"Windows\"",
+        "referer": "https://betmexico.mx/casino",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "sec-ch-ua-mobile": "?0"
+      },
+      "timestamp": 1787904527.5049093
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://betmexico.mx/assets/earlyPayoutAPI-D_w_uubU.js",
+      "headers": {
+        "content-encoding": "br",
+        "x-amz-version-id": "xovn9RRuWvWH6Os8LBJQg1Crz0mKfef.",
+        "etag": "W/\"65e99182ef9e4d267fe99ac084dd6db5\"",
+        "age": "42898",
+        "x-content-type-options": "nosniff",
+        "server-timing": "cdn-cache-hit,cdn-pop;desc=\"DFW56-P10\",cdn-hit-layer;desc=\"EDGE\",cdn-rid;desc=\"qBXnCqUXiyeUbipfbA3STmPl7_8sSYFbuIypNru9xSnK50smol1VTQ==\",cdn-downstream-fbl;dur=1",
+        "x-cache": "Hit from cloudfront",
+        "alt-svc": "h3=\":443\"; ma=86400",
+        "date": "Thu, 27 Aug 2026 20:10:51 GMT",
+        "content-type": "text/javascript",
+        "last-modified": "Thu, 27 Aug 2026 20:07:35 GMT",
+        "vary": "Accept-Encoding",
+        "x-amz-cf-id": "qBXnCqUXiyeUbipfbA3STmPl7_8sSYFbuIypNru9xSnK50smol1VTQ==",
+        "cache-control": "public, max-age=604800, immutable, stale-while-revalidate=10800, stale-if-error=10800",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "via": "1.1 51d0a1b74b16c30679726a1e0d574f5c.cloudfront.net (CloudFront)",
+        "access-control-allow-origin": "*",
+        "x-amz-cf-pop": "DFW56-P10",
+        "server": "CloudFront"
+      },
+      "response_body": "(function(){try{var e=typeof window<`u`?window:typeof global<`u`?global:typeof globalThis<`u`?globalThis:typeof self<`u`?self:{};e.SENTRY_RELEASE={id:`bmx-prod-v26.8.40`},e._sentryModuleMetadata=e._sentryModuleMetadata||{},e._sentryModuleMetadata[new e.Error().stack]=function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t];if(n!=null)for(var r in n)n.hasOwnProperty(r)&&(e[r]=n[r])}return e}({},e._sentryModuleMetadata[new e.Error().stack],{\"_sentryBundlerPluginAppKey:platform-frontend\":!0});var t=new e.Error().stack;t&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[t]=`ede6ec8b-89bb-4165-a770-8eeea0922597`,e._sentryDebugIdIdentifier=`sentry-dbid-ede6ec8b-89bb-4165-a770-8eeea0922597`)}catch{}})();import{n as e}from\"./rolldown-runtime-D76PP_Cl.js\";import{Ft as t,y as n}from\"./vendor-core-CHuJTDIe.js\";import{$ as r,Ci as i,a,at as o,bt as s,c,do as l,it as u,lo as d,nt as f,oo as p,so as m,tt as h,xi as g,xt as _}from\"./useAuth-8r07X6Nt.js\";async function v(){let{data:e,error:t}=await C.get(`/api/EarlyPayoutFeatures/v1/MessageStatus`);return t.value?Promise.reject(t.value):Promise.resolve(e.value)}async function y(e){let{data:t,error:n}=await C.post(`/api/EarlyPayoutFeatures/v1/MessageSeen`,e);return n.value?Promise.reject(n.value):Promise.resolve(t.value)}var b,x,S,C,w=e((()=>{r(),p(),c(),o(),i(),s(),n(),{doPing:b}=_(),x=l({baseURL:g,timeout:6e4*3},h(()=>u()??``),f(()=>a()),d(),m(()=>b())),S=t(!1),C=x({headers:{\"content-type\":`application/json`}})}));export{S as i,w as n,y as r,v as t};\n//# sourceMappingURL=earlyPayoutAPI-D_w_uubU.js.map",
+      "timestamp": 1787904527.517441
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://paymentsapi.betmexico.mx/api/wallet/PendingWithdrawal",
+      "headers": {
+        "x-frame-options": "DENY",
+        "access-control-expose-headers": "Access-Control-Allow-Credentials,Origin,Access-Control-Allow-Methods,Access-Control-Allow-Origin,Access-Control-Allow-Headers",
+        "access-control-allow-credentials": "true",
+        "via": "1.1 62948ecc9077fa56dfc8df69e8170ff4.cloudfront.net (CloudFront)",
+        "alt-svc": "h3=\":443\"; ma=86400",
+        "x-cache": "Miss from cloudfront",
+        "content-length": "147",
+        "access-control-allow-origin": "https://betmexico.mx",
+        "date": "Fri, 28 Aug 2026 08:08:45 GMT",
+        "x-xss-protection": "1; mode=block",
+        "content-type": "application/json; charset=utf-8",
+        "x-amz-cf-pop": "DFW56-P9",
+        "server": "CloudFront",
+        "x-amz-cf-id": "XocD1JVqGgIQeyQh1qcRE7EqOhMVxIX8wb19jzSokVdHD64x1MZvPQ==",
+        "vary": "Origin"
+      },
+      "response_body": "{\"id\":null,\"reference\":null,\"amount\":null,\"transactionStatus\":null,\"transactionStatusDescription\":null,\"gatewayType\":null,\"isCashWithdrawal\":false}",
+      "timestamp": 1787904527.52901
+    },
+    {
+      "type": "response",
+      "status": 410,
+      "url": "https://betmexico.mx/api/UserDocument/GetStatusFiles",
+      "headers": {
+        "vary": "Origin",
+        "via": "1.1 f3c133b66c9ad381e006ccd012343690.cloudfront.net (CloudFront)",
+        "alt-svc": "h3=\":443\"; ma=86400",
+        "x-cache": "Error from cloudfront",
+        "content-length": "105",
+        "x-amz-cf-id": "e6yTfMD7eJz31ZmFVwvZrIY8upD-I4xn11MmBHSbkEiAFVJf_xZylw==",
+        "date": "Fri, 28 Aug 2026 08:08:45 GMT",
+        "x-xss-protection": "1; mode=block",
+        "content-type": "application/json; charset=utf-8",
+        "x-amz-cf-pop": "DFW56-P10",
+        "server": "CloudFront",
+        "x-frame-options": "DENY"
+      },
+      "response_body": "{\"error\":\"DATA_NOT_FOUND\",\"message\":\"User has not files upload yet\",\"details\":null,\"redirectLogin\":false}",
+      "timestamp": 1787904527.5424755
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://betmexico.mx/api/ResponsibleGame/Validator/Breaktime",
+      "headers": {
+        "vary": "Origin",
+        "via": "1.1 f3c133b66c9ad381e006ccd012343690.cloudfront.net (CloudFront)",
+        "alt-svc": "h3=\":443\"; ma=86400",
+        "x-cache": "Miss from cloudfront",
+        "content-length": "144",
+        "x-amz-cf-id": "W6m-et2PP8xft5LcSIvPvuXPCuQ1yQbu7XuMJcRlCegnfalMo9LwYA==",
+        "date": "Fri, 28 Aug 2026 08:08:45 GMT",
+        "x-xss-protection": "1; mode=block",
+        "content-type": "application/json; charset=utf-8",
+        "x-amz-cf-pop": "DFW56-P10",
+        "server": "CloudFront",
+        "x-frame-options": "DENY"
+      },
+      "response_body": "{\"data\":{\"hasUserBreakTime\":false,\"timeOff\":null,\"untilDate\":null},\"isSuccess\":true,\"message\":\"El usuario no tiene tiempo de descanso vigente.\"}",
+      "timestamp": 1787904527.5537188
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://betmexico.mx/api/Users/Validate/HasFullValidation",
+      "headers": {
+        "vary": "Origin",
+        "via": "1.1 f3c133b66c9ad381e006ccd012343690.cloudfront.net (CloudFront)",
+        "alt-svc": "h3=\":443\"; ma=86400",
+        "x-cache": "Miss from cloudfront",
+        "content-length": "79",
+        "x-amz-cf-id": "NAUwBIDGBDwspZ6xDF6KoFA7xN04PVCEMSkU-YD5V81A_OupGxL6Xg==",
+        "date": "Fri, 28 Aug 2026 08:08:45 GMT",
+        "x-xss-protection": "1; mode=block",
+        "content-type": "application/json; charset=utf-8",
+        "x-amz-cf-pop": "DFW56-P10",
+        "server": "CloudFront",
+        "x-frame-options": "DENY"
+      },
+      "response_body": "{\"data\":false,\"isSuccess\":true,\"message\":\"Usuario pendiente de verificación.\"}",
+      "timestamp": 1787904527.5661886
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://paymentsapi.betmexico.mx/api/Wallet/Total/Amount/ByAccountType",
+      "headers": {
+        "x-frame-options": "DENY",
+        "access-control-expose-headers": "Access-Control-Allow-Credentials,Origin,Access-Control-Allow-Methods,Access-Control-Allow-Origin,Access-Control-Allow-Headers",
+        "access-control-allow-credentials": "true",
+        "via": "1.1 62948ecc9077fa56dfc8df69e8170ff4.cloudfront.net (CloudFront)",
+        "alt-svc": "h3=\":443\"; ma=86400",
+        "x-cache": "Miss from cloudfront",
+        "content-length": "26",
+        "access-control-allow-origin": "https://betmexico.mx",
+        "date": "Fri, 28 Aug 2026 08:08:45 GMT",
+        "x-xss-protection": "1; mode=block",
+        "content-type": "application/json; charset=utf-8",
+        "x-amz-cf-pop": "DFW56-P9",
+        "server": "CloudFront",
+        "x-amz-cf-id": "B3X7XhPwpzJP1N_sjZWmZFPYFtjLku7TEdd3bD4kErBeVCY4r4SQaA==",
+        "vary": "Origin"
+      },
+      "response_body": "{\"Real\":0.00,\"Bonos\":0.00}",
+      "timestamp": 1787904527.5769975
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://betmexico.freshchat.com/widget/?token=6075ba75-898e-43ee-bd85-07a0130baf54&referrer=aHR0cHM6Ly9iZXRtZXhpY28ubXg=&eagerLoad=true",
+      "post_data": null,
+      "headers": {
+        "referer": "https://betmexico.mx/",
+        "upgrade-insecure-requests": "1",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+      },
+      "timestamp": 1787904527.5971465
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://betmexico.freshchat.com/widget/css/widget.css?t=1787904525056",
+      "post_data": null,
+      "headers": {
+        "sec-ch-ua-platform": "\"Windows\"",
+        "referer": "https://betmexico.mx/",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "sec-ch-ua-mobile": "?0"
+      },
+      "timestamp": 1787904527.6079762
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://casino.betmexico.mx/api/UserFavoriteGames",
+      "headers": {
+        "x-amz-cf-id": "-VaQn52-6ThLD3eOZwiYUdrzvy9XMNpR1Fddtiblhb9pNa98q7P56A==",
+        "access-control-expose-headers": "Access-Control-Allow-Credentials,Origin,Access-Control-Allow-Methods,Access-Control-Allow-Origin,Access-Control-Allow-Headers",
+        "access-control-allow-credentials": "true",
+        "via": "1.1 c21d87dcbf77ef771bcc5c31c28adeae.cloudfront.net (CloudFront)",
+        "access-control-allow-origin": "https://betmexico.mx",
+        "x-cache": "Miss from cloudfront",
+        "content-length": "24",
+        "alt-svc": "h3=\":443\"; ma=86400",
+        "date": "Fri, 28 Aug 2026 08:08:45 GMT",
+        "x-xss-protection": "1; mode=block",
+        "content-type": "application/json; charset=utf-8",
+        "vary": "Origin, Origin",
+        "server": "CloudFront",
+        "x-amz-cf-pop": "DFW56-P2",
+        "x-frame-options": "DENY"
+      },
+      "response_body": "{\"data\":[],\"error\":null}",
+      "timestamp": 1787904527.6193738
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://betmexico.mx/api/Giveaway/ActiveFreeSpins",
+      "headers": {
+        "content-encoding": "gzip",
+        "x-amz-version-id": "RolrBajgIHGv2Zl_h0ElD.mjt_kEd8qr",
+        "etag": "W/\"4cfedc7d76bb61b9550e603f58bb6201\"",
+        "alt-svc": "h3=\":443\"; ma=86400",
+        "x-cache": "Error from cloudfront",
+        "x-amz-cf-id": "kOaqZS4tmd0Qn9jKsWvtBT5G-0uRaHy4kj-ndLDiuIUWVGnCoCpCHA==",
+        "date": "Fri, 28 Aug 2026 08:08:46 GMT",
+        "content-type": "text/html",
+        "vary": "Accept-Encoding, Origin",
+        "last-modified": "Thu, 27 Aug 2026 20:10:50 GMT",
+        "x-frame-options": "DENY",
+        "cache-control": "no-cache, no-store",
+        "via": "1.1 f3c133b66c9ad381e006ccd012343690.cloudfront.net (CloudFront)",
+        "x-xss-protection": "1; mode=block",
+        "x-amz-cf-pop": "DFW56-P10",
+        "server": "CloudFront"
+      },
+      "response_body": "<!doctype html><html lang=\"es-MX\"><head><meta charset=\"utf-8\"/><meta name=\"google\" content=\"notranslate\"/><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge, chrome=1\"/><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"/favicon_32x32.png\"/><link rel=\"icon\" type=\"image/png\" sizes=\"48x48\" href=\"/favicon_48x48.png\"/><link rel=\"icon\" type=\"image/png\" sizes=\"144x144\" href=\"/favicon.png\"/><link rel=\"icon\" type=\"image/png\" sizes=\"240x240\" href=\"/favicon_240x240.png\"/><link rel=\"shortcut icon\" type=\"image/png\" href=\"/favicon.png\"/><link rel=\"apple-touch-icon\" sizes=\"48x48\" href=\"/apple-touch-icon.png\"/><link rel=\"alternate\" href=\"android-app://com.betmexicomx.android/https/betmexico.mx\"/><title>Betmexico | Apuestas y casino en línea con bonos de bienvenida</title><link rel=\"manifest\" href=\"/manifest.json\"/><meta property=\"title\" content=\"Betmexico | Apuestas y casino en línea con bonos de bienvenida\"/><meta name=\"title\" content=\"Betmexico | Apuestas y casino en línea con bonos de bienvenida\"/><meta property=\"description\" content=\"Descubre Betmexico, el mejor sitio de apuestas deportivas y casino en México. Disfruta de bonos de bienvenida y más. ¡Regístrate ahora!\"/><meta name=\"description\" content=\"Descubre Betmexico, el mejor sitio de apuestas deportivas y casino en México. Disfruta de bonos de bienvenida y más. ¡Regístrate ahora!\"/><meta property=\"url\" content=\"https://betmexico.mx/\"/><meta property=\"image\" content=\"/banner-seo-2024.jpg\"/><meta property=\"og:url\" content=\"https://betmexico.mx/\"/><meta property=\"og:type\" content=\"website\"/><meta property=\"og:title\" content=\"Betmexico | Apuestas y casino en línea con bonos de bienvenida\"/><meta property=\"og:description\" content=\"Descubre Betmexico, el mejor sitio de apuestas deportivas y casino en México. Disfruta de bonos de bienvenida y más. ¡Regístrate ahora!\"/><meta property=\"og:image\" content=\"https://betmexico.mx/b",
+      "timestamp": 1787904527.632466
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://paymentsapi.betmexico.mx/api/Wallet/Total/Amount/ByAccountType",
+      "headers": {
+        "x-frame-options": "DENY",
+        "access-control-expose-headers": "Access-Control-Allow-Credentials,Origin,Access-Control-Allow-Methods,Access-Control-Allow-Origin,Access-Control-Allow-Headers",
+        "access-control-allow-credentials": "true",
+        "via": "1.1 62948ecc9077fa56dfc8df69e8170ff4.cloudfront.net (CloudFront)",
+        "alt-svc": "h3=\":443\"; ma=86400",
+        "x-cache": "Miss from cloudfront",
+        "content-length": "26",
+        "access-control-allow-origin": "https://betmexico.mx",
+        "date": "Fri, 28 Aug 2026 08:08:45 GMT",
+        "x-xss-protection": "1; mode=block",
+        "content-type": "application/json; charset=utf-8",
+        "x-amz-cf-pop": "DFW56-P9",
+        "server": "CloudFront",
+        "x-amz-cf-id": "u_raQB9I5ox-kf2psNCVVBj__aa1bAlhv1sA8HmOQ9fI7o-7afK0_g==",
+        "vary": "Origin"
+      },
+      "response_body": "{\"Real\":0.00,\"Bonos\":0.00}",
+      "timestamp": 1787904527.6421928
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://o4506956930875392.ingest.us.sentry.io/api/4507851099930624/envelope/?sentry_version=7&sentry_key=598a6235f8fbb8a1a6e67012e8dbe45e&sentry_client=sentry.javascript.vue%2F8.55.0",
+      "headers": {
+        "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+        "access-control-expose-headers": "x-sentry-error,x-sentry-rate-limits,retry-after",
+        "cross-origin-resource-policy": "cross-origin",
+        "via": "1.1 google",
+        "access-control-allow-origin": "*",
+        "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
+        "content-length": "2",
+        "date": "Fri, 28 Aug 2026 08:08:45 GMT",
+        "content-type": "application/json",
+        "vary": "origin, access-control-request-method, access-control-request-headers",
+        "server": "nginx"
+      },
+      "response_body": "{}",
+      "timestamp": 1787904527.6538885
+    },
+    {
+      "type": "response",
+      "status": 204,
+      "url": "https://paymentsapi.betmexico.mx/api/user/LastDepositDetail",
+      "headers": {
+        "access-control-expose-headers": "Access-Control-Allow-Credentials,Origin,Access-Control-Allow-Methods,Access-Control-Allow-Origin,Access-Control-Allow-Headers",
+        "access-control-allow-credentials": "true",
+        "via": "1.1 62948ecc9077fa56dfc8df69e8170ff4.cloudfront.net (CloudFront)",
+        "alt-svc": "h3=\":443\"; ma=86400",
+        "x-cache": "Miss from cloudfront",
+        "access-control-allow-origin": "https://betmexico.mx",
+        "date": "Fri, 28 Aug 2026 08:08:45 GMT",
+        "x-xss-protection": "1; mode=block",
+        "x-amz-cf-pop": "DFW56-P9",
+        "vary": "Origin",
+        "server": "CloudFront",
+        "x-amz-cf-id": "roMLhwr4Eb0LuIPIuQXFDhOmFZC2QqXyCoV-3_Md84GRYRwkvknolg==",
+        "x-frame-options": "DENY"
+      },
+      "response_body": null,
+      "timestamp": 1787904527.6662643
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://casino.betmexico.mx/api/Games/getPaginatedHalls?pageSize=12&isiOSApp=false",
+      "headers": {
+        "x-amz-cf-id": "Xdjfrq8pzlbvwIJ3pm6mo5l4qboQFbNv7I9PyYl6V4G6ecL4zDxMAA==",
+        "access-control-expose-headers": "Access-Control-Allow-Credentials,Origin,Access-Control-Allow-Methods,Access-Control-Allow-Origin,Access-Control-Allow-Headers",
+        "content-encoding": "gzip",
+        "access-control-allow-credentials": "true",
+        "via": "1.1 c21d87dcbf77ef771bcc5c31c28adeae.cloudfront.net (CloudFront)",
+        "access-control-allow-origin": "https://betmexico.mx",
+        "x-cache": "Miss from cloudfront",
+        "alt-svc": "h3=\":443\"; ma=86400",
+        "x-xss-protection": "1; mode=block",
+        "date": "Fri, 28 Aug 2026 08:08:45 GMT",
+        "content-type": "application/json; charset=utf-8",
+        "vary": "Accept-Encoding, Origin, Origin",
+        "server": "CloudFront",
+        "x-amz-cf-pop": "DFW56-P2",
+        "x-frame-options": "DENY"
+      },
+      "response_body": "[{\"id\":\"cc22d433-3aa2-451a-9341-4f3e9f8c9596\",\"hallName\":\"Destacados\",\"order\":0,\"templateHallGamesGroups\":[{\"id\":\"d365552d-9b3b-409c-8b13-dcfdc9370717\",\"groupName\":\"Destacados\",\"order\":0,\"topOrder\":null,\"total\":null,\"groupType\":2,\"templateHallGamesToGroup\":[{\"gameId\":\"pragmatic_vs5joker\",\"gameLabel\":\"Joker's Jewels\",\"order\":0,\"providerGameId\":\"vs5joker\",\"type\":2,\"category\":2,\"provider\":1,\"demoGameAvailable\":true,\"isLive\":false,\"metadata\":{\"desktop\":{\"imageUrl\":\"https://casino-cdn.betmexico.mx/games/unified/pragmatic_vs5joker_180x233.webp\",\"fallbackImageUrl\":\"https://casino-cdn.betmexico.mx/games/unified/pragmatic_vs5joker_180x233.webp\",\"isGameWide\":false,\"isGameLong\":false},\"mobile\":{\"imageUrl\":\"https://casino-cdn.betmexico.mx/games/unified/pragmatic_vs5joker_180x233.webp\",\"fallbackImageUrl\":\"https://casino-cdn.betmexico.mx/games/unified/pragmatic_vs5joker_180x233.webp\",\"isGameWide\":false,\"isGameLong\":false},\"mainImageUrl\":\"https://casino-cdn.betmexico.mx/games/unified/pragmatic_vs5joker_180x233.webp\",\"fallbackMainImageUrl\":\"https://casino-cdn.betmexico.mx/games/unified/pragmatic_vs5joker_180x233.webp\",\"blurImageUrl\":\"https://casino-cdn.betmexico.mx/games/unified/pragmatic_vs5joker_blur.jpg\",\"topImageUrl\":\"https://casino-cdn.betmexico.mx/games/unified/pragmatic_vs5joker_top_es.webp\"},\"liveGameInformation\":null,\"extraInfo\":null},{\"gameId\":\"pragmatic_vs5aztecgems\",\"gameLabel\":\"Aztec Gems\",\"order\":1,\"providerGameId\":\"vs5aztecgems\",\"type\":2,\"category\":2,\"provider\":1,\"demoGameAvailable\":true,\"isLive\":false,\"metadata\":{\"desktop\":{\"imageUrl\":\"https://casino-cdn.betmexico.mx/games/unified/pragmatic_vs5aztecgems_180x233.webp\",\"fallbackImageUrl\":\"https://casino-cdn.betmexico.mx/games/unified/pragmatic_vs5aztecgems_180x233.webp\",\"isGameWide\":false,\"isGameLong\":false},\"mobile\":{\"imageUrl\":\"https://casino-cdn.betmexico.mx/games/unified/pragmatic_vs5aztecgems_180x233.webp\",\"fallbackImageUrl\":\"https://casino-cdn.betmexico.mx/games/unified/pragmatic_vs5aztecgems_180x233.webp\",\"isGa",
+      "timestamp": 1787904527.6822882
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://betmexico.mx/api/Users/Validate/HasFullValidation",
+      "headers": {
+        "vary": "Origin",
+        "via": "1.1 f3c133b66c9ad381e006ccd012343690.cloudfront.net (CloudFront)",
+        "alt-svc": "h3=\":443\"; ma=86400",
+        "x-cache": "Miss from cloudfront",
+        "content-length": "79",
+        "x-amz-cf-id": "-026_ECob0tpVzeR6PtIha5xUVnkVsyDi75ph-oe8Yo29vEk2cYdmg==",
+        "date": "Fri, 28 Aug 2026 08:08:45 GMT",
+        "x-xss-protection": "1; mode=block",
+        "content-type": "application/json; charset=utf-8",
+        "x-amz-cf-pop": "DFW56-P10",
+        "server": "CloudFront",
+        "x-frame-options": "DENY"
+      },
+      "response_body": "{\"data\":false,\"isSuccess\":true,\"message\":\"Usuario pendiente de verificación.\"}",
+      "timestamp": 1787904527.693713
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://www.google.com/rmkt/collect/11008527725/?random=1787904522622&cv=11&fst=1787904522622&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be68r0h2v886685391za200zd886685391xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938468~118897920~118897930~119367802~119367810~120385422~120799816&u_w=1920&u_h=1080&url=https%3A%2F%2Fbetmexico.mx%2Fcasino&ref=https%3A%2F%2Fbetmexico.mx%2Fcasino&rcb=7&frm=0&tiba=Slots%20Online%20y%20Jackpots%20%7C%20Betmexico%20Juegos&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=1665919952.1787904346&uaa=x86&uab=64&uafvl=Not%253DA%253FBrand%3B99.0.0.0%7CGoogle%2520Chrome%3B151.0.7922.175%7CChromium%3B151.0.7922.175&uamb=0&uam=&uap=Windows&uapv=19.0.0&uaw=0&data=event%3Dgtag.config%3Bapp_source%3DWEB&ept=68&gcp=5",
+      "headers": {},
+      "response_body": null,
+      "timestamp": 1787904527.704759
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://www.google.com/rmkt/collect/10843576426/?random=1787904522628&cv=11&fst=1787904522628&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be68r0h2v886685391za200zd886685391xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938468~118897920~118897930~119367802~119367810~120385422~120799816&u_w=1920&u_h=1080&url=https%3A%2F%2Fbetmexico.mx%2Fcasino&ref=https%3A%2F%2Fbetmexico.mx%2Fcasino&rcb=7&frm=0&tiba=Slots%20Online%20y%20Jackpots%20%7C%20Betmexico%20Juegos&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=1665919952.1787904346&uaa=x86&uab=64&uafvl=Not%253DA%253FBrand%3B99.0.0.0%7CGoogle%2520Chrome%3B151.0.7922.175%7CChromium%3B151.0.7922.175&uamb=0&uam=&uap=Windows&uapv=19.0.0&uaw=0&data=event%3Dgtag.config%3Bapp_source%3DWEB&ept=68&gcp=5",
+      "headers": {},
+      "response_body": null,
+      "timestamp": 1787904527.7164009
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://googleads.g.doubleclick.net/pagead/viewthroughconversion/11008527725/?random=1787904522622&cv=11&fst=1787904522622&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be68r0h2v886685391za200zd886685391xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938468~118897920~118897930~119367802~119367810~120385422~120799816&u_w=1920&u_h=1080&url=https%3A%2F%2Fbetmexico.mx%2Fcasino&ref=https%3A%2F%2Fbetmexico.mx%2Fcasino&rcb=7&frm=0&tiba=Slots%20Online%20y%20Jackpots%20%7C%20Betmexico%20Juegos&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=1665919952.1787904346&uaa=x86&uab=64&uafvl=Not%253DA%253FBrand%3B99.0.0.0%7CGoogle%2520Chrome%3B151.0.7922.175%7CChromium%3B151.0.7922.175&uamb=0&uam=&uap=Windows&uapv=19.0.0&uaw=0&data=event%3Dgtag.config%3Bapp_source%3DWEB&ept=9&rfmt=3&fmt=4",
+      "headers": {
+        "cache-control": "no-cache, must-revalidate",
+        "timing-allow-origin": "*",
+        "content-encoding": "br",
+        "pragma": "no-cache",
+        "cross-origin-resource-policy": "cross-origin",
+        "x-content-type-options": "nosniff",
+        "expires": "Fri, 01 Jan 1990 00:00:00 GMT",
+        "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
+        "p3p": "policyref=\"https://googleads.g.doubleclick.net/pagead/gcn_p3p_.xml\", CP=\"CURa ADMa DEVa TAIo PSAo PSDo OUR IND UNI PUR INT DEM STA PRE COM NAV OTC NOI DSP COR\"",
+        "content-length": "2708",
+        "date": "Fri, 28 Aug 2026 08:08:45 GMT",
+        "x-xss-protection": "0",
+        "content-type": "text/javascript; charset=UTF-8",
+        "content-disposition": "attachment; filename=\"f.txt\"",
+        "server": "cafe"
+      },
+      "response_body": "(function(){var s = {};(function(){var k=typeof Object.defineProperties==\"function\"?Object.defineProperty:function(b,d,a){if(b==Array.prototype||b==Object.prototype)return b;b[d]=a.value;return b};function l(b){b=[\"object\"==typeof globalThis&&globalThis,b,\"object\"==typeof window&&window,\"object\"==typeof self&&self,\"object\"==typeof global&&global];for(var d=0;d<b.length;++d){var a=b[d];if(a&&a.Math==Math)return a}throw Error(\"Cannot find global object\");} var p=l(this),q=typeof Symbol===\"function\"&&typeof Symbol(\"x\")===\"symbol\",r={},t={};function u(b,d,a){if(!a||b!=null){a=t[d];if(a==null)return b[d];a=b[a];return a!==void 0?a:b[d]}} function v(b,d,a){if(d)a:{var c=b.split(\".\");b=c.length===1;var e=c[0],f;!b&&e in r?f=r:f=p;for(e=0;e<c.length-1;e++){var g=c[e];if(!(g in f))break a;f=f[g]}c=c[c.length-1];a=q&&a===\"es6\"?f[c]:null;d=d(a);d!=null&&(b?k(r,c,{configurable:!0,writable:!0,value:d}):d!==a&&(t[c]===void 0&&(b=Math.random()*1E9>>>0,t[c]=q?p.Symbol(c):\"$jscp$\"+b+\"$\"+c),k(f,t[c],{configurable:!0,writable:!0,value:d})))}}function w(b){var d=0;return function(){return d<b.length?{done:!1,value:b[d++]}:{done:!0}}} var x=q&&typeof u(Object,\"assign\")==\"function\"?u(Object,\"assign\"):function(b,d){if(b==null)throw new TypeError(\"No nullish arg\");b=Object(b);for(var a=1;a<arguments.length;a++){var c=arguments[a];if(c)for(var e in c)Object.prototype.hasOwnProperty.call(c,e)&&(b[e]=c[e])}return b};v(\"Object.assign\",function(b){return b||x},\"es6\");function y(){for(var b=Number(this),d=[],a=b;a<arguments.length;a++)d[a-b]=arguments[a];return d};/*  Copyright The Closure Library Authors. SPDX-License-Identifier: Apache-2.0 */ var z=this||self;var A={};function B(b,d){for(var a in b)Object.prototype.hasOwnProperty.call(b,a)&&d(a,b[a])};var C=window,E=document,F=navigator;function G(b,d){var a={};d&&B(d,function(c,e){c=c.toLowerCase();a.hasOwnProperty(c)||b.setAttribute(c,e)})}function H(){var b=I.i,d=b.apply,a=y.apply(0,arguments);if(!(a instanceof Array)){var c=typeof Symbol!=",
+      "timestamp": 1787904527.727431
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://www.google.com/rmkt/collect/11008409130/?random=1787904522634&cv=11&fst=1787904522634&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be68r0h2v886685391za200zd886685391xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938468~118897920~118897930~119367802~119367810~120385422~120799816&u_w=1920&u_h=1080&url=https%3A%2F%2Fbetmexico.mx%2Fcasino&ref=https%3A%2F%2Fbetmexico.mx%2Fcasino&rcb=7&frm=0&tiba=Slots%20Online%20y%20Jackpots%20%7C%20Betmexico%20Juegos&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=1665919952.1787904346&uaa=x86&uab=64&uafvl=Not%253DA%253FBrand%3B99.0.0.0%7CGoogle%2520Chrome%3B151.0.7922.175%7CChromium%3B151.0.7922.175&uamb=0&uam=&uap=Windows&uapv=19.0.0&uaw=0&data=event%3Dgtag.config%3Bapp_source%3DWEB&ept=68&gcp=5",
+      "headers": {},
+      "response_body": null,
+      "timestamp": 1787904527.7382352
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://googleads.g.doubleclick.net/pagead/viewthroughconversion/10843576426/?random=1787904522628&cv=11&fst=1787904522628&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be68r0h2v886685391za200zd886685391xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938468~118897920~118897930~119367802~119367810~120385422~120799816&u_w=1920&u_h=1080&url=https%3A%2F%2Fbetmexico.mx%2Fcasino&ref=https%3A%2F%2Fbetmexico.mx%2Fcasino&rcb=7&frm=0&tiba=Slots%20Online%20y%20Jackpots%20%7C%20Betmexico%20Juegos&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=1665919952.1787904346&uaa=x86&uab=64&uafvl=Not%253DA%253FBrand%3B99.0.0.0%7CGoogle%2520Chrome%3B151.0.7922.175%7CChromium%3B151.0.7922.175&uamb=0&uam=&uap=Windows&uapv=19.0.0&uaw=0&data=event%3Dgtag.config%3Bapp_source%3DWEB&ept=9&rfmt=3&fmt=4",
+      "headers": {
+        "cache-control": "no-cache, must-revalidate",
+        "timing-allow-origin": "*",
+        "content-encoding": "br",
+        "pragma": "no-cache",
+        "cross-origin-resource-policy": "cross-origin",
+        "x-content-type-options": "nosniff",
+        "expires": "Fri, 01 Jan 1990 00:00:00 GMT",
+        "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
+        "p3p": "policyref=\"https://googleads.g.doubleclick.net/pagead/gcn_p3p_.xml\", CP=\"CURa ADMa DEVa TAIo PSAo PSDo OUR IND UNI PUR INT DEM STA PRE COM NAV OTC NOI DSP COR\"",
+        "content-length": "2704",
+        "date": "Fri, 28 Aug 2026 08:08:45 GMT",
+        "x-xss-protection": "0",
+        "content-type": "text/javascript; charset=UTF-8",
+        "content-disposition": "attachment; filename=\"f.txt\"",
+        "server": "cafe"
+      },
+      "response_body": "(function(){var s = {};(function(){var k=typeof Object.defineProperties==\"function\"?Object.defineProperty:function(b,d,a){if(b==Array.prototype||b==Object.prototype)return b;b[d]=a.value;return b};function l(b){b=[\"object\"==typeof globalThis&&globalThis,b,\"object\"==typeof window&&window,\"object\"==typeof self&&self,\"object\"==typeof global&&global];for(var d=0;d<b.length;++d){var a=b[d];if(a&&a.Math==Math)return a}throw Error(\"Cannot find global object\");} var p=l(this),q=typeof Symbol===\"function\"&&typeof Symbol(\"x\")===\"symbol\",r={},t={};function u(b,d,a){if(!a||b!=null){a=t[d];if(a==null)return b[d];a=b[a];return a!==void 0?a:b[d]}} function v(b,d,a){if(d)a:{var c=b.split(\".\");b=c.length===1;var e=c[0],f;!b&&e in r?f=r:f=p;for(e=0;e<c.length-1;e++){var g=c[e];if(!(g in f))break a;f=f[g]}c=c[c.length-1];a=q&&a===\"es6\"?f[c]:null;d=d(a);d!=null&&(b?k(r,c,{configurable:!0,writable:!0,value:d}):d!==a&&(t[c]===void 0&&(b=Math.random()*1E9>>>0,t[c]=q?p.Symbol(c):\"$jscp$\"+b+\"$\"+c),k(f,t[c],{configurable:!0,writable:!0,value:d})))}}function w(b){var d=0;return function(){return d<b.length?{done:!1,value:b[d++]}:{done:!0}}} var x=q&&typeof u(Object,\"assign\")==\"function\"?u(Object,\"assign\"):function(b,d){if(b==null)throw new TypeError(\"No nullish arg\");b=Object(b);for(var a=1;a<arguments.length;a++){var c=arguments[a];if(c)for(var e in c)Object.prototype.hasOwnProperty.call(c,e)&&(b[e]=c[e])}return b};v(\"Object.assign\",function(b){return b||x},\"es6\");function y(){for(var b=Number(this),d=[],a=b;a<arguments.length;a++)d[a-b]=arguments[a];return d};/*  Copyright The Closure Library Authors. SPDX-License-Identifier: Apache-2.0 */ var z=this||self;var A={};function B(b,d){for(var a in b)Object.prototype.hasOwnProperty.call(b,a)&&d(a,b[a])};var C=window,E=document,F=navigator;function G(b,d){var a={};d&&B(d,function(c,e){c=c.toLowerCase();a.hasOwnProperty(c)||b.setAttribute(c,e)})}function H(){var b=I.i,d=b.apply,a=y.apply(0,arguments);if(!(a instanceof Array)){var c=typeof Symbol!=",
+      "timestamp": 1787904527.7501984
+    },
+    {
+      "type": "response",
+      "status": 204,
+      "url": "https://analytics.google.com/g/collect?v=2&tid=G-QQ994S5FZ0&gtm=45be68r0h2v886685391za200zd886685391&_p=1787904522604&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=EAAAACQC&are=1&cid=342009127.1787904346&frm=0&ibt=1&ir=1&ngs=1&pscdl=noapi&rcb=7&sr=1920x1080&uaa=x86&uab=64&uafvl=Not%253DA%253FBrand%3B99.0.0.0%7CGoogle%2520Chrome%3B151.0.7922.175%7CChromium%3B151.0.7922.175&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=es-419&_s=1&tag_exp=115938466~115938468~118897920~118897930~119367802~119367810~120385422~120799816&sid=1787904345&sct=1&seg=1&dl=https%3A%2F%2Fbetmexico.mx%2Fcasino&dr=https%3A%2F%2Fbetmexico.mx%2Fcasino&dt=Slots%20Online%20y%20Jackpots%20%7C%20Betmexico%20Juegos&en=page_view&_ee=1&ep.app_source=WEB&tfd=556",
+      "headers": {
+        "cache-control": "no-cache, no-store, must-revalidate",
+        "pragma": "no-cache",
+        "cross-origin-resource-policy": "cross-origin",
+        "access-control-allow-credentials": "true",
+        "content-security-policy-report-only": "script-src 'none'; form-action 'none'; frame-src 'none'; report-uri https://csp.withgoogle.com/csp/scaffolding/ascnsrsggc:197:0",
+        "report-to": "{\"group\":\"ascnsrsggc:197:0\",\"max_age\":2592000,\"endpoints\":[{\"url\":\"https://csp.withgoogle.com/csp/report-to/scaffolding/ascnsrsggc:197:0\"}],}",
+        "expires": "Fri, 01 Jan 1990 00:00:00 GMT",
+        "access-control-allow-origin": "https://betmexico.mx",
+        "cross-origin-opener-policy-report-only": "same-origin; report-to=ascnsrsggc:197:0",
+        "content-length": "0",
+        "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
+        "date": "Fri, 28 Aug 2026 08:08:45 GMT",
+        "content-type": "text/plain",
+        "server": "Golfe2"
+      },
+      "response_body": null,
+      "timestamp": 1787904527.7620754
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://www.google.com/pagead/1p-user-list/11008527725/?random=1787904522622&cv=11&fst=1787904000000&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be68r0h2v886685391za200zd886685391xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938468~118897920~118897930~119367802~119367810~120385422~120799816&u_w=1920&u_h=1080&url=https%3A%2F%2Fbetmexico.mx%2Fcasino&ref=https%3A%2F%2Fbetmexico.mx%2Fcasino&rcb=7&frm=0&tiba=Slots%20Online%20y%20Jackpots%20%7C%20Betmexico%20Juegos&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=1665919952.1787904346&uaa=x86&uab=64&uafvl=Not%253DA%253FBrand%3B99.0.0.0%7CGoogle%2520Chrome%3B151.0.7922.175%7CChromium%3B151.0.7922.175&uamb=0&uam=&uap=Windows&uapv=19.0.0&uaw=0&data=event%3Dgtag.config%3Bapp_source%3DWEB&ept=9&rfmt=3&fmt=3&is_vtc=1&cid=CAQS-AEAQM4h3OOQBOM9a7E3TzoqeSNSxm9S7BgdJ2rsw6yt7FtQfQ7CHaWOs6eX0zA5dyInPGCFKjHi3DceI6_rxLbNt5k3dnG6AG_zNedyQJQ9GD6gDGxsJkHfYwGB_Lw5QDxPS2hrdNcMNWZ_riRwvXy6Thd8g_-yg-LFu5C0hRFXSrC6eCwUK0gUwCi-oMS4V3z0rRAhiAOSNoqrgR-rmSGPMfTdNHQ3RUByHUGZxTO9y8NHBmt5jLa7-bcO9VKCtJ7mviWAMa_Kk5OshDIwHYL8Wh4pMSbwgalNcM-tfBWYj2wQEW7FEIaDAqosyBXwGNotycphmM7QeQ&random=4293707542&rmt_tld=0&ipr=y",
+      "headers": {
+        "content-security-policy": "script-src 'none'; object-src 'none'",
+        "cache-control": "no-cache, no-store, must-revalidate",
+        "timing-allow-origin": "*",
+        "pragma": "no-cache",
+        "cross-origin-resource-policy": "cross-origin",
+        "x-content-type-options": "nosniff",
+        "expires": "Fri, 01 Jan 1990 00:00:00 GMT",
+        "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
+        "p3p": "policyref=\"https://www.googleadservices.com/pagead/p3p.xml\", CP=\"NOI DEV PSA PSD IVA IVD OTP OUR OTR IND OTC\"",
+        "content-length": "42",
+        "date": "Fri, 28 Aug 2026 08:08:45 GMT",
+        "x-xss-protection": "0",
+        "content-type": "image/gif",
+        "server": "cafe"
+      },
+      "response_body": null,
+      "timestamp": 1787904527.7741523
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://www.google.com.mx/pagead/1p-user-list/11008527725/?random=1787904522622&cv=11&fst=1787904000000&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be68r0h2v886685391za200zd886685391xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938468~118897920~118897930~119367802~119367810~120385422~120799816&u_w=1920&u_h=1080&url=https%3A%2F%2Fbetmexico.mx%2Fcasino&ref=https%3A%2F%2Fbetmexico.mx%2Fcasino&rcb=7&frm=0&tiba=Slots%20Online%20y%20Jackpots%20%7C%20Betmexico%20Juegos&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=1665919952.1787904346&uaa=x86&uab=64&uafvl=Not%253DA%253FBrand%3B99.0.0.0%7CGoogle%2520Chrome%3B151.0.7922.175%7CChromium%3B151.0.7922.175&uamb=0&uam=&uap=Windows&uapv=19.0.0&uaw=0&data=event%3Dgtag.config%3Bapp_source%3DWEB&ept=9&rfmt=3&fmt=3&is_vtc=1&cid=CAQS-AEAQM4h3OOQBOM9a7E3TzoqeSNSxm9S7BgdJ2rsw6yt7FtQfQ7CHaWOs6eX0zA5dyInPGCFKjHi3DceI6_rxLbNt5k3dnG6AG_zNedyQJQ9GD6gDGxsJkHfYwGB_Lw5QDxPS2hrdNcMNWZ_riRwvXy6Thd8g_-yg-LFu5C0hRFXSrC6eCwUK0gUwCi-oMS4V3z0rRAhiAOSNoqrgR-rmSGPMfTdNHQ3RUByHUGZxTO9y8NHBmt5jLa7-bcO9VKCtJ7mviWAMa_Kk5OshDIwHYL8Wh4pMSbwgalNcM-tfBWYj2wQEW7FEIaDAqosyBXwGNotycphmM7QeQ&random=4293707542&rmt_tld=1&ipr=y",
+      "headers": {
+        "content-security-policy": "script-src 'none'; object-src 'none'",
+        "cache-control": "no-cache, no-store, must-revalidate",
+        "timing-allow-origin": "*",
+        "pragma": "no-cache",
+        "cross-origin-resource-policy": "cross-origin",
+        "x-content-type-options": "nosniff",
+        "expires": "Fri, 01 Jan 1990 00:00:00 GMT",
+        "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
+        "p3p": "policyref=\"https://www.googleadservices.com/pagead/p3p.xml\", CP=\"NOI DEV PSA PSD IVA IVD OTP OUR OTR IND OTC\"",
+        "content-length": "42",
+        "date": "Fri, 28 Aug 2026 08:08:45 GMT",
+        "x-xss-protection": "0",
+        "content-type": "image/gif",
+        "server": "cafe"
+      },
+      "response_body": null,
+      "timestamp": 1787904527.788161
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://googleads.g.doubleclick.net/pagead/viewthroughconversion/11008409130/?random=1787904522634&cv=11&fst=1787904522634&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be68r0h2v886685391za200zd886685391xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938468~118897920~118897930~119367802~119367810~120385422~120799816&u_w=1920&u_h=1080&url=https%3A%2F%2Fbetmexico.mx%2Fcasino&ref=https%3A%2F%2Fbetmexico.mx%2Fcasino&rcb=7&frm=0&tiba=Slots%20Online%20y%20Jackpots%20%7C%20Betmexico%20Juegos&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=1665919952.1787904346&uaa=x86&uab=64&uafvl=Not%253DA%253FBrand%3B99.0.0.0%7CGoogle%2520Chrome%3B151.0.7922.175%7CChromium%3B151.0.7922.175&uamb=0&uam=&uap=Windows&uapv=19.0.0&uaw=0&data=event%3Dgtag.config%3Bapp_source%3DWEB&ept=9&rfmt=3&fmt=4",
+      "headers": {
+        "cache-control": "no-cache, must-revalidate",
+        "timing-allow-origin": "*",
+        "content-encoding": "br",
+        "pragma": "no-cache",
+        "cross-origin-resource-policy": "cross-origin",
+        "x-content-type-options": "nosniff",
+        "expires": "Fri, 01 Jan 1990 00:00:00 GMT",
+        "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
+        "p3p": "policyref=\"https://googleads.g.doubleclick.net/pagead/gcn_p3p_.xml\", CP=\"CURa ADMa DEVa TAIo PSAo PSDo OUR IND UNI PUR INT DEM STA PRE COM NAV OTC NOI DSP COR\"",
+        "content-length": "2701",
+        "date": "Fri, 28 Aug 2026 08:08:45 GMT",
+        "x-xss-protection": "0",
+        "content-type": "text/javascript; charset=UTF-8",
+        "content-disposition": "attachment; filename=\"f.txt\"",
+        "server": "cafe"
+      },
+      "response_body": "(function(){var s = {};(function(){var k=typeof Object.defineProperties==\"function\"?Object.defineProperty:function(b,d,a){if(b==Array.prototype||b==Object.prototype)return b;b[d]=a.value;return b};function l(b){b=[\"object\"==typeof globalThis&&globalThis,b,\"object\"==typeof window&&window,\"object\"==typeof self&&self,\"object\"==typeof global&&global];for(var d=0;d<b.length;++d){var a=b[d];if(a&&a.Math==Math)return a}throw Error(\"Cannot find global object\");} var p=l(this),q=typeof Symbol===\"function\"&&typeof Symbol(\"x\")===\"symbol\",r={},t={};function u(b,d,a){if(!a||b!=null){a=t[d];if(a==null)return b[d];a=b[a];return a!==void 0?a:b[d]}} function v(b,d,a){if(d)a:{var c=b.split(\".\");b=c.length===1;var e=c[0],f;!b&&e in r?f=r:f=p;for(e=0;e<c.length-1;e++){var g=c[e];if(!(g in f))break a;f=f[g]}c=c[c.length-1];a=q&&a===\"es6\"?f[c]:null;d=d(a);d!=null&&(b?k(r,c,{configurable:!0,writable:!0,value:d}):d!==a&&(t[c]===void 0&&(b=Math.random()*1E9>>>0,t[c]=q?p.Symbol(c):\"$jscp$\"+b+\"$\"+c),k(f,t[c],{configurable:!0,writable:!0,value:d})))}}function w(b){var d=0;return function(){return d<b.length?{done:!1,value:b[d++]}:{done:!0}}} var x=q&&typeof u(Object,\"assign\")==\"function\"?u(Object,\"assign\"):function(b,d){if(b==null)throw new TypeError(\"No nullish arg\");b=Object(b);for(var a=1;a<arguments.length;a++){var c=arguments[a];if(c)for(var e in c)Object.prototype.hasOwnProperty.call(c,e)&&(b[e]=c[e])}return b};v(\"Object.assign\",function(b){return b||x},\"es6\");function y(){for(var b=Number(this),d=[],a=b;a<arguments.length;a++)d[a-b]=arguments[a];return d};/*  Copyright The Closure Library Authors. SPDX-License-Identifier: Apache-2.0 */ var z=this||self;var A={};function B(b,d){for(var a in b)Object.prototype.hasOwnProperty.call(b,a)&&d(a,b[a])};var C=window,E=document,F=navigator;function G(b,d){var a={};d&&B(d,function(c,e){c=c.toLowerCase();a.hasOwnProperty(c)||b.setAttribute(c,e)})}function H(){var b=I.i,d=b.apply,a=y.apply(0,arguments);if(!(a instanceof Array)){var c=typeof Symbol!=",
+      "timestamp": 1787904527.8015833
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://betmexico.mx/api/Giveaway/PendingFreebet",
+      "headers": {
+        "content-encoding": "gzip",
+        "x-amz-version-id": "RolrBajgIHGv2Zl_h0ElD.mjt_kEd8qr",
+        "etag": "W/\"4cfedc7d76bb61b9550e603f58bb6201\"",
+        "alt-svc": "h3=\":443\"; ma=86400",
+        "x-cache": "Error from cloudfront",
+        "x-amz-cf-id": "27OdGHgZBo1djNpoT3OVJkQoACrr-Eb70EhXhmRBbG2bj78zQZNpiQ==",
+        "date": "Fri, 28 Aug 2026 08:08:46 GMT",
+        "content-type": "text/html",
+        "vary": "Accept-Encoding, Origin",
+        "last-modified": "Thu, 27 Aug 2026 20:10:50 GMT",
+        "x-frame-options": "DENY",
+        "cache-control": "no-cache, no-store",
+        "via": "1.1 f3c133b66c9ad381e006ccd012343690.cloudfront.net (CloudFront)",
+        "x-xss-protection": "1; mode=block",
+        "x-amz-cf-pop": "DFW56-P10",
+        "server": "CloudFront"
+      },
+      "response_body": "<!doctype html><html lang=\"es-MX\"><head><meta charset=\"utf-8\"/><meta name=\"google\" content=\"notranslate\"/><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge, chrome=1\"/><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"/favicon_32x32.png\"/><link rel=\"icon\" type=\"image/png\" sizes=\"48x48\" href=\"/favicon_48x48.png\"/><link rel=\"icon\" type=\"image/png\" sizes=\"144x144\" href=\"/favicon.png\"/><link rel=\"icon\" type=\"image/png\" sizes=\"240x240\" href=\"/favicon_240x240.png\"/><link rel=\"shortcut icon\" type=\"image/png\" href=\"/favicon.png\"/><link rel=\"apple-touch-icon\" sizes=\"48x48\" href=\"/apple-touch-icon.png\"/><link rel=\"alternate\" href=\"android-app://com.betmexicomx.android/https/betmexico.mx\"/><title>Betmexico | Apuestas y casino en línea con bonos de bienvenida</title><link rel=\"manifest\" href=\"/manifest.json\"/><meta property=\"title\" content=\"Betmexico | Apuestas y casino en línea con bonos de bienvenida\"/><meta name=\"title\" content=\"Betmexico | Apuestas y casino en línea con bonos de bienvenida\"/><meta property=\"description\" content=\"Descubre Betmexico, el mejor sitio de apuestas deportivas y casino en México. Disfruta de bonos de bienvenida y más. ¡Regístrate ahora!\"/><meta name=\"description\" content=\"Descubre Betmexico, el mejor sitio de apuestas deportivas y casino en México. Disfruta de bonos de bienvenida y más. ¡Regístrate ahora!\"/><meta property=\"url\" content=\"https://betmexico.mx/\"/><meta property=\"image\" content=\"/banner-seo-2024.jpg\"/><meta property=\"og:url\" content=\"https://betmexico.mx/\"/><meta property=\"og:type\" content=\"website\"/><meta property=\"og:title\" content=\"Betmexico | Apuestas y casino en línea con bonos de bienvenida\"/><meta property=\"og:description\" content=\"Descubre Betmexico, el mejor sitio de apuestas deportivas y casino en México. Disfruta de bonos de bienvenida y más. ¡Regístrate ahora!\"/><meta property=\"og:image\" content=\"https://betmexico.mx/b",
+      "timestamp": 1787904527.814725
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://betmexico.mx/api/Giveaway/ActiveFreeSpins",
+      "headers": {
+        "content-encoding": "gzip",
+        "x-amz-version-id": "RolrBajgIHGv2Zl_h0ElD.mjt_kEd8qr",
+        "etag": "W/\"4cfedc7d76bb61b9550e603f58bb6201\"",
+        "alt-svc": "h3=\":443\"; ma=86400",
+        "x-cache": "Error from cloudfront",
+        "x-amz-cf-id": "ftQBrQmYxjmOsRkyDc0rNyjOpssmK9hpYHaEMBbCUD2cqTGOQ81OuQ==",
+        "date": "Fri, 28 Aug 2026 08:08:46 GMT",
+        "content-type": "text/html",
+        "vary": "Accept-Encoding, Origin",
+        "last-modified": "Thu, 27 Aug 2026 20:10:50 GMT",
+        "x-frame-options": "DENY",
+        "cache-control": "no-cache, no-store",
+        "via": "1.1 f3c133b66c9ad381e006ccd012343690.cloudfront.net (CloudFront)",
+        "x-xss-protection": "1; mode=block",
+        "x-amz-cf-pop": "DFW56-P10",
+        "server": "CloudFront"
+      },
+      "response_body": "<!doctype html><html lang=\"es-MX\"><head><meta charset=\"utf-8\"/><meta name=\"google\" content=\"notranslate\"/><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge, chrome=1\"/><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"/favicon_32x32.png\"/><link rel=\"icon\" type=\"image/png\" sizes=\"48x48\" href=\"/favicon_48x48.png\"/><link rel=\"icon\" type=\"image/png\" sizes=\"144x144\" href=\"/favicon.png\"/><link rel=\"icon\" type=\"image/png\" sizes=\"240x240\" href=\"/favicon_240x240.png\"/><link rel=\"shortcut icon\" type=\"image/png\" href=\"/favicon.png\"/><link rel=\"apple-touch-icon\" sizes=\"48x48\" href=\"/apple-touch-icon.png\"/><link rel=\"alternate\" href=\"android-app://com.betmexicomx.android/https/betmexico.mx\"/><title>Betmexico | Apuestas y casino en línea con bonos de bienvenida</title><link rel=\"manifest\" href=\"/manifest.json\"/><meta property=\"title\" content=\"Betmexico | Apuestas y casino en línea con bonos de bienvenida\"/><meta name=\"title\" content=\"Betmexico | Apuestas y casino en línea con bonos de bienvenida\"/><meta property=\"description\" content=\"Descubre Betmexico, el mejor sitio de apuestas deportivas y casino en México. Disfruta de bonos de bienvenida y más. ¡Regístrate ahora!\"/><meta name=\"description\" content=\"Descubre Betmexico, el mejor sitio de apuestas deportivas y casino en México. Disfruta de bonos de bienvenida y más. ¡Regístrate ahora!\"/><meta property=\"url\" content=\"https://betmexico.mx/\"/><meta property=\"image\" content=\"/banner-seo-2024.jpg\"/><meta property=\"og:url\" content=\"https://betmexico.mx/\"/><meta property=\"og:type\" content=\"website\"/><meta property=\"og:title\" content=\"Betmexico | Apuestas y casino en línea con bonos de bienvenida\"/><meta property=\"og:description\" content=\"Descubre Betmexico, el mejor sitio de apuestas deportivas y casino en México. Disfruta de bonos de bienvenida y más. ¡Regístrate ahora!\"/><meta property=\"og:image\" content=\"https://betmexico.mx/b",
+      "timestamp": 1787904527.829168
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://betmexico.mx/api/StickyPromo/IsStickyEligible",
+      "headers": {
+        "vary": "Origin",
+        "via": "1.1 f3c133b66c9ad381e006ccd012343690.cloudfront.net (CloudFront)",
+        "alt-svc": "h3=\":443\"; ma=86400",
+        "x-cache": "Miss from cloudfront",
+        "content-length": "29",
+        "x-amz-cf-id": "KagouffonVKvtnSXcFHe-N7XcBy3-Ey-pauatsxQF1h3XJ7iUWy1iw==",
+        "date": "Fri, 28 Aug 2026 08:08:45 GMT",
+        "x-xss-protection": "1; mode=block",
+        "content-type": "application/json; charset=utf-8",
+        "x-amz-cf-pop": "DFW56-P10",
+        "server": "CloudFront",
+        "x-frame-options": "DENY"
+      },
+      "response_body": "{\"isUserStickyEligible\":true}",
+      "timestamp": 1787904527.8461957
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://casino.betmexico.mx/api/Games/GamesMaintenance",
+      "headers": {
+        "access-control-expose-headers": "Access-Control-Allow-Credentials,Origin,Access-Control-Allow-Methods,Access-Control-Allow-Origin,Access-Control-Allow-Headers",
+        "content-encoding": "gzip",
+        "age": "23",
+        "alt-svc": "h3=\":443\"; ma=86400",
+        "x-cache": "Hit from cloudfront",
+        "x-amz-cf-id": "VLxBF2EXTfju90_8sXGPmxDpTJFYGRqueplXU7kr6GQxuKd9Givi5w==",
+        "date": "Fri, 28 Aug 2026 08:08:22 GMT",
+        "content-type": "application/json; charset=utf-8",
+        "vary": "Accept-Encoding,Origin, Origin",
+        "x-frame-options": "DENY",
+        "cache-control": "public, max-age=30, stale-while-revalidate=15",
+        "access-control-allow-credentials": "true",
+        "via": "1.1 c21d87dcbf77ef771bcc5c31c28adeae.cloudfront.net (CloudFront)",
+        "access-control-allow-origin": "https://betmexico.mx",
+        "x-xss-protection": "1; mode=block",
+        "x-amz-cf-pop": "DFW56-P2",
+        "server": "CloudFront"
+      },
+      "response_body": "{\"data\":{\"gameIds\":[\"wizard_pp_html5_mysteryfox96\",\"fbmds_bailaojunino\",\"fbmds_ancienttropicsfbmmythiclink\",\"fbmds_kingdomgemsdiamond\",\"fbmds_magictales\",\"fbmds_sicbomacau\",\"fbmds_deuceswildfhdvideopoker\",\"fbmds_virafesta\",\"fbmds_romanadventure\",\"fbmds_dramafinale\",\"fbmds_multimegabonus\",\"fbmds_legendaryace\",\"fbmds_jacksorbetterfhdvideopoker\",\"fbmds_multimegabonusvip\",\"fbmds_rubingoreskin\",\"fbmds_fruitpicnic\",\"fbmds_rockstarbingofhd\",\"fbmds_xingfufortune\",\"fbmds_8way\",\"fbmds_pharaoh’slegacy\",\"fbmds_powerpicklottofhd\",\"fbmds_mayabingo\",\"fbmds_casho’clockfhd\",\"fbmds_multiplusbonus\",\"fbmds_bonuspokerfhdvideopoker\",\"fbmds_ancienttropics\",\"fbmds_plus3bonus\",\"fbmds_neptunianriches\",\"fbmds_championtales\",\"fbmds_multichampionbonus\",\"fbmds_multichampion\",\"fbmds_multimega\",\"fbmds_arcticblast\",\"fbmds_rubingofhd\",\"fbmds_sicbo\",\"fbmds_rockstarbingoreskin\",\"fbmds_multichampionbonusvip\",\"fbmds_plus3bonusvip\",\"fbmds_multiplusbonusvip\",\"fbmds_blackjackvegasstrippro\",\"fbmds_dragongoldenfantasyhd\",\"fbmds_royaltrucks243ways\",\"fbmds_multiplus\",\"fbmds_30maniaspinbonus\",\"fbmds_countrystyle\",\"fbmds_topplusbaccarat\",\"fbmds_romanadventure50lines\",\"fbmds_masterpandahd\",\"fbmds_bingopilipino\",\"fbmds_embaixadinha\",\"fbmds_kingdomgemsfbmeasymoneylink\",\"fbmds_magicchampionfhd\",\"fbmds_racingowildfbmeasymoneylink\",\"fbmds_royaltrucks50lines\",\"fbmds_championii\",\"fbmds_bingoblastfhd\",\"fbmds_goldenmetropolis\",\"fbmds_rainbowfalls\",\"fbmds_blackjackvegasstrip\",\"fbmds_electricbingohd\",\"fbmds_vikingjourney\",\"fbmds_romanadventure243ways\",\"fbmds_powerpicklotto\",\"fbmds_bancafrancesafbmds\",\"fbmds_bingokingdomhd\",\"fbmds_sapphirefever\",\"fbmds_topplusbancafrancesa\",\"fbmds_bingoswertehd\",\"fbmds_catchthegoldfbmeasymoneylink\",\"fbmds_baccarat\",\"fbmds_championiv\",\"fbmds_eternalkingdomfbmmythiclink\",\"fbmds_aloha\",\"fbmds_theluckygazettegoldenmystery\",\"fbmds_catchthegold\",\"fbmds_naturesparadisefbmmythiclink\",\"fbmds_vivamexicofhdbingo\",\"fbmds_topplusblackjackvegas\",\"fbmds_vivamexico\",\"fbmds_blackjackvegasstripbonus\",\"fbmds_b",
+      "timestamp": 1787904527.8653536
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://casino.betmexico.mx/api/UserFavoriteGames",
+      "headers": {
+        "x-amz-cf-id": "DylfdG9qJn3YW7LjjykSKWBBz2YT5_XG7FD2QIh8P3hxrro6IlA-Mw==",
+        "access-control-expose-headers": "Access-Control-Allow-Credentials,Origin,Access-Control-Allow-Methods,Access-Control-Allow-Origin,Access-Control-Allow-Headers",
+        "access-control-allow-credentials": "true",
+        "via": "1.1 c21d87dcbf77ef771bcc5c31c28adeae.cloudfront.net (CloudFront)",
+        "access-control-allow-origin": "https://betmexico.mx",
+        "x-cache": "Miss from cloudfront",
+        "content-length": "24",
+        "alt-svc": "h3=\":443\"; ma=86400",
+        "date": "Fri, 28 Aug 2026 08:08:45 GMT",
+        "x-xss-protection": "1; mode=block",
+        "content-type": "application/json; charset=utf-8",
+        "vary": "Origin, Origin",
+        "server": "CloudFront",
+        "x-amz-cf-pop": "DFW56-P2",
+        "x-frame-options": "DENY"
+      },
+      "response_body": "{\"data\":[],\"error\":null}",
+      "timestamp": 1787904527.8845415
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://www.google.com/pagead/1p-user-list/10843576426/?random=1787904522628&cv=11&fst=1787904000000&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be68r0h2v886685391za200zd886685391xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938468~118897920~118897930~119367802~119367810~120385422~120799816&u_w=1920&u_h=1080&url=https%3A%2F%2Fbetmexico.mx%2Fcasino&ref=https%3A%2F%2Fbetmexico.mx%2Fcasino&rcb=7&frm=0&tiba=Slots%20Online%20y%20Jackpots%20%7C%20Betmexico%20Juegos&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=1665919952.1787904346&uaa=x86&uab=64&uafvl=Not%253DA%253FBrand%3B99.0.0.0%7CGoogle%2520Chrome%3B151.0.7922.175%7CChromium%3B151.0.7922.175&uamb=0&uam=&uap=Windows&uapv=19.0.0&uaw=0&data=event%3Dgtag.config%3Bapp_source%3DWEB&ept=9&rfmt=3&fmt=3&is_vtc=1&cid=CAQS-AEAQM4h3CUxab9Gqmn4URDqkWbAvmMfnCT-U-0W7t_29jq5BwQNZgfQ-adTaYD0EzS2Vvy0IbMnO4pOE8Nad7ey_zWJG5qjjOWLGbSfXPgO_Z14071azrgb2g1bIXoLk0bBqVsU23ugK7IEOsvog4hehaUayreZ6gGcNj0IBelvtGTVXuzYr-7SpgzEvAeUjbQbmI40zEoydxHI-2WtHlqRVPRr39DaWzCPlgIQFLc1qZYVkvJQZIHg_RvyqnzqFKWVT49FPX6QN7JhJMlcstT9cZNnjxYXlynZaTBu0diOqA3WEr_c0gtJglpJ53dVYmezUbm0r7IG5w&random=54962978&rmt_tld=0&ipr=y",
+      "headers": {
+        "content-security-policy": "script-src 'none'; object-src 'none'",
+        "cache-control": "no-cache, no-store, must-revalidate",
+        "timing-allow-origin": "*",
+        "pragma": "no-cache",
+        "cross-origin-resource-policy": "cross-origin",
+        "x-content-type-options": "nosniff",
+        "expires": "Fri, 01 Jan 1990 00:00:00 GMT",
+        "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
+        "p3p": "policyref=\"https://www.googleadservices.com/pagead/p3p.xml\", CP=\"NOI DEV PSA PSD IVA IVD OTP OUR OTR IND OTC\"",
+        "content-length": "42",
+        "date": "Fri, 28 Aug 2026 08:08:45 GMT",
+        "x-xss-protection": "0",
+        "content-type": "image/gif",
+        "server": "cafe"
+      },
+      "response_body": null,
+      "timestamp": 1787904527.8997056
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://www.google.com.mx/pagead/1p-user-list/10843576426/?random=1787904522628&cv=11&fst=1787904000000&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be68r0h2v886685391za200zd886685391xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938468~118897920~118897930~119367802~119367810~120385422~120799816&u_w=1920&u_h=1080&url=https%3A%2F%2Fbetmexico.mx%2Fcasino&ref=https%3A%2F%2Fbetmexico.mx%2Fcasino&rcb=7&frm=0&tiba=Slots%20Online%20y%20Jackpots%20%7C%20Betmexico%20Juegos&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=1665919952.1787904346&uaa=x86&uab=64&uafvl=Not%253DA%253FBrand%3B99.0.0.0%7CGoogle%2520Chrome%3B151.0.7922.175%7CChromium%3B151.0.7922.175&uamb=0&uam=&uap=Windows&uapv=19.0.0&uaw=0&data=event%3Dgtag.config%3Bapp_source%3DWEB&ept=9&rfmt=3&fmt=3&is_vtc=1&cid=CAQS-AEAQM4h3CUxab9Gqmn4URDqkWbAvmMfnCT-U-0W7t_29jq5BwQNZgfQ-adTaYD0EzS2Vvy0IbMnO4pOE8Nad7ey_zWJG5qjjOWLGbSfXPgO_Z14071azrgb2g1bIXoLk0bBqVsU23ugK7IEOsvog4hehaUayreZ6gGcNj0IBelvtGTVXuzYr-7SpgzEvAeUjbQbmI40zEoydxHI-2WtHlqRVPRr39DaWzCPlgIQFLc1qZYVkvJQZIHg_RvyqnzqFKWVT49FPX6QN7JhJMlcstT9cZNnjxYXlynZaTBu0diOqA3WEr_c0gtJglpJ53dVYmezUbm0r7IG5w&random=54962978&rmt_tld=1&ipr=y",
+      "headers": {
+        "content-security-policy": "script-src 'none'; object-src 'none'",
+        "cache-control": "no-cache, no-store, must-revalidate",
+        "timing-allow-origin": "*",
+        "pragma": "no-cache",
+        "cross-origin-resource-policy": "cross-origin",
+        "x-content-type-options": "nosniff",
+        "expires": "Fri, 01 Jan 1990 00:00:00 GMT",
+        "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
+        "p3p": "policyref=\"https://www.googleadservices.com/pagead/p3p.xml\", CP=\"NOI DEV PSA PSD IVA IVD OTP OUR OTR IND OTC\"",
+        "content-length": "42",
+        "date": "Fri, 28 Aug 2026 08:08:45 GMT",
+        "x-xss-protection": "0",
+        "content-type": "image/gif",
+        "server": "cafe"
+      },
+      "response_body": null,
+      "timestamp": 1787904527.91458
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://betmexico.mx/api/Giveaway/ActiveFreeSpins",
+      "headers": {
+        "content-encoding": "gzip",
+        "x-amz-version-id": "RolrBajgIHGv2Zl_h0ElD.mjt_kEd8qr",
+        "etag": "W/\"4cfedc7d76bb61b9550e603f58bb6201\"",
+        "alt-svc": "h3=\":443\"; ma=86400",
+        "x-cache": "Error from cloudfront",
+        "x-amz-cf-id": "_Qm8XBoiNajLS39YCHZG0V7xGU_xCwq2zQtOUPSiBnxmwaxi2z675g==",
+        "date": "Fri, 28 Aug 2026 08:08:46 GMT",
+        "content-type": "text/html",
+        "vary": "Accept-Encoding, Origin",
+        "last-modified": "Thu, 27 Aug 2026 20:10:50 GMT",
+        "x-frame-options": "DENY",
+        "cache-control": "no-cache, no-store",
+        "via": "1.1 f3c133b66c9ad381e006ccd012343690.cloudfront.net (CloudFront)",
+        "x-xss-protection": "1; mode=block",
+        "x-amz-cf-pop": "DFW56-P10",
+        "server": "CloudFront"
+      },
+      "response_body": "<!doctype html><html lang=\"es-MX\"><head><meta charset=\"utf-8\"/><meta name=\"google\" content=\"notranslate\"/><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge, chrome=1\"/><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"/favicon_32x32.png\"/><link rel=\"icon\" type=\"image/png\" sizes=\"48x48\" href=\"/favicon_48x48.png\"/><link rel=\"icon\" type=\"image/png\" sizes=\"144x144\" href=\"/favicon.png\"/><link rel=\"icon\" type=\"image/png\" sizes=\"240x240\" href=\"/favicon_240x240.png\"/><link rel=\"shortcut icon\" type=\"image/png\" href=\"/favicon.png\"/><link rel=\"apple-touch-icon\" sizes=\"48x48\" href=\"/apple-touch-icon.png\"/><link rel=\"alternate\" href=\"android-app://com.betmexicomx.android/https/betmexico.mx\"/><title>Betmexico | Apuestas y casino en línea con bonos de bienvenida</title><link rel=\"manifest\" href=\"/manifest.json\"/><meta property=\"title\" content=\"Betmexico | Apuestas y casino en línea con bonos de bienvenida\"/><meta name=\"title\" content=\"Betmexico | Apuestas y casino en línea con bonos de bienvenida\"/><meta property=\"description\" content=\"Descubre Betmexico, el mejor sitio de apuestas deportivas y casino en México. Disfruta de bonos de bienvenida y más. ¡Regístrate ahora!\"/><meta name=\"description\" content=\"Descubre Betmexico, el mejor sitio de apuestas deportivas y casino en México. Disfruta de bonos de bienvenida y más. ¡Regístrate ahora!\"/><meta property=\"url\" content=\"https://betmexico.mx/\"/><meta property=\"image\" content=\"/banner-seo-2024.jpg\"/><meta property=\"og:url\" content=\"https://betmexico.mx/\"/><meta property=\"og:type\" content=\"website\"/><meta property=\"og:title\" content=\"Betmexico | Apuestas y casino en línea con bonos de bienvenida\"/><meta property=\"og:description\" content=\"Descubre Betmexico, el mejor sitio de apuestas deportivas y casino en México. Disfruta de bonos de bienvenida y más. ¡Regístrate ahora!\"/><meta property=\"og:image\" content=\"https://betmexico.mx/b",
+      "timestamp": 1787904527.9273288
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://casino-cdn.betmexico.mx/games/unified/evoplay_luckycard_180x233.webp",
+      "headers": {
+        "cache-control": "max-age=2592000,stale-while-revalidate=10800,stale-if-error=10800",
+        "x-amz-version-id": "xUYeA_l0Ic4AfuDsQWhlfD9DJ1P1iIoR",
+        "etag": "\"3c8608108d1ba82ecf2660ec96309408\"",
+        "age": "1197273",
+        "via": "1.1 a0ced2c61430bc862fa4fd815b7da596.cloudfront.net (CloudFront)",
+        "x-cache": "Hit from cloudfront",
+        "content-length": "4248",
+        "x-amz-cf-id": "c9e5YPfrCBG-PeeoNaPiqS6V0AHXJ9U1kkRxuULTBhg_37cGLBD1Fw==",
+        "date": "Fri, 14 Aug 2026 11:33:13 GMT",
+        "content-type": "binary/octet-stream",
+        "last-modified": "Fri, 05 Sep 2025 18:08:20 GMT",
+        "server": "AmazonS3",
+        "x-amz-cf-pop": "DFW56-P3"
+      },
+      "response_body": null,
+      "timestamp": 1787904527.9392605
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://betmexico.mx/api/Giveaway/ActiveFreeSpins",
+      "headers": {
+        "content-encoding": "gzip",
+        "x-amz-version-id": "RolrBajgIHGv2Zl_h0ElD.mjt_kEd8qr",
+        "etag": "W/\"4cfedc7d76bb61b9550e603f58bb6201\"",
+        "alt-svc": "h3=\":443\"; ma=86400",
+        "x-cache": "Error from cloudfront",
+        "x-amz-cf-id": "CGyMdgDVI9Enf7im9MyE6Q8In2rv_IpVGdDrOI3Sq0Lbwzs6a2m8hA==",
+        "date": "Fri, 28 Aug 2026 08:08:46 GMT",
+        "content-type": "text/html",
+        "vary": "Accept-Encoding, Origin",
+        "last-modified": "Thu, 27 Aug 2026 20:10:50 GMT",
+        "x-frame-options": "DENY",
+        "cache-control": "no-cache, no-store",
+        "via": "1.1 f3c133b66c9ad381e006ccd012343690.cloudfront.net (CloudFront)",
+        "x-xss-protection": "1; mode=block",
+        "x-amz-cf-pop": "DFW56-P10",
+        "server": "CloudFront"
+      },
+      "response_body": "<!doctype html><html lang=\"es-MX\"><head><meta charset=\"utf-8\"/><meta name=\"google\" content=\"notranslate\"/><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge, chrome=1\"/><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no\"/><link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"/favicon_32x32.png\"/><link rel=\"icon\" type=\"image/png\" sizes=\"48x48\" href=\"/favicon_48x48.png\"/><link rel=\"icon\" type=\"image/png\" sizes=\"144x144\" href=\"/favicon.png\"/><link rel=\"icon\" type=\"image/png\" sizes=\"240x240\" href=\"/favicon_240x240.png\"/><link rel=\"shortcut icon\" type=\"image/png\" href=\"/favicon.png\"/><link rel=\"apple-touch-icon\" sizes=\"48x48\" href=\"/apple-touch-icon.png\"/><link rel=\"alternate\" href=\"android-app://com.betmexicomx.android/https/betmexico.mx\"/><title>Betmexico | Apuestas y casino en línea con bonos de bienvenida</title><link rel=\"manifest\" href=\"/manifest.json\"/><meta property=\"title\" content=\"Betmexico | Apuestas y casino en línea con bonos de bienvenida\"/><meta name=\"title\" content=\"Betmexico | Apuestas y casino en línea con bonos de bienvenida\"/><meta property=\"description\" content=\"Descubre Betmexico, el mejor sitio de apuestas deportivas y casino en México. Disfruta de bonos de bienvenida y más. ¡Regístrate ahora!\"/><meta name=\"description\" content=\"Descubre Betmexico, el mejor sitio de apuestas deportivas y casino en México. Disfruta de bonos de bienvenida y más. ¡Regístrate ahora!\"/><meta property=\"url\" content=\"https://betmexico.mx/\"/><meta property=\"image\" content=\"/banner-seo-2024.jpg\"/><meta property=\"og:url\" content=\"https://betmexico.mx/\"/><meta property=\"og:type\" content=\"website\"/><meta property=\"og:title\" content=\"Betmexico | Apuestas y casino en línea con bonos de bienvenida\"/><meta property=\"og:description\" content=\"Descubre Betmexico, el mejor sitio de apuestas deportivas y casino en México. Disfruta de bonos de bienvenida y más. ¡Regístrate ahora!\"/><meta property=\"og:image\" content=\"https://betmexico.mx/b",
+      "timestamp": 1787904527.9524283
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://www.google.com/pagead/1p-user-list/11008409130/?random=1787904522634&cv=11&fst=1787904000000&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be68r0h2v886685391za200zd886685391xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938468~118897920~118897930~119367802~119367810~120385422~120799816&u_w=1920&u_h=1080&url=https%3A%2F%2Fbetmexico.mx%2Fcasino&ref=https%3A%2F%2Fbetmexico.mx%2Fcasino&rcb=7&frm=0&tiba=Slots%20Online%20y%20Jackpots%20%7C%20Betmexico%20Juegos&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=1665919952.1787904346&uaa=x86&uab=64&uafvl=Not%253DA%253FBrand%3B99.0.0.0%7CGoogle%2520Chrome%3B151.0.7922.175%7CChromium%3B151.0.7922.175&uamb=0&uam=&uap=Windows&uapv=19.0.0&uaw=0&data=event%3Dgtag.config%3Bapp_source%3DWEB&ept=9&rfmt=3&fmt=3&is_vtc=1&cid=CAQS-AEAQM4h3EZQD3qeR2Rm4b28FuAVn7WsEU2hFjdjM0awxzkVHwEzSvAfObGpYolxZPSYEc2fvZgI-o1Ph-R_9C13hsRCS70jj9_oSYyn3r91Rkf0xvxxUPgjV7kvt4HGT45ogDI0EN0FhIhtUpsxrpfiF7rH6Queau7yM9p5oFypdn0xoXcM6jkf-nM8ph4b2jvvHK03T2dO7Ilxve-CiiCbrALpLKXhR2zA486sFv2yNCsN-LFfuh73NC7ZE2Vsm_SKzQw5mzq14TSAcuWzfoGzlzHh3gHMiMx7qJcsckfmOuhNxlW0N5K1jl1_I2zf8jUXSfpDusRHng&random=967213284&rmt_tld=0&ipr=y",
+      "headers": {
+        "content-security-policy": "script-src 'none'; object-src 'none'",
+        "cache-control": "no-cache, no-store, must-revalidate",
+        "timing-allow-origin": "*",
+        "pragma": "no-cache",
+        "cross-origin-resource-policy": "cross-origin",
+        "x-content-type-options": "nosniff",
+        "expires": "Fri, 01 Jan 1990 00:00:00 GMT",
+        "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
+        "p3p": "policyref=\"https://www.googleadservices.com/pagead/p3p.xml\", CP=\"NOI DEV PSA PSD IVA IVD OTP OUR OTR IND OTC\"",
+        "content-length": "42",
+        "date": "Fri, 28 Aug 2026 08:08:45 GMT",
+        "x-xss-protection": "0",
+        "content-type": "image/gif",
+        "server": "cafe"
+      },
+      "response_body": null,
+      "timestamp": 1787904527.9644744
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://www.google.com.mx/pagead/1p-user-list/11008409130/?random=1787904522634&cv=11&fst=1787904000000&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be68r0h2v886685391za200zd886685391xec&gcd=13l3l3l3l1l1&dma=0&tag_exp=115938466~115938468~118897920~118897930~119367802~119367810~120385422~120799816&u_w=1920&u_h=1080&url=https%3A%2F%2Fbetmexico.mx%2Fcasino&ref=https%3A%2F%2Fbetmexico.mx%2Fcasino&rcb=7&frm=0&tiba=Slots%20Online%20y%20Jackpots%20%7C%20Betmexico%20Juegos&hn=www.googleadservices.com&npa=0&pscdl=noapi&auid=1665919952.1787904346&uaa=x86&uab=64&uafvl=Not%253DA%253FBrand%3B99.0.0.0%7CGoogle%2520Chrome%3B151.0.7922.175%7CChromium%3B151.0.7922.175&uamb=0&uam=&uap=Windows&uapv=19.0.0&uaw=0&data=event%3Dgtag.config%3Bapp_source%3DWEB&ept=9&rfmt=3&fmt=3&is_vtc=1&cid=CAQS-AEAQM4h3EZQD3qeR2Rm4b28FuAVn7WsEU2hFjdjM0awxzkVHwEzSvAfObGpYolxZPSYEc2fvZgI-o1Ph-R_9C13hsRCS70jj9_oSYyn3r91Rkf0xvxxUPgjV7kvt4HGT45ogDI0EN0FhIhtUpsxrpfiF7rH6Queau7yM9p5oFypdn0xoXcM6jkf-nM8ph4b2jvvHK03T2dO7Ilxve-CiiCbrALpLKXhR2zA486sFv2yNCsN-LFfuh73NC7ZE2Vsm_SKzQw5mzq14TSAcuWzfoGzlzHh3gHMiMx7qJcsckfmOuhNxlW0N5K1jl1_I2zf8jUXSfpDusRHng&random=967213284&rmt_tld=1&ipr=y",
+      "headers": {
+        "content-security-policy": "script-src 'none'; object-src 'none'",
+        "cache-control": "no-cache, no-store, must-revalidate",
+        "timing-allow-origin": "*",
+        "pragma": "no-cache",
+        "cross-origin-resource-policy": "cross-origin",
+        "x-content-type-options": "nosniff",
+        "expires": "Fri, 01 Jan 1990 00:00:00 GMT",
+        "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
+        "p3p": "policyref=\"https://www.googleadservices.com/pagead/p3p.xml\", CP=\"NOI DEV PSA PSD IVA IVD OTP OUR OTR IND OTC\"",
+        "content-length": "42",
+        "date": "Fri, 28 Aug 2026 08:08:45 GMT",
+        "x-xss-protection": "0",
+        "content-type": "image/gif",
+        "server": "cafe"
+      },
+      "response_body": null,
+      "timestamp": 1787904527.975171
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://casino.betmexico.mx/api/Games/ValidateCategory?categoryId=d365552d-9b3b-409c-8b13-dcfdc9370717",
+      "headers": {
+        "access-control-expose-headers": "Access-Control-Allow-Credentials,Origin,Access-Control-Allow-Methods,Access-Control-Allow-Origin,Access-Control-Allow-Headers",
+        "access-control-allow-credentials": "true",
+        "via": "1.1 c21d87dcbf77ef771bcc5c31c28adeae.cloudfront.net (CloudFront)",
+        "access-control-allow-origin": "https://betmexico.mx",
+        "x-cache": "Miss from cloudfront",
+        "content-length": "0",
+        "alt-svc": "h3=\":443\"; ma=86400",
+        "date": "Fri, 28 Aug 2026 08:08:46 GMT",
+        "x-xss-protection": "1; mode=block",
+        "x-amz-cf-pop": "DFW56-P2",
+        "vary": "Origin, Origin",
+        "server": "CloudFront",
+        "x-amz-cf-id": "VK8LjFXlnL0MaoLNwp_ow7afiCGbhPnTlmPxteMxb69f-AwqpbZ5GA==",
+        "x-frame-options": "DENY"
+      },
+      "response_body": null,
+      "timestamp": 1787904527.986561
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://betmexico.mx/assets/momioFormatApi-BWrTNeRH.js",
+      "headers": {
+        "content-encoding": "br",
+        "x-amz-version-id": "JtIhLwJzyLDtGsCmE35ZHU0Mn1yZ1n3w",
+        "etag": "W/\"55daa4330b4a8d55cf889f01d2216293\"",
+        "age": "43016",
+        "x-content-type-options": "nosniff",
+        "alt-svc": "h3=\":443\"; ma=86400",
+        "server-timing": "cdn-cache-hit,cdn-pop;desc=\"DFW56-P10\",cdn-hit-layer;desc=\"EDGE\",cdn-rid;desc=\"rrU0uICCrkImQakdU0LT4APnEMjD-dYTDA1ORLgcMROuRVFoseOSHg==\",cdn-downstream-fbl;dur=3",
+        "x-cache": "Hit from cloudfront",
+        "x-amz-cf-id": "rrU0uICCrkImQakdU0LT4APnEMjD-dYTDA1ORLgcMROuRVFoseOSHg==",
+        "date": "Thu, 27 Aug 2026 20:10:52 GMT",
+        "content-type": "text/javascript",
+        "last-modified": "Thu, 27 Aug 2026 20:08:32 GMT",
+        "vary": "Accept-Encoding",
+        "cache-control": "public, max-age=604800, immutable, stale-while-revalidate=10800, stale-if-error=10800",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "via": "1.1 c20c28df9ea4babb3490b87b40dce40a.cloudfront.net (CloudFront)",
+        "access-control-allow-origin": "*",
+        "x-amz-cf-pop": "DFW56-P10",
+        "server": "CloudFront"
+      },
+      "response_body": "(function(){try{var e=typeof window<`u`?window:typeof global<`u`?global:typeof globalThis<`u`?globalThis:typeof self<`u`?self:{};e.SENTRY_RELEASE={id:`bmx-prod-v26.8.40`},e._sentryModuleMetadata=e._sentryModuleMetadata||{},e._sentryModuleMetadata[new e.Error().stack]=function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t];if(n!=null)for(var r in n)n.hasOwnProperty(r)&&(e[r]=n[r])}return e}({},e._sentryModuleMetadata[new e.Error().stack],{\"_sentryBundlerPluginAppKey:platform-frontend\":!0});var t=new e.Error().stack;t&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[t]=`62ece926-07a6-462d-abfa-ca9cc7640db0`,e._sentryDebugIdIdentifier=`sentry-dbid-62ece926-07a6-462d-abfa-ca9cc7640db0`)}catch{}})();import{n as e}from\"./rolldown-runtime-D76PP_Cl.js\";import{$ as t,a as n,at as r,bt as i,c as a,do as o,it as s,lo as c,nt as l,oo as u,so as d,tt as f,xt as p}from\"./useAuth-8r07X6Nt.js\";async function m(e){try{let{data:t}=await _().put(`/api/userbet/oddsformat`,{typeOdds:e});return t.value?Promise.resolve({data:!0,error:null}):Promise.resolve({data:!1,error:null})}catch{return Promise.resolve({data:!1,error:null})}}async function h(){try{let{data:e}=await _().get(`/api/userbet/oddsformat`);return e.value?Promise.resolve(e.value.data):Promise.resolve({typeOdds:0})}catch{return Promise.resolve({typeOdds:0})}}var g,_,v=e((()=>{t(),u(),a(),r(),i(),{doPing:g}=p(),_=o({baseURL:`https://sportsbets.betmexico.mx/`,timeout:6e4*3},f(()=>s()??``),l(()=>n()),c(),d(()=>g()))}));export{v as n,m as r,h as t};\n//# sourceMappingURL=momioFormatApi-BWrTNeRH.js.map",
+      "timestamp": 1787904527.9988685
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://paymentsapi.betmexico.mx/api/Wallet/Total/Amount/ByAccountType",
+      "headers": {
+        "x-frame-options": "DENY",
+        "access-control-expose-headers": "Access-Control-Allow-Credentials,Origin,Access-Control-Allow-Methods,Access-Control-Allow-Origin,Access-Control-Allow-Headers",
+        "access-control-allow-credentials": "true",
+        "via": "1.1 62948ecc9077fa56dfc8df69e8170ff4.cloudfront.net (CloudFront)",
+        "alt-svc": "h3=\":443\"; ma=86400",
+        "x-cache": "Miss from cloudfront",
+        "content-length": "26",
+        "access-control-allow-origin": "https://betmexico.mx",
+        "date": "Fri, 28 Aug 2026 08:08:47 GMT",
+        "x-xss-protection": "1; mode=block",
+        "content-type": "application/json; charset=utf-8",
+        "x-amz-cf-pop": "DFW56-P9",
+        "server": "CloudFront",
+        "x-amz-cf-id": "krt7cfhJ6PnFYdEkj_SHbYrD-RM0qxEMsVR9M6odBqGXy-2TzNrnlA==",
+        "vary": "Origin"
+      },
+      "response_body": "{\"Real\":0.00,\"Bonos\":0.00}",
+      "timestamp": 1787904528.011624
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://assetscdn-wchat.freshchat.com/static/assets/vendor.e3822b9e3c227a16f7365086d03763cf.css",
+      "post_data": null,
+      "headers": {
+        "referer": "https://betmexico.freshchat.com/"
+      },
+      "timestamp": 1787904528.0229084
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://assetscdn-wchat.freshchat.com/static/assets/hotline-web.d41d8cd98f00b204e9800998ecf8427e.css",
+      "post_data": null,
+      "headers": {
+        "referer": "https://betmexico.freshchat.com/"
+      },
+      "timestamp": 1787904528.0354164
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://assetscdn-wchat.freshchat.com/static/assets/vendor.862630a2b93632e0d7bbae6d63246102.js",
+      "post_data": null,
+      "headers": {
+        "referer": "https://betmexico.freshchat.com/"
+      },
+      "timestamp": 1787904528.0470335
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://assetscdn-wchat.freshchat.com/static/assets/4268.js",
+      "post_data": null,
+      "headers": {
+        "referer": "https://betmexico.freshchat.com/"
+      },
+      "timestamp": 1787904528.058107
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://assetscdn-wchat.freshchat.com/static/assets/chunk.d7742dcdd43fa48a4328.css",
+      "post_data": null,
+      "headers": {
+        "referer": "https://betmexico.freshchat.com/"
+      },
+      "timestamp": 1787904528.0685134
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://assetscdn-wchat.freshchat.com/static/fd-messaging.0a8c424b4178e2963616.css",
+      "post_data": null,
+      "headers": {
+        "referer": "https://betmexico.freshchat.com/"
+      },
+      "timestamp": 1787904528.0840302
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://assetscdn-wchat.freshchat.com/static/assets/fd-messaging.1bc34bcedcdc0e7c541d.js",
+      "post_data": null,
+      "headers": {
+        "referer": "https://betmexico.freshchat.com/"
+      },
+      "timestamp": 1787904528.0988297
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://rts-static-prod.freshworksapi.com/us/rts-min.js",
+      "post_data": null,
+      "headers": {
+        "referer": "https://betmexico.freshchat.com/"
+      },
+      "timestamp": 1787904528.1093662
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://assetscdn-wchat.freshchat.com/static/assets/chunk.66b4f38d93bd74fd6b41.js",
+      "post_data": null,
+      "headers": {
+        "referer": "https://betmexico.freshchat.com/"
+      },
+      "timestamp": 1787904528.12341
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://assetscdn-wchat.freshchat.com/static/assets/chunk.1caf5b1f88ebd2a15ff5.js",
+      "post_data": null,
+      "headers": {
+        "referer": "https://betmexico.freshchat.com/"
+      },
+      "timestamp": 1787904528.1353037
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://assetscdn-wchat.freshchat.com/static/assets/chunk.470bef69dcff148376b2.js",
+      "post_data": null,
+      "headers": {
+        "referer": "https://betmexico.freshchat.com/"
+      },
+      "timestamp": 1787904528.1459875
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://assetscdn-wchat.freshchat.com/static/assets/notif.da662fefc5060dabf2859ea199198b14.mp3",
+      "post_data": null,
+      "headers": {
+        "sec-ch-ua-platform": "\"Windows\"",
+        "referer": "https://betmexico.freshchat.com/",
+        "accept-encoding": "identity;q=1, *;q=0",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "range": "bytes=0-",
+        "sec-ch-ua-mobile": "?0"
+      },
+      "timestamp": 1787904528.15723
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://betmexico.freshchat.com/app/services/app/webchat/6075ba75-898e-43ee-bd85-07a0130baf54/user",
+      "post_data": null,
+      "headers": {
+        "sec-ch-ua-platform": "\"Windows\"",
+        "referer": "https://betmexico.freshchat.com/widget/?token=6075ba75-898e-43ee-bd85-07a0130baf54&referrer=aHR0cHM6Ly9iZXRtZXhpY28ubXg=&eagerLoad=true",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+        "accept": "application/json",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "sec-ch-ua-mobile": "?0"
+      },
+      "timestamp": 1787904528.167637
+    },
+    {
+      "type": "request",
+      "method": "POST",
+      "url": "https://analytics.google.com/g/collect?v=2&tid=G-QQ994S5FZ0&gtm=45be68r0h2v886685391za200zd886685391&_p=1787904522604&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=EEAAACQC&ae=a&are=1&cid=342009127.1787904346&frm=0&ibt=1&ir=1&ngs=1&pscdl=noapi&rcb=7&sr=1920x1080&uaa=x86&uab=64&uafvl=Not%253DA%253FBrand%3B99.0.0.0%7CGoogle%2520Chrome%3B151.0.7922.175%7CChromium%3B151.0.7922.175&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=es-419&_s=2&tag_exp=115938466~115938468~118897920~118897930~119367802~119367810~120385422~120799816&sid=1787904345&sct=1&seg=1&dl=https%3A%2F%2Fbetmexico.mx%2Fcasino&dr=https%3A%2F%2Fbetmexico.mx%2Fcasino&dt=Slots%20Online%20y%20Jackpots%20%7C%20Betmexico%20Juegos&en=scroll&ep.app_source=WEB&epn.percent_scrolled=90&_et=20&tfd=5564",
+      "post_data": null,
+      "headers": {
+        "sec-ch-ua-platform": "\"Windows\"",
+        "referer": "https://betmexico.mx/",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "sec-ch-ua-mobile": "?0"
+      },
+      "timestamp": 1787904528.187088
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://betmexico.freshchat.com/app/services/app/webchat/6075ba75-898e-43ee-bd85-07a0130baf54/user",
+      "headers": {
+        "x-request-id": "4d6eea6b-02f6-45db-a8e4-75e109e61814",
+        "content-encoding": "br",
+        "x-fw-ratelimiting-managed": "true",
+        "cf-cache-status": "DYNAMIC",
+        "report-to": "{ \"group\": \"nel-endpoint-freshchat\", \"max_age\": 2592000, \"include_subdomains\": true, \"endpoints\": [{\"url\": \"https://nel.us-east-1.freshedge.net/nelreports/freshchat\"}]}",
+        "date": "Fri, 28 Aug 2026 08:08:50 GMT",
+        "content-type": "application/json;charset=UTF-8",
+        "x-server": "q4p8v",
+        "strict-transport-security": "max-age=31536000; includeSubDomains",
+        "content-security-policy": "style-src 'unsafe-inline' *; font-src 'self' * data:; img-src 'self' * data:; connect-src 'self' * https://cloudflareinsights.com; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://*.freshchat.com https://*.freshworksapi.com https://ajax.cloudflare.com https://static.cloudflareinsights.com; child-src 'self' * blob:; media-src 'self' https://*.freshchat.com; manifest-src 'self' https://*.freshchat.com; default-src 'none';",
+        "cache-control": "no-store",
+        "nel": "{ \"report_to\": \"nel-endpoint-freshchat\", \"max_age\": 2592000, \"include_subdomains\": true}",
+        "x-envoy-upstream-service-time": "4",
+        "access-control-allow-credentials": "true",
+        "x-trace-id": "00-25f961e8fabe2c0aaf0e9fc253dc1522-524b19b93311a8ca-00",
+        "x-ratelimit-total": "3000",
+        "x-ratelimit-remaining": "2994",
+        "cf-ray": "a321d49249643234-QRO",
+        "x-server-processing-time-ms": "7",
+        "x-ratelimit-used-currentrequest": "1",
+        "x-xss-protection": "1; mode=block",
+        "x-ratelimit-limit": "3000",
+        "server": "cloudflare"
+      },
+      "response_body": null,
+      "timestamp": 1787904528.2069366
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://betmexico.freshchat.com/app/services/app/webchat/6075ba75-898e-43ee-bd85-07a0130baf54/widget_info_v2?locales=es-MX,es-419,es-419&platform=web",
+      "post_data": null,
+      "headers": {
+        "sec-ch-ua-platform": "\"Windows\"",
+        "referer": "https://betmexico.freshchat.com/widget/?token=6075ba75-898e-43ee-bd85-07a0130baf54&referrer=aHR0cHM6Ly9iZXRtZXhpY28ubXg=&eagerLoad=true",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+        "accept": "application/json",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "sec-ch-ua-mobile": "?0"
+      },
+      "timestamp": 1787904528.2211494
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://betmexico.mx/api/StickyPromo/IsInVerifyProcess",
+      "headers": {
+        "vary": "Origin",
+        "via": "1.1 f3c133b66c9ad381e006ccd012343690.cloudfront.net (CloudFront)",
+        "alt-svc": "h3=\":443\"; ma=86400",
+        "x-cache": "Miss from cloudfront",
+        "content-length": "31",
+        "x-amz-cf-id": "swhbvTxEWlzeVuRCRGUcOdnQuqmF6f2-GAEuwTc8MMtkxiuPhOiQlA==",
+        "date": "Fri, 28 Aug 2026 08:08:47 GMT",
+        "x-xss-protection": "1; mode=block",
+        "content-type": "application/json; charset=utf-8",
+        "x-amz-cf-pop": "DFW56-P10",
+        "server": "CloudFront",
+        "x-frame-options": "DENY"
+      },
+      "response_body": "{\"isUserInVerifyProcess\":false}",
+      "timestamp": 1787904528.2338142
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://betmexico.mx/api/Users/",
+      "headers": {
+        "content-encoding": "gzip",
+        "via": "1.1 f3c133b66c9ad381e006ccd012343690.cloudfront.net (CloudFront)",
+        "alt-svc": "h3=\":443\"; ma=86400",
+        "x-cache": "Miss from cloudfront",
+        "x-amz-cf-id": "o1e6NNJeDZcOs2ijbCGs_pFrR2Z07qx8Bc6RTL6IyKNc7gm9koSh_Q==",
+        "date": "Fri, 28 Aug 2026 08:08:47 GMT",
+        "x-xss-protection": "1; mode=block",
+        "content-type": "application/json; charset=utf-8",
+        "vary": "Accept-Encoding, Origin",
+        "server": "CloudFront",
+        "x-amz-cf-pop": "DFW56-P10",
+        "x-frame-options": "DENY"
+      },
+      "response_body": "{\"data\":{\"id\":\"2183ff17-aa81-44c6-a2c3-4d5cec4cb0cc\",\"fullname\":\"Norma Citlali Sandoval Vazquez\",\"birthDate\":\"1983-09-23T00:00:00\",\"gender\":null,\"userRegisterStep\":2,\"userDetail\":{\"address\":\"\",\"city\":\"\",\"region\":\"\",\"postalCode\":null,\"country\":\"México\",\"cellPhone\":\"8112270303\",\"state\":\"\"},\"userAccount\":{\"username\":\"retirobetmex010432687\",\"email\":\"retirobetmex0.1@gmail.com\",\"faceStatus\":0},\"userConfig\":{\"statusSportbookNotifications\":false},\"autoexclusion\":null},\"isSuccess\":true,\"message\":\"Datos del usuario encontrados.\"}",
+      "timestamp": 1787904528.2467277
+    },
+    {
+      "type": "response",
+      "status": 410,
+      "url": "https://betmexico.mx/api/UserDocument/GetStatusFiles",
+      "headers": {
+        "vary": "Origin",
+        "via": "1.1 f3c133b66c9ad381e006ccd012343690.cloudfront.net (CloudFront)",
+        "alt-svc": "h3=\":443\"; ma=86400",
+        "x-cache": "Error from cloudfront",
+        "content-length": "105",
+        "x-amz-cf-id": "e8-fDZBWvPoYBRgiEt2ic_SE-yWm4cIjvLrH91Hc6Hn2iD5n_KIvpQ==",
+        "date": "Fri, 28 Aug 2026 08:08:47 GMT",
+        "x-xss-protection": "1; mode=block",
+        "content-type": "application/json; charset=utf-8",
+        "x-amz-cf-pop": "DFW56-P10",
+        "server": "CloudFront",
+        "x-frame-options": "DENY"
+      },
+      "response_body": "{\"error\":\"DATA_NOT_FOUND\",\"message\":\"User has not files upload yet\",\"details\":null,\"redirectLogin\":false}",
+      "timestamp": 1787904528.258138
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://assetscdn-wchat.freshchat.com/static/assets/chunk.50fa78b47c3335714ea2.js",
+      "post_data": null,
+      "headers": {
+        "referer": "https://betmexico.freshchat.com/"
+      },
+      "timestamp": 1787904528.2719789
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://betmexico.freshchat.com/app/services/app/webchat/6075ba75-898e-43ee-bd85-07a0130baf54/faq/category?platform=web&locales=es-MX%2Ces-419%2Ces-419&since=1781719822428&lastLocaleId=26&widgetUuid=default",
+      "post_data": null,
+      "headers": {
+        "sec-ch-ua-platform": "\"Windows\"",
+        "referer": "https://betmexico.freshchat.com/widget/?token=6075ba75-898e-43ee-bd85-07a0130baf54&referrer=aHR0cHM6Ly9iZXRtZXhpY28ubXg=&eagerLoad=true",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+        "accept": "application/json",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "sec-ch-ua-mobile": "?0"
+      },
+      "timestamp": 1787904528.2841587
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://fc-use1-00-pics-bkt-00.s3.amazonaws.com/51aa2a1c54ae4c5996119873b2608dcbc2eafa81050537d303b34dc98dec823b/f_marketingpicFull/u_8c6eb40c0895e6e5b7dafc83b8db999bf91d3c8edd0e7eb7348880a32468a8d4/img_43ostr0i2v_7b2c88cf96567fcc841bdb0663722f9816104ef5067523ad505f68a76034b349.png",
+      "post_data": null,
+      "headers": {
+        "sec-ch-ua-platform": "\"Windows\"",
+        "referer": "https://betmexico.freshchat.com/",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "sec-ch-ua-mobile": "?0"
+      },
+      "timestamp": 1787904528.2940307
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://fc-use1-00-pics-bkt-00.s3.amazonaws.com/51aa2a1c54ae4c5996119873b2608dcbc2eafa81050537d303b34dc98dec823b/f_marketingpicFull/u_8c6eb40c0895e6e5b7dafc83b8db999bf91d3c8edd0e7eb7348880a32468a8d4/img_u6mg57urr2_6a4cb9eced54b20e52c63ed58a903b3ba62da12d02b4cffa28cdaddde939d041.png",
+      "post_data": null,
+      "headers": {
+        "sec-ch-ua-platform": "\"Windows\"",
+        "referer": "https://betmexico.freshchat.com/",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "sec-ch-ua-mobile": "?0"
+      },
+      "timestamp": 1787904528.3052924
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://fc-use1-00-pics-bkt-00.s3.amazonaws.com/51aa2a1c54ae4c5996119873b2608dcbc2eafa81050537d303b34dc98dec823b/f_marketingpicFull/u_8c6eb40c0895e6e5b7dafc83b8db999bf91d3c8edd0e7eb7348880a32468a8d4/img_mukq2eq670_ae0119025b8db14a88ef079a38f50e80443796728615983907728d2413835584.png",
+      "post_data": null,
+      "headers": {
+        "sec-ch-ua-platform": "\"Windows\"",
+        "referer": "https://betmexico.freshchat.com/",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "sec-ch-ua-mobile": "?0"
+      },
+      "timestamp": 1787904528.316209
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://fc-use1-00-pics-bkt-00.s3.amazonaws.com/2f59e5a5913ad471e7ece6bcfe95e9ec58cdcdb0e955352dceeb7bfaa53d2bea/f_appLevelPicFull/img_hu1nvh7qlq_06c8d0bb142d72e9a4f36d8a7414067b9140aa529ab9f78b4d6eccd12ae29fcb.png",
+      "post_data": null,
+      "headers": {
+        "sec-ch-ua-platform": "\"Windows\"",
+        "referer": "https://betmexico.freshchat.com/",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "sec-ch-ua-mobile": "?0"
+      },
+      "timestamp": 1787904528.331395
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://fc-use1-00-pics-bkt-00.s3.amazonaws.com/2f59e5a5913ad471e7ece6bcfe95e9ec58cdcdb0e955352dceeb7bfaa53d2bea/f_appLevelPicFull/img_p83t7a7sg6_70aadda1550ee2e0ccf063aa2d8065ea332da3043f5c193a2ec6168cecba1cdb.png",
+      "post_data": null,
+      "headers": {
+        "sec-ch-ua-platform": "\"Windows\"",
+        "referer": "https://betmexico.freshchat.com/",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "sec-ch-ua-mobile": "?0"
+      },
+      "timestamp": 1787904528.342813
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://fc-use1-00-pics-bkt-00.s3.amazonaws.com/2f59e5a5913ad471e7ece6bcfe95e9ec58cdcdb0e955352dceeb7bfaa53d2bea/f_appLevelPicFull/img_l0bhvt8l1i_ff39b82342533a3d02a95e000cb6e4e18fac9818250d01073beeff76a4531dcc.png",
+      "post_data": null,
+      "headers": {
+        "sec-ch-ua-platform": "\"Windows\"",
+        "referer": "https://betmexico.freshchat.com/",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "sec-ch-ua-mobile": "?0"
+      },
+      "timestamp": 1787904528.352975
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://fc-use1-00-pics-bkt-00.s3.amazonaws.com/7896718c014e1ce4489e44da1dbb85e3d4a74c03ce059e562da05a03501481a1/f_marketingpicFull/u_1a0a3cc314c9c475e2c1bbd787f87e586cfa31369b787206258205d5571509fc/img_jqhdmkrbl8_3c84fce16191fe3445afb4091bdd8e126deb57ac07b627987bb8dcd85d2f4730.png",
+      "post_data": null,
+      "headers": {
+        "sec-ch-ua-platform": "\"Windows\"",
+        "referer": "https://betmexico.freshchat.com/",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "sec-ch-ua-mobile": "?0"
+      },
+      "timestamp": 1787904528.363207
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://fc-use1-00-pics-bkt-00.s3.amazonaws.com/7896718c014e1ce4489e44da1dbb85e3d4a74c03ce059e562da05a03501481a1/f_marketingpicFull/u_1a0a3cc314c9c475e2c1bbd787f87e586cfa31369b787206258205d5571509fc/img_4g9s0n9bkd_581d72e890785322485f3ec1b4ed5cf1eac1f0155e2a94862edbc3b81ff68746.png",
+      "post_data": null,
+      "headers": {
+        "sec-ch-ua-platform": "\"Windows\"",
+        "referer": "https://betmexico.freshchat.com/",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "sec-ch-ua-mobile": "?0"
+      },
+      "timestamp": 1787904528.373486
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://fc-use1-00-pics-bkt-00.s3.amazonaws.com/7896718c014e1ce4489e44da1dbb85e3d4a74c03ce059e562da05a03501481a1/f_marketingpicFull/u_1a0a3cc314c9c475e2c1bbd787f87e586cfa31369b787206258205d5571509fc/img_lrbkucnplk_44ce7d93f20b8d7f99816a21e925418420acad364f1c44bd0c63596088165fd3.png",
+      "post_data": null,
+      "headers": {
+        "sec-ch-ua-platform": "\"Windows\"",
+        "referer": "https://betmexico.freshchat.com/",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "sec-ch-ua-mobile": "?0"
+      },
+      "timestamp": 1787904528.3834
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://assetscdn-wchat.freshchat.com/static/assets/freshchat_logo.f6e2dc08072c0bf69ca4c005e561b7dc.png",
+      "post_data": null,
+      "headers": {
+        "sec-ch-ua-platform": "\"Windows\"",
+        "referer": "https://betmexico.freshchat.com/",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "sec-ch-ua-mobile": "?0"
+      },
+      "timestamp": 1787904528.3950505
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "blob:https://betmexico.freshchat.com/765a8804-6065-41ad-9877-31add730e39e",
+      "post_data": null,
+      "headers": {
+        "accept": "*/*"
+      },
+      "timestamp": 1787904528.405519
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://rts-static-prod.freshworksapi.com/us/rts-min.js",
+      "headers": {
+        "vary": "Accept-Encoding",
+        "x-amz-replication-status": "COMPLETED",
+        "content-encoding": "gzip",
+        "x-amz-version-id": "J39H9juk4b3N1dtdw2PRHW4TiOfDabh.",
+        "etag": "W/\"627a257285f295b947b315c121971603\"",
+        "age": "19",
+        "via": "1.1 3464dfd29ea725137a4e56a5b8387b30.cloudfront.net (CloudFront)",
+        "x-cache": "Hit from cloudfront",
+        "x-amz-cf-id": "o3_AC99NR1Q7SZ0Dg0Ckc0U6I7jQFbcUaSvT7BVqTi1JjdEpLOqNrw==",
+        "date": "Fri, 28 Aug 2026 08:07:24 GMT",
+        "content-type": "text/javascript",
+        "last-modified": "Tue, 07 Jul 2026 05:43:10 GMT",
+        "server": "AmazonS3",
+        "x-amz-cf-pop": "DFW59-P6",
+        "x-amz-server-side-encryption": "AES256"
+      },
+      "response_body": "/*! For license information please see rts.js.LICENSE.txt */\n(()=>{var t={760(t,n,a){var i;t.exports=function(){function r(t,n,a){function o($,c){if(!n[$]){if(!t[$]){if(i)return i($,!0);var l=new Error(\"Cannot find module '\"+$+\"'\");throw l.code=\"MODULE_NOT_FOUND\",l}var u=n[$]={exports:{}};t[$][0].call(u.exports,function(n){return o(t[$][1][n]||n)},u,u.exports,r,t,n,a)}return n[$].exports}for(var i=void 0,$=0;$<a.length;$++)o(a[$]);return o}return r}()({1:[function(t,n,a){\"use strict\";var i=t(\"util\").deprecate,$=t(\"./lib/suffix-trie.js\").fromJson(t(\"./rules.json\")),c=t(\"./lib/clean-host.js\"),l=t(\"./lib/domain.js\"),u=t(\"./lib/public-suffix.js\"),p=t(\"./lib/subdomain.js\"),h=t(\"./lib/is-valid.js\"),d=t(\"./lib/is-ip.js\"),f=t(\"./lib/tld-exists.js\"),m=1,g=2,y=3,b=4,k=5;function factory(t){var n=t.rules||$||{},a=t.validHosts||[],v=t.extractHostname||c;function parse(t,i){var $=i||k,c={hostname:v(t),isValid:null,isIp:null,tldExists:!1,publicSuffix:null,domain:null,subdomain:null};return null===c.hostname?(c.isIp=!1,c.isValid=!1,c):(c.isIp=d(c.hostname),c.isIp?(c.isValid=!0,c):(c.isValid=h(c.hostname),!1===c.isValid||($!==k&&$!==m||(c.tldExists=f(n,c.hostname)),$===m||(c.publicSuffix=u(n,c.hostname),$===g||(c.domain=l(a,c.publicSuffix,c.hostname),$===y||(c.subdomain=p(c.hostname,c.domain))))),c))}return{extractHostname:v,isValidHostname:h,isValid:i(function isValid(t){return h(t)},'\"isValid\" is deprecated, please use \"isValidHostname\" instead.'),parse,tldExists:function(t){return parse(t,m).tldExists},getPublicSuffix:function(t){return parse(t,g).publicSuffix},getDomain:function(t){return parse(t,y).domain},getSubdomain:function(t){return parse(t,b).subdomain},fromUserSettings:factory}}n.exports=factory({})},{\"./lib/clean-host.js\":2,\"./lib/domain.js\":3,\"./lib/is-ip.js\":5,\"./lib/is-valid.js\":6,\"./lib/public-suffix.js\":7,\"./lib/subdomain.js\":8,\"./lib/suffix-trie.js\":9,\"./lib/tld-exists.js\":10,\"./rules.json\":80,util:78}],2:[function(t,n,a){var i=t(\"url\"),$=t(\"./is-valid.js\"),c=/^(",
+      "timestamp": 1787904528.4185855
+    },
+    {
+      "type": "response",
+      "status": 204,
+      "url": "https://analytics.google.com/g/collect?v=2&tid=G-QQ994S5FZ0&gtm=45be68r0h2v886685391za200zd886685391&_p=1787904522604&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=EEAAACQC&ae=a&are=1&cid=342009127.1787904346&frm=0&ibt=1&ir=1&ngs=1&pscdl=noapi&rcb=7&sr=1920x1080&uaa=x86&uab=64&uafvl=Not%253DA%253FBrand%3B99.0.0.0%7CGoogle%2520Chrome%3B151.0.7922.175%7CChromium%3B151.0.7922.175&uam=&uamb=0&uap=Windows&uapv=19.0.0&uaw=0&ul=es-419&_s=2&tag_exp=115938466~115938468~118897920~118897930~119367802~119367810~120385422~120799816&sid=1787904345&sct=1&seg=1&dl=https%3A%2F%2Fbetmexico.mx%2Fcasino&dr=https%3A%2F%2Fbetmexico.mx%2Fcasino&dt=Slots%20Online%20y%20Jackpots%20%7C%20Betmexico%20Juegos&en=scroll&ep.app_source=WEB&epn.percent_scrolled=90&_et=20&tfd=5564",
+      "headers": {
+        "cache-control": "no-cache, no-store, must-revalidate",
+        "pragma": "no-cache",
+        "cross-origin-resource-policy": "cross-origin",
+        "access-control-allow-credentials": "true",
+        "content-security-policy-report-only": "script-src 'none'; form-action 'none'; frame-src 'none'; report-uri https://csp.withgoogle.com/csp/scaffolding/ascnsrsggc:197:0",
+        "report-to": "{\"group\":\"ascnsrsggc:197:0\",\"max_age\":2592000,\"endpoints\":[{\"url\":\"https://csp.withgoogle.com/csp/report-to/scaffolding/ascnsrsggc:197:0\"}],}",
+        "expires": "Fri, 01 Jan 1990 00:00:00 GMT",
+        "access-control-allow-origin": "https://betmexico.mx",
+        "cross-origin-opener-policy-report-only": "same-origin; report-to=ascnsrsggc:197:0",
+        "content-length": "0",
+        "alt-svc": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000",
+        "date": "Fri, 28 Aug 2026 08:08:50 GMT",
+        "content-type": "text/plain",
+        "server": "Golfe2"
+      },
+      "response_body": null,
+      "timestamp": 1787904528.4301069
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://paymentsapi.betmexico.mx/api/Wallet/Total/Amount/ByAccountType",
+      "post_data": null,
+      "headers": {
+        "sec-ch-ua-platform": "\"Windows\"",
+        "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImN0eSI6IkpXVCJ9.eyJVbmlxdWVJZFRyYWNrZXIiOiIyMTgzZmYxN2FhODE0NGM2YTJjMzRkNWNlYzRjYjBjY19QVVpBNDhCWVM2RURGT1MyVlFHUjI0MVROTlZIIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6InJldGlyb2JldG1leDAxMDQzMjY4NyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6InJldGlyb2JldG1leDAuMUBnbWFpbC5jb20iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9zaWQiOiIyMTgzZmYxNy1hYTgxLTQ0YzYtYTJjMy00ZDVjZWM0Y2IwY2MiLCJqdGkiOiI0ODU4ZTQxNi1mYjU4LTQzZDgtOWMxZS1jZDIwYTI0MDVmMDIiLCJFeHRlbmRlZFNlc3Npb24iOiJGYWxzZSIsIlN0YXR1cyI6IkFjdGl2ZSIsIm5iZiI6MTc4NzkwNDQ2MCwiZXhwIjoxNzg3OTkwODYwLCJpc3MiOiJodHRwczovL2JldG1leGljby5teC8iLCJhdWQiOiJTcG9ydEJvb2tCZXRNZXhpY28ifQ.WQ1W3ChhdpAAke_7C2RVzHDPruOYy_uLpvoq1se0tiQ",
+        "referer": "https://betmexico.mx/",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+        "accept": "application/json, text/plain, */*",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "sec-ch-ua-mobile": "?0"
+      },
+      "timestamp": 1787904535.2817183
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://paymentsapi.betmexico.mx/api/Wallet/Total/Amount/ByAccountType",
+      "headers": {
+        "x-frame-options": "DENY",
+        "access-control-expose-headers": "Access-Control-Allow-Credentials,Origin,Access-Control-Allow-Methods,Access-Control-Allow-Origin,Access-Control-Allow-Headers",
+        "access-control-allow-credentials": "true",
+        "via": "1.1 62948ecc9077fa56dfc8df69e8170ff4.cloudfront.net (CloudFront)",
+        "alt-svc": "h3=\":443\"; ma=86400",
+        "x-cache": "Miss from cloudfront",
+        "content-length": "26",
+        "access-control-allow-origin": "https://betmexico.mx",
+        "date": "Fri, 28 Aug 2026 08:08:58 GMT",
+        "x-xss-protection": "1; mode=block",
+        "content-type": "application/json; charset=utf-8",
+        "x-amz-cf-pop": "DFW56-P9",
+        "server": "CloudFront",
+        "x-amz-cf-id": "qMlNKUZrNToLyFEWmcrzmLmy71syMy3tDuCK8_zurBcYjTjTXlWzkA==",
+        "vary": "Origin"
+      },
+      "response_body": null,
+      "timestamp": 1787904535.356203
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://paymentsapi.betmexico.mx/api/user/LastDepositDetail",
+      "post_data": null,
+      "headers": {
+        "sec-ch-ua-platform": "\"Windows\"",
+        "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImN0eSI6IkpXVCJ9.eyJVbmlxdWVJZFRyYWNrZXIiOiIyMTgzZmYxN2FhODE0NGM2YTJjMzRkNWNlYzRjYjBjY19QVVpBNDhCWVM2RURGT1MyVlFHUjI0MVROTlZIIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6InJldGlyb2JldG1leDAxMDQzMjY4NyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6InJldGlyb2JldG1leDAuMUBnbWFpbC5jb20iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9zaWQiOiIyMTgzZmYxNy1hYTgxLTQ0YzYtYTJjMy00ZDVjZWM0Y2IwY2MiLCJqdGkiOiI0ODU4ZTQxNi1mYjU4LTQzZDgtOWMxZS1jZDIwYTI0MDVmMDIiLCJFeHRlbmRlZFNlc3Npb24iOiJGYWxzZSIsIlN0YXR1cyI6IkFjdGl2ZSIsIm5iZiI6MTc4NzkwNDQ2MCwiZXhwIjoxNzg3OTkwODYwLCJpc3MiOiJodHRwczovL2JldG1leGljby5teC8iLCJhdWQiOiJTcG9ydEJvb2tCZXRNZXhpY28ifQ.WQ1W3ChhdpAAke_7C2RVzHDPruOYy_uLpvoq1se0tiQ",
+        "referer": "https://betmexico.mx/",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+        "accept": "application/json, text/plain, */*",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "sec-ch-ua-mobile": "?0"
+      },
+      "timestamp": 1787904535.3681285
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://betmexico.mx/api/StickyPromo/IsInVerifyProcess",
+      "post_data": null,
+      "headers": {
+        "sec-ch-ua-platform": "\"Windows\"",
+        "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImN0eSI6IkpXVCJ9.eyJVbmlxdWVJZFRyYWNrZXIiOiIyMTgzZmYxN2FhODE0NGM2YTJjMzRkNWNlYzRjYjBjY19QVVpBNDhCWVM2RURGT1MyVlFHUjI0MVROTlZIIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6InJldGlyb2JldG1leDAxMDQzMjY4NyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6InJldGlyb2JldG1leDAuMUBnbWFpbC5jb20iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9zaWQiOiIyMTgzZmYxNy1hYTgxLTQ0YzYtYTJjMy00ZDVjZWM0Y2IwY2MiLCJqdGkiOiI0ODU4ZTQxNi1mYjU4LTQzZDgtOWMxZS1jZDIwYTI0MDVmMDIiLCJFeHRlbmRlZFNlc3Npb24iOiJGYWxzZSIsIlN0YXR1cyI6IkFjdGl2ZSIsIm5iZiI6MTc4NzkwNDQ2MCwiZXhwIjoxNzg3OTkwODYwLCJpc3MiOiJodHRwczovL2JldG1leGljby5teC8iLCJhdWQiOiJTcG9ydEJvb2tCZXRNZXhpY28ifQ.WQ1W3ChhdpAAke_7C2RVzHDPruOYy_uLpvoq1se0tiQ",
+        "referer": "https://betmexico.mx/casino",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "sec-ch-ua-mobile": "?0",
+        "baggage": "sentry-environment=production,sentry-release=bmx-prod-v26.8.40,sentry-public_key=598a6235f8fbb8a1a6e67012e8dbe45e,sentry-trace_id=ca3327e176074da298ef304ae2ac8a25,sentry-sample_rate=1e-10,sentry-sampled=false",
+        "sentry-trace": "ca3327e176074da298ef304ae2ac8a25-ad90ca44b782e288-0",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+        "accept": "application/json, text/plain, */*"
+      },
+      "timestamp": 1787904535.4368289
+    },
+    {
+      "type": "response",
+      "status": 204,
+      "url": "https://paymentsapi.betmexico.mx/api/user/LastDepositDetail",
+      "headers": {
+        "access-control-expose-headers": "Access-Control-Allow-Credentials,Origin,Access-Control-Allow-Methods,Access-Control-Allow-Origin,Access-Control-Allow-Headers",
+        "access-control-allow-credentials": "true",
+        "via": "1.1 62948ecc9077fa56dfc8df69e8170ff4.cloudfront.net (CloudFront)",
+        "alt-svc": "h3=\":443\"; ma=86400",
+        "x-cache": "Miss from cloudfront",
+        "access-control-allow-origin": "https://betmexico.mx",
+        "date": "Fri, 28 Aug 2026 08:08:58 GMT",
+        "x-xss-protection": "1; mode=block",
+        "x-amz-cf-pop": "DFW56-P9",
+        "vary": "Origin",
+        "server": "CloudFront",
+        "x-amz-cf-id": "DQGWCcemqpiBrONtXedGVV4RHvpnCtudIrHposyi2AFd_jFb-UDm2A==",
+        "x-frame-options": "DENY"
+      },
+      "response_body": null,
+      "timestamp": 1787904535.4481387
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://betmexico.mx/api/Users/",
+      "post_data": null,
+      "headers": {
+        "sec-ch-ua-platform": "\"Windows\"",
+        "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImN0eSI6IkpXVCJ9.eyJVbmlxdWVJZFRyYWNrZXIiOiIyMTgzZmYxN2FhODE0NGM2YTJjMzRkNWNlYzRjYjBjY19QVVpBNDhCWVM2RURGT1MyVlFHUjI0MVROTlZIIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6InJldGlyb2JldG1leDAxMDQzMjY4NyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6InJldGlyb2JldG1leDAuMUBnbWFpbC5jb20iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9zaWQiOiIyMTgzZmYxNy1hYTgxLTQ0YzYtYTJjMy00ZDVjZWM0Y2IwY2MiLCJqdGkiOiI0ODU4ZTQxNi1mYjU4LTQzZDgtOWMxZS1jZDIwYTI0MDVmMDIiLCJFeHRlbmRlZFNlc3Npb24iOiJGYWxzZSIsIlN0YXR1cyI6IkFjdGl2ZSIsIm5iZiI6MTc4NzkwNDQ2MCwiZXhwIjoxNzg3OTkwODYwLCJpc3MiOiJodHRwczovL2JldG1leGljby5teC8iLCJhdWQiOiJTcG9ydEJvb2tCZXRNZXhpY28ifQ.WQ1W3ChhdpAAke_7C2RVzHDPruOYy_uLpvoq1se0tiQ",
+        "referer": "https://betmexico.mx/casino",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "sec-ch-ua-mobile": "?0",
+        "baggage": "sentry-environment=production,sentry-release=bmx-prod-v26.8.40,sentry-public_key=598a6235f8fbb8a1a6e67012e8dbe45e,sentry-trace_id=ca3327e176074da298ef304ae2ac8a25,sentry-sample_rate=1e-10,sentry-sampled=false",
+        "sentry-trace": "ca3327e176074da298ef304ae2ac8a25-ad90ca44b782e288-0",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+        "accept": "application/json, text/plain, */*"
+      },
+      "timestamp": 1787904535.5745838
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://betmexico.mx/api/StickyPromo/IsInVerifyProcess",
+      "headers": {
+        "vary": "Origin",
+        "via": "1.1 f3c133b66c9ad381e006ccd012343690.cloudfront.net (CloudFront)",
+        "alt-svc": "h3=\":443\"; ma=86400",
+        "x-cache": "Miss from cloudfront",
+        "content-length": "31",
+        "x-amz-cf-id": "uXsEQa_evlMFqRQ7Ox01BIeA-yW7SLl5oSHfCIOlm-sZyXivcb48xQ==",
+        "date": "Fri, 28 Aug 2026 08:08:58 GMT",
+        "x-xss-protection": "1; mode=block",
+        "content-type": "application/json; charset=utf-8",
+        "x-amz-cf-pop": "DFW56-P10",
+        "server": "CloudFront",
+        "x-frame-options": "DENY"
+      },
+      "response_body": "{\"isUserInVerifyProcess\":false}",
+      "timestamp": 1787904535.5876343
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://betmexico.mx/api/UserDocument/GetStatusFiles",
+      "post_data": null,
+      "headers": {
+        "sec-ch-ua-platform": "\"Windows\"",
+        "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImN0eSI6IkpXVCJ9.eyJVbmlxdWVJZFRyYWNrZXIiOiIyMTgzZmYxN2FhODE0NGM2YTJjMzRkNWNlYzRjYjBjY19QVVpBNDhCWVM2RURGT1MyVlFHUjI0MVROTlZIIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6InJldGlyb2JldG1leDAxMDQzMjY4NyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6InJldGlyb2JldG1leDAuMUBnbWFpbC5jb20iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9zaWQiOiIyMTgzZmYxNy1hYTgxLTQ0YzYtYTJjMy00ZDVjZWM0Y2IwY2MiLCJqdGkiOiI0ODU4ZTQxNi1mYjU4LTQzZDgtOWMxZS1jZDIwYTI0MDVmMDIiLCJFeHRlbmRlZFNlc3Npb24iOiJGYWxzZSIsIlN0YXR1cyI6IkFjdGl2ZSIsIm5iZiI6MTc4NzkwNDQ2MCwiZXhwIjoxNzg3OTkwODYwLCJpc3MiOiJodHRwczovL2JldG1leGljby5teC8iLCJhdWQiOiJTcG9ydEJvb2tCZXRNZXhpY28ifQ.WQ1W3ChhdpAAke_7C2RVzHDPruOYy_uLpvoq1se0tiQ",
+        "cache-control": "no-cache",
+        "referer": "https://betmexico.mx/casino",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "sec-ch-ua-mobile": "?0",
+        "baggage": "sentry-environment=production,sentry-release=bmx-prod-v26.8.40,sentry-public_key=598a6235f8fbb8a1a6e67012e8dbe45e,sentry-trace_id=ca3327e176074da298ef304ae2ac8a25,sentry-sample_rate=1e-10,sentry-sampled=false",
+        "sentry-trace": "ca3327e176074da298ef304ae2ac8a25-ad90ca44b782e288-0",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+        "accept": "application/json, text/plain, */*"
+      },
+      "timestamp": 1787904535.6713276
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://betmexico.mx/api/Users/",
+      "headers": {
+        "content-encoding": "gzip",
+        "via": "1.1 f3c133b66c9ad381e006ccd012343690.cloudfront.net (CloudFront)",
+        "alt-svc": "h3=\":443\"; ma=86400",
+        "x-cache": "Miss from cloudfront",
+        "x-amz-cf-id": "TRV30iaBDAfNSqci_oaS5IyasX_zldF_pcNW3ZY4YTk-P76NDsfzow==",
+        "date": "Fri, 28 Aug 2026 08:08:58 GMT",
+        "x-xss-protection": "1; mode=block",
+        "content-type": "application/json; charset=utf-8",
+        "vary": "Accept-Encoding, Origin",
+        "server": "CloudFront",
+        "x-amz-cf-pop": "DFW56-P10",
+        "x-frame-options": "DENY"
+      },
+      "response_body": "{\"data\":{\"id\":\"2183ff17-aa81-44c6-a2c3-4d5cec4cb0cc\",\"fullname\":\"Norma Citlali Sandoval Vazquez\",\"birthDate\":\"1983-09-23T00:00:00\",\"gender\":null,\"userRegisterStep\":2,\"userDetail\":{\"address\":\"\",\"city\":\"\",\"region\":\"\",\"postalCode\":null,\"country\":\"México\",\"cellPhone\":\"8112270303\",\"state\":\"\"},\"userAccount\":{\"username\":\"retirobetmex010432687\",\"email\":\"retirobetmex0.1@gmail.com\",\"faceStatus\":0},\"userConfig\":{\"statusSportbookNotifications\":false},\"autoexclusion\":null},\"isSuccess\":true,\"message\":\"Datos del usuario encontrados.\"}",
+      "timestamp": 1787904535.6834195
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://betmexico.mx/assets/banner_promo_desktop-CNQXMpBy.webp",
+      "post_data": null,
+      "headers": {
+        "sec-ch-ua-platform": "\"Windows\"",
+        "referer": "https://betmexico.mx/casino",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "sec-ch-ua-mobile": "?0"
+      },
+      "timestamp": 1787904535.8146808
+    },
+    {
+      "type": "response",
+      "status": 410,
+      "url": "https://betmexico.mx/api/UserDocument/GetStatusFiles",
+      "headers": {
+        "vary": "Origin",
+        "via": "1.1 f3c133b66c9ad381e006ccd012343690.cloudfront.net (CloudFront)",
+        "alt-svc": "h3=\":443\"; ma=86400",
+        "x-cache": "Error from cloudfront",
+        "content-length": "105",
+        "x-amz-cf-id": "CktUnrVEBcXSJzbsA496TwhhEsuoVWES8Z4WeI6Qmkm_nSYT8CUm7A==",
+        "date": "Fri, 28 Aug 2026 08:08:58 GMT",
+        "x-xss-protection": "1; mode=block",
+        "content-type": "application/json; charset=utf-8",
+        "x-amz-cf-pop": "DFW56-P10",
+        "server": "CloudFront",
+        "x-frame-options": "DENY"
+      },
+      "response_body": "{\"error\":\"DATA_NOT_FOUND\",\"message\":\"User has not files upload yet\",\"details\":null,\"redirectLogin\":false}",
+      "timestamp": 1787904535.8253791
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://betmexico.mx/assets/animated_face-B_8z_Oue.svg",
+      "post_data": null,
+      "headers": {
+        "sec-ch-ua-platform": "\"Windows\"",
+        "referer": "https://betmexico.mx/casino",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "sec-ch-ua-mobile": "?0"
+      },
+      "timestamp": 1787904538.7076902
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://betmexico.mx/assets/cara-TCmm-T56.svg",
+      "post_data": null,
+      "headers": {
+        "sec-ch-ua-platform": "\"Windows\"",
+        "referer": "https://betmexico.mx/casino",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "sec-ch-ua-mobile": "?0"
+      },
+      "timestamp": 1787904538.7175186
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://betmexico.mx/assets/iluminar-BsStvy8l.svg",
+      "post_data": null,
+      "headers": {
+        "sec-ch-ua-platform": "\"Windows\"",
+        "referer": "https://betmexico.mx/casino",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "sec-ch-ua-mobile": "?0"
+      },
+      "timestamp": 1787904538.726683
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://betmexico.mx/assets/camara-BkF7kufK.svg",
+      "post_data": null,
+      "headers": {
+        "sec-ch-ua-platform": "\"Windows\"",
+        "referer": "https://betmexico.mx/casino",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "sec-ch-ua-mobile": "?0"
+      },
+      "timestamp": 1787904538.7372882
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://betmexico.mx/assets/lentes-Cly95X2q.svg",
+      "post_data": null,
+      "headers": {
+        "sec-ch-ua-platform": "\"Windows\"",
+        "referer": "https://betmexico.mx/casino",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "sec-ch-ua-mobile": "?0"
+      },
+      "timestamp": 1787904538.7482498
+    },
+    {
+      "type": "request",
+      "method": "POST",
+      "url": "https://betmexico.mx/api/UserVerification/SendLinkVerification",
+      "post_data": null,
+      "headers": {
+        "sec-ch-ua-platform": "\"Windows\"",
+        "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImN0eSI6IkpXVCJ9.eyJVbmlxdWVJZFRyYWNrZXIiOiIyMTgzZmYxN2FhODE0NGM2YTJjMzRkNWNlYzRjYjBjY19QVVpBNDhCWVM2RURGT1MyVlFHUjI0MVROTlZIIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6InJldGlyb2JldG1leDAxMDQzMjY4NyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6InJldGlyb2JldG1leDAuMUBnbWFpbC5jb20iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9zaWQiOiIyMTgzZmYxNy1hYTgxLTQ0YzYtYTJjMy00ZDVjZWM0Y2IwY2MiLCJqdGkiOiI0ODU4ZTQxNi1mYjU4LTQzZDgtOWMxZS1jZDIwYTI0MDVmMDIiLCJFeHRlbmRlZFNlc3Npb24iOiJGYWxzZSIsIlN0YXR1cyI6IkFjdGl2ZSIsIm5iZiI6MTc4NzkwNDQ2MCwiZXhwIjoxNzg3OTkwODYwLCJpc3MiOiJodHRwczovL2JldG1leGljby5teC8iLCJhdWQiOiJTcG9ydEJvb2tCZXRNZXhpY28ifQ.WQ1W3ChhdpAAke_7C2RVzHDPruOYy_uLpvoq1se0tiQ",
+        "referer": "https://betmexico.mx/casino",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "sec-ch-ua-mobile": "?0",
+        "baggage": "sentry-environment=production,sentry-release=bmx-prod-v26.8.40,sentry-public_key=598a6235f8fbb8a1a6e67012e8dbe45e,sentry-trace_id=ca3327e176074da298ef304ae2ac8a25,sentry-sample_rate=1e-10,sentry-sampled=false",
+        "sentry-trace": "ca3327e176074da298ef304ae2ac8a25-ad90ca44b782e288-0",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+        "accept": "application/json, text/plain, */*"
+      },
+      "timestamp": 1787904541.5237823
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://betmexico.mx/api/UserVerification/SendLinkVerification",
+      "headers": {
+        "via": "1.1 f3c133b66c9ad381e006ccd012343690.cloudfront.net (CloudFront)",
+        "alt-svc": "h3=\":443\"; ma=86400",
+        "x-cache": "Miss from cloudfront",
+        "content-length": "0",
+        "x-amz-cf-id": "UTaO4SQvaeMhNK1mtFAX-BlU_vLgRsJrfUY0dg8uDBEjiePVp1RtQg==",
+        "date": "Fri, 28 Aug 2026 08:09:04 GMT",
+        "x-xss-protection": "1; mode=block",
+        "x-amz-cf-pop": "DFW56-P10",
+        "vary": "Origin",
+        "server": "CloudFront",
+        "x-frame-options": "DENY"
+      },
+      "response_body": null,
+      "timestamp": 1787904541.664572
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://paymentsapi.betmexico.mx/api/wallet/PendingWithdrawal",
+      "post_data": null,
+      "headers": {
+        "sec-ch-ua-platform": "\"Windows\"",
+        "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImN0eSI6IkpXVCJ9.eyJVbmlxdWVJZFRyYWNrZXIiOiIyMTgzZmYxN2FhODE0NGM2YTJjMzRkNWNlYzRjYjBjY19QVVpBNDhCWVM2RURGT1MyVlFHUjI0MVROTlZIIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6InJldGlyb2JldG1leDAxMDQzMjY4NyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6InJldGlyb2JldG1leDAuMUBnbWFpbC5jb20iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9zaWQiOiIyMTgzZmYxNy1hYTgxLTQ0YzYtYTJjMy00ZDVjZWM0Y2IwY2MiLCJqdGkiOiI0ODU4ZTQxNi1mYjU4LTQzZDgtOWMxZS1jZDIwYTI0MDVmMDIiLCJFeHRlbmRlZFNlc3Npb24iOiJGYWxzZSIsIlN0YXR1cyI6IkFjdGl2ZSIsIm5iZiI6MTc4NzkwNDQ2MCwiZXhwIjoxNzg3OTkwODYwLCJpc3MiOiJodHRwczovL2JldG1leGljby5teC8iLCJhdWQiOiJTcG9ydEJvb2tCZXRNZXhpY28ifQ.WQ1W3ChhdpAAke_7C2RVzHDPruOYy_uLpvoq1se0tiQ",
+        "referer": "https://betmexico.mx/",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+        "accept": "application/json, text/plain, */*",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "sec-ch-ua-mobile": "?0"
+      },
+      "timestamp": 1787904582.438575
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://paymentsapi.betmexico.mx/api/wallet/PendingWithdrawal",
+      "headers": {
+        "x-frame-options": "DENY",
+        "access-control-expose-headers": "Access-Control-Allow-Credentials,Origin,Access-Control-Allow-Methods,Access-Control-Allow-Origin,Access-Control-Allow-Headers",
+        "access-control-allow-credentials": "true",
+        "via": "1.1 aad28f029eb5b6de488ed1dde6002a42.cloudfront.net (CloudFront)",
+        "access-control-allow-origin": "https://betmexico.mx",
+        "x-cache": "Miss from cloudfront",
+        "content-length": "147",
+        "alt-svc": "h3=\":443\"; ma=86400",
+        "date": "Fri, 28 Aug 2026 08:09:45 GMT",
+        "x-xss-protection": "1; mode=block",
+        "content-type": "application/json; charset=utf-8",
+        "x-amz-cf-pop": "DFW56-P9",
+        "server": "CloudFront",
+        "x-amz-cf-id": "kDRSG6Vvhg--14D75t15TGkN4uNse0aWy893pdtySKBvIOnS-SHppQ==",
+        "vary": "Origin"
+      },
+      "response_body": null,
+      "timestamp": 1787904582.62437
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://flags.betmexico.mx/maintenance.json",
+      "post_data": null,
+      "headers": {
+        "sec-ch-ua-platform": "\"Windows\"",
+        "referer": "https://betmexico.mx/",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+        "accept": "application/json, text/plain, */*",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "sec-ch-ua-mobile": "?0"
+      },
+      "timestamp": 1787904642.3217697
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://paymentsapi.betmexico.mx/api/wallet/PendingWithdrawal",
+      "post_data": null,
+      "headers": {
+        "sec-ch-ua-platform": "\"Windows\"",
+        "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImN0eSI6IkpXVCJ9.eyJVbmlxdWVJZFRyYWNrZXIiOiIyMTgzZmYxN2FhODE0NGM2YTJjMzRkNWNlYzRjYjBjY19QVVpBNDhCWVM2RURGT1MyVlFHUjI0MVROTlZIIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6InJldGlyb2JldG1leDAxMDQzMjY4NyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6InJldGlyb2JldG1leDAuMUBnbWFpbC5jb20iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9zaWQiOiIyMTgzZmYxNy1hYTgxLTQ0YzYtYTJjMy00ZDVjZWM0Y2IwY2MiLCJqdGkiOiI0ODU4ZTQxNi1mYjU4LTQzZDgtOWMxZS1jZDIwYTI0MDVmMDIiLCJFeHRlbmRlZFNlc3Npb24iOiJGYWxzZSIsIlN0YXR1cyI6IkFjdGl2ZSIsIm5iZiI6MTc4NzkwNDQ2MCwiZXhwIjoxNzg3OTkwODYwLCJpc3MiOiJodHRwczovL2JldG1leGljby5teC8iLCJhdWQiOiJTcG9ydEJvb2tCZXRNZXhpY28ifQ.WQ1W3ChhdpAAke_7C2RVzHDPruOYy_uLpvoq1se0tiQ",
+        "referer": "https://betmexico.mx/",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+        "accept": "application/json, text/plain, */*",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "sec-ch-ua-mobile": "?0"
+      },
+      "timestamp": 1787904642.437806
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://paymentsapi.betmexico.mx/api/wallet/PendingWithdrawal",
+      "headers": {
+        "x-frame-options": "DENY",
+        "access-control-expose-headers": "Access-Control-Allow-Credentials,Origin,Access-Control-Allow-Methods,Access-Control-Allow-Origin,Access-Control-Allow-Headers",
+        "access-control-allow-credentials": "true",
+        "via": "1.1 8bc59699ec22e0a39e7bce454f44084a.cloudfront.net (CloudFront)",
+        "access-control-allow-origin": "https://betmexico.mx",
+        "x-cache": "Miss from cloudfront",
+        "content-length": "147",
+        "alt-svc": "h3=\":443\"; ma=86400",
+        "date": "Fri, 28 Aug 2026 08:10:45 GMT",
+        "x-xss-protection": "1; mode=block",
+        "content-type": "application/json; charset=utf-8",
+        "x-amz-cf-pop": "DFW56-P9",
+        "server": "CloudFront",
+        "x-amz-cf-id": "Sn0GjX9LHgcwz9J3hWcDyyz5RsHALfFaimlHH4qBpyT9PmH9o-Y4MQ==",
+        "vary": "Origin"
+      },
+      "response_body": "{\"id\":null,\"reference\":null,\"amount\":null,\"transactionStatus\":null,\"transactionStatusDescription\":null,\"gatewayType\":null,\"isCashWithdrawal\":false}",
+      "timestamp": 1787904642.5512533
+    },
+    {
+      "type": "request",
+      "method": "GET",
+      "url": "https://paymentsapi.betmexico.mx/api/wallet/PendingWithdrawal",
+      "post_data": null,
+      "headers": {
+        "sec-ch-ua-platform": "\"Windows\"",
+        "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImN0eSI6IkpXVCJ9.eyJVbmlxdWVJZFRyYWNrZXIiOiIyMTgzZmYxN2FhODE0NGM2YTJjMzRkNWNlYzRjYjBjY19QVVpBNDhCWVM2RURGT1MyVlFHUjI0MVROTlZIIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6InJldGlyb2JldG1leDAxMDQzMjY4NyIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6InJldGlyb2JldG1leDAuMUBnbWFpbC5jb20iLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9zaWQiOiIyMTgzZmYxNy1hYTgxLTQ0YzYtYTJjMy00ZDVjZWM0Y2IwY2MiLCJqdGkiOiI0ODU4ZTQxNi1mYjU4LTQzZDgtOWMxZS1jZDIwYTI0MDVmMDIiLCJFeHRlbmRlZFNlc3Npb24iOiJGYWxzZSIsIlN0YXR1cyI6IkFjdGl2ZSIsIm5iZiI6MTc4NzkwNDQ2MCwiZXhwIjoxNzg3OTkwODYwLCJpc3MiOiJodHRwczovL2JldG1leGljby5teC8iLCJhdWQiOiJTcG9ydEJvb2tCZXRNZXhpY28ifQ.WQ1W3ChhdpAAke_7C2RVzHDPruOYy_uLpvoq1se0tiQ",
+        "referer": "https://betmexico.mx/",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36",
+        "accept": "application/json, text/plain, */*",
+        "sec-ch-ua": "\"Not=A?Brand\";v=\"99\", \"Google Chrome\";v=\"151\", \"Chromium\";v=\"151\"",
+        "sec-ch-ua-mobile": "?0"
+      },
+      "timestamp": 1787904702.4409082
+    },
+    {
+      "type": "response",
+      "status": 200,
+      "url": "https://paymentsapi.betmexico.mx/api/wallet/PendingWithdrawal",
+      "headers": {
+        "x-frame-options": "DENY",
+        "access-control-expose-headers": "Access-Control-Allow-Credentials,Origin,Access-Control-Allow-Methods,Access-Control-Allow-Origin,Access-Control-Allow-Headers",
+        "access-control-allow-credentials": "true",
+        "via": "1.1 3368064fd81368cfc0c47fab23e1aa0e.cloudfront.net (CloudFront)",
+        "alt-svc": "h3=\":443\"; ma=86400",
+        "x-cache": "Miss from cloudfront",
+        "content-length": "147",
+        "access-control-allow-origin": "https://betmexico.mx",
+        "date": "Fri, 28 Aug 2026 08:11:45 GMT",
+        "x-xss-protection": "1; mode=block",
+        "content-type": "application/json; charset=utf-8",
+        "x-amz-cf-pop": "DFW56-P9",
+        "server": "CloudFront",
+        "x-amz-cf-id": "mX97a9PhnJ9ngGUl1oosirSoeD54cfeS26bUI-BohKtIO5BGpYULZg==",
+        "vary": "Origin"
+      },
+      "response_body": "{\"id\":null,\"reference\":null,\"amount\":null,\"transactionStatus\":null,\"transactionStatusDescription\":null,\"gatewayType\":null,\"isCashWithdrawal\":false}",
+      "timestamp": 1787904702.6267753
+    }
+  ]
+}

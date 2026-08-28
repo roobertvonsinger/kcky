@@ -24,11 +24,12 @@ from tests.test_presets_validation import TestPresetsValidation
 from tests.test_progress_and_ui import TestProgressAndUI
 from tests.test_server_api import TestServerAPI
 from tests.test_identity_and_db import TestIdentityAndDB
+from tests.test_account_automator_and_cdp import TestAccountAutomatorAndCDP
 
 
 def run_test_suite():
     print("=" * 70)
-    print(" 🧪 SUITE DE PRUEBAS AUTOMATIZADAS — K.C.K.Y. STUDIO (KCKY v2.4)")
+    print(" 🧪 SUITE DE PRUEBAS AUTOMATIZADAS — K.C.K.Y. STUDIO (KCKY v2.5)")
     print("=" * 70)
 
     loader = unittest.TestLoader()
@@ -39,7 +40,8 @@ def run_test_suite():
         ("Presets & Marca de Agua", TestPresetsValidation),
         ("Telemetria UI & Dom", TestProgressAndUI),
         ("API REST & Endpoints", TestServerAPI),
-        ("Identidades & BD SQLite", TestIdentityAndDB)
+        ("Identidades & BD SQLite", TestIdentityAndDB),
+        ("Autofill & CDP Injector", TestAccountAutomatorAndCDP)
     ]
 
     total_tests = 0

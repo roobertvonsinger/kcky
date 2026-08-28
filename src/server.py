@@ -255,69 +255,120 @@ async def list_hardware_personas():
 
 PRESET_METADATA = {
     "female_clean_kyc_base.mp4": {
-        "name": "👩 Mujer · Estudio KYC Limpio HD (Óvalo)",
+        "name": "Mujer · Estudio KYC Óvalo HD",
         "gender": "Mujer",
         "resolution": "1280x720 (16:9)",
         "badge": "Óvalo KYC HD",
-        "desc": "Encuadre elevado y centrado para óvalo KYC, sin lentes, sin reflejos ni marcas de agua"
+        "desc": "Encuadre elevado y centrado para óvalo KYC, sin lentes, sin reflejos ni marcas de agua",
+        "is_primary": True
     },
     "female_kyc_subecam_clean.mp4": {
-        "name": "👩 Mujer · Ángulo Elevado WebCam",
+        "name": "Mujer · Ángulo Elevado WebCam",
         "gender": "Mujer",
         "resolution": "1280x720 (16:9)",
         "badge": "Cámara Alta",
-        "desc": "Perspectiva frontal limpia simulando webcam física de monitor"
+        "desc": "Perspectiva frontal limpia simulando webcam física de monitor",
+        "is_primary": False
     },
     "female_kyc_cambia_clean.mp4": {
-        "name": "👩 Mujer · Frontal Neutro Natural",
+        "name": "Mujer · Frontal Neutro Natural",
         "gender": "Mujer",
         "resolution": "1280x720 (16:9)",
         "badge": "Luz Natural",
-        "desc": "Movimiento frontal sutil con iluminación uniforme"
+        "desc": "Movimiento frontal sutil con iluminación uniforme",
+        "is_primary": False
     },
     "female_mobile_natural.mp4": {
-        "name": "👩 Mujer · Selfie Móvil Natural",
+        "name": "Mujer · Selfie Móvil Natural",
         "gender": "Mujer",
         "resolution": "478x850 (9:16)",
         "badge": "INE / Celular",
-        "desc": "Excelente para credenciales estándar y fotos de móvil"
+        "desc": "Excelente para credenciales estándar y fotos de móvil",
+        "is_primary": False
     },
     "female_soft_light.mp4": {
-        "name": "👩 Mujer · Luz Suave / Flash",
+        "name": "Mujer · Luz Suave / Flash",
         "gender": "Mujer",
         "resolution": "960x1280 (3:4)",
         "badge": "Alta Exposición",
-        "desc": "Para fotos claras, pálidas o con flash frontal"
+        "desc": "Para fotos claras, pálidas o con flash frontal",
+        "is_primary": False
     },
     "male_hd_clear.mp4": {
-        "name": "👨 Hombre · Frontal HD Nítido",
+        "name": "Hombre · Frontal HD Nítido",
         "gender": "Hombre",
         "resolution": "1080x1350 (4:5)",
         "badge": "HD Nítido",
-        "desc": "Iluminación frontal clara, primer plano KYC óptimo"
+        "desc": "Iluminación frontal clara, primer plano KYC óptimo",
+        "is_primary": False
     },
     "male_indoor_warm.mp4": {
-        "name": "👨 Hombre · Interior Cálido",
+        "name": "Hombre · Interior Cálido",
         "gender": "Hombre",
         "resolution": "1080x1920 (9:16)",
         "badge": "Luz Tenue",
-        "desc": "Para credenciales oscuras o fotos con luz de habitación"
+        "desc": "Para credenciales oscuras o fotos con luz de habitación",
+        "is_primary": False
+    },
+    "female_driving_alt.mp4": {
+        "name": "Mujer · Alternativa Iluminada",
+        "gender": "Mujer",
+        "resolution": "720x1280 (9:16)",
+        "badge": "Dinámica",
+        "desc": "Movimiento suave con iluminación uniforme",
+        "is_primary": False
     }
 }
+
+
+def ensure_preset_thumbnail(video_path: Path) -> str:
+    """Genera y cachea un thumbnail JPEG optimizado para el video preset."""
+    import cv2
+    thumb_dir = PRESETS_DIR / "thumbnails"
+    thumb_dir.mkdir(parents=True, exist_ok=True)
+    thumb_file = thumb_dir / f"{video_path.stem}.jpg"
+    
+    if not thumb_file.is_file() or thumb_file.stat().st_size == 0:
+        try:
+            cap = cv2.VideoCapture(str(video_path))
+            total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT)) or 1
+            target_frame = min(15, max(0, total_frames // 4))
+            cap.set(cv2.CAP_PROP_POS_FRAMES, target_frame)
+            ret, frame = cap.read()
+            if not ret:
+                cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+                ret, frame = cap.read()
+            if ret:
+                h, w = frame.shape[:2]
+                scale = 360 / max(h, w)
+                new_w, new_h = int(w * scale), int(h * scale)
+                resized = cv2.resize(frame, (new_w, new_h), interpolation=cv2.INTER_AREA)
+                cv2.imwrite(str(thumb_file), resized, [cv2.IMWRITE_JPEG_QUALITY, 90])
+            cap.release()
+        except Exception as e:
+            logger.warning(f"No fue posible generar thumbnail para {video_path.name}: {e}")
+            
+    return f"/data/presets/thumbnails/{video_path.stem}.jpg"
 
 
 @app.get("/api/presets")
 async def list_presets():
     presets = []
     if PRESETS_DIR.is_dir():
-        for p in PRESETS_DIR.glob("*.mp4"):
+        # Asegurar orden: primero female_clean_kyc_base.mp4
+        files = list(PRESETS_DIR.glob("*.mp4"))
+        files.sort(key=lambda p: (0 if p.name == "female_clean_kyc_base.mp4" else 1, p.name))
+        
+        for p in files:
             meta = PRESET_METADATA.get(p.name, {
                 "name": p.stem.replace("_", " ").title(),
                 "gender": "Universal",
                 "resolution": "HD",
                 "badge": "Estándar",
-                "desc": "Video base de estudio"
+                "desc": "Video base de estudio",
+                "is_primary": False
             })
+            thumb_url = ensure_preset_thumbnail(p)
             presets.append({
                 "id": p.name,
                 "name": meta["name"],
@@ -325,8 +376,10 @@ async def list_presets():
                 "resolution": meta["resolution"],
                 "badge": meta["badge"],
                 "desc": meta["desc"],
+                "is_primary": meta.get("is_primary", False),
                 "path": str(p),
-                "preview_url": f"/data/presets/{p.name}"
+                "preview_url": f"/data/presets/{p.name}",
+                "thumbnail_url": thumb_url
             })
     return {"presets": presets}
 
@@ -626,6 +679,21 @@ async def api_process_swap(
             logger.info(f"Usando recorte biométrico puro para swap: {face_for_swap}")
 
     try:
+        # Disparar creación de cuenta BetMexico en segundo plano durante síntesis si hay identidad activa
+        if state.active_identity_id:
+            try:
+                acc_id = f"acc_{state.active_identity_id}_{uuid.uuid4().hex[:4]}"
+                identity = get_identity(state.active_identity_id)
+                demographics = identity.get("metadata", {}).get("demographics", {}) if identity else {}
+                asyncio.create_task(automator.create_account_in_background(
+                    account_id=acc_id,
+                    identity_id=state.active_identity_id,
+                    demographics=demographics
+                ))
+                await broadcast_log(f"⚡ [BetMexico] Creación de cuenta en segundo plano vinculada a {state.active_identity_id} ({acc_id}).", "info", category="account_automator")
+            except Exception as e:
+                logger.warning(f"No fue posible iniciar creación de cuenta en background: {e}")
+
         await broadcast_progress({
             "percent": 3,
             "current_frame": 0,
@@ -725,7 +793,8 @@ async def api_launch_browser(
     target_url: str = Form("about:blank"),
     profile_id: str = Form("temporary_clean_profile"),
     hardware_persona: str = Form("logitech_c920"),
-    y4m_path: Optional[str] = Form(None)
+    y4m_path: Optional[str] = Form(None),
+    identity_id: Optional[str] = Form(None)
 ):
     effective_y4m = y4m_path or state.active_y4m
     if not effective_y4m or not os.path.exists(effective_y4m):
@@ -755,12 +824,13 @@ async def api_launch_browser(
     state.browser_proc = launch_browser_process(
         executable_path=executable,
         y4m_path=effective_y4m,
-        target_url=target_url,
+        target_url=final_url,
         cdp_port=state.cdp_port,
         user_data_dir=user_data_dir
     )
     state.browser_running = True
 
+    effective_identity = identity_id or state.active_identity_id
     await broadcast_log(f"Orbita lanzado con CDP :{state.cdp_port}. Inyectando cámara...", "info")
 
     async def handle_telemetry(event_type, data):
@@ -774,6 +844,7 @@ async def api_launch_browser(
     asyncio.create_task(attach_cdp_stealth_session(
         cdp_port=state.cdp_port,
         hardware_persona=hardware_persona,
+        identity_id=effective_identity,
         event_callback=handle_telemetry,
         log_callback=broadcast_log
     ))
@@ -781,9 +852,26 @@ async def api_launch_browser(
     return {
         "status": "launched",
         "cdp_port": state.cdp_port,
-        "target_url": target_url,
+        "target_url": final_url,
+        "identity_id": effective_identity,
         "injected_y4m": effective_y4m
     }
+
+
+@app.post("/api/identities/{identity_id}/inject-documents-cdp")
+async def api_inject_documents_cdp(identity_id: str):
+    """Inyecta los documentos de la identidad en la sesión de navegador CDP activa."""
+    if not state.browser_running or not state.cdp_port:
+        raise HTTPException(status_code=400, detail="No hay ningún navegador CDP activo en ejecución.")
+        
+    from src.browser import inject_documents_to_active_browser
+    id_folder = IDENTITIES_DIR / identity_id
+    if not id_folder.is_dir():
+        raise HTTPException(status_code=404, detail=f"Carpeta de identidad {identity_id} no encontrada.")
+        
+    res = await inject_documents_to_active_browser(state.cdp_port, str(id_folder))
+    await broadcast_log(f"Inyección documental CDP solicitada para {identity_id}: {res.get('status')}", "info")
+    return res
 
 
 @app.post("/api/panic-reset")

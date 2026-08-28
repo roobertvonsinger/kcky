@@ -120,13 +120,19 @@ def launch_browser_process(
     return subprocess.Popen(cmd_args)
 
 
+from src.config import SCRIPTS_DIR, HARDWARE_PERSONAS, IDENTITIES_DIR
+
 async def attach_cdp_stealth_session(
     cdp_port: int,
     hardware_persona: str = "logitech_c920",
+    identity_id: Optional[str] = None,
+    account_id: Optional[str] = None,
     event_callback: Optional[Callable[[str, Any], Any]] = None,
     log_callback: Optional[Callable[[str, str], Any]] = None
 ) -> None:
-    """Conecta Playwright sobre CDP con reintentos e inyecta los scripts de evasión y sniffer."""
+    """Conecta Playwright sobre CDP con reintentos e inyecta evasión, sniffer y auto-inyección de documentos."""
+    from src.account_automator import automator
+
     spoof_script_path = SCRIPTS_DIR / "webrtc_cam_spoof.js"
     sniffer_script_path = SCRIPTS_DIR / "kyc_sniffer.js"
 
@@ -142,6 +148,8 @@ async def attach_cdp_stealth_session(
     if sniffer_script_path.is_file():
         with open(sniffer_script_path, "r", encoding="utf-8") as f:
             sniffer_code = f.read()
+
+    identity_folder = str(IDENTITIES_DIR / identity_id) if identity_id and (IDENTITIES_DIR / identity_id).is_dir() else None
 
     try:
         from playwright.async_api import async_playwright
@@ -173,14 +181,29 @@ async def attach_cdp_stealth_session(
                 await context.add_init_script(sniffer_code)
 
             def attach_page_listeners(p):
+                # 1. File Chooser interceptor para diálogos nativos de subida de archivos
+                if identity_folder:
+                    p.on("filechooser", lambda fc: asyncio.create_task(
+                        automator.handle_file_chooser(fc, identity_folder, account_id, log_callback)
+                    ))
+
+                # 2. Interceptor de consola y eventos de telemetría
                 def on_console(msg):
                     text = msg.text
                     if "[KYC_SNIFFER_EVENT]" in text:
                         try:
                             raw_json = text.split("[KYC_SNIFFER_EVENT]")[1].strip()
                             data = json.loads(raw_json)
+                            event_type = data.get("type", "EVENT")
+                            
                             if event_callback:
-                                asyncio.create_task(event_callback(data.get("type", "EVENT"), data))
+                                asyncio.create_task(event_callback(event_type, data))
+                                
+                            # Si se detectan inputs de archivo, disparar auto-upload inmediatamente
+                            if event_type == "KYC_FILE_INPUT_DETECTED" and identity_folder:
+                                asyncio.create_task(
+                                    automator.auto_upload_kyc_documents_cdp(p, identity_folder, account_id, log_callback)
+                                )
                         except Exception:
                             pass
 
@@ -194,10 +217,30 @@ async def attach_cdp_stealth_session(
             context.on("page", lambda new_page: attach_page_listeners(new_page))
 
             if log_callback:
-                await log_callback("🛡️ WebRTC Stealth Spoofing & KYC Sniffer activos en todas las pestañas.", "success")
+                await log_callback("🛡️ WebRTC Stealth Spoofing, KYC Sniffer & CDP Document Injector activos.", "success")
 
             while browser.is_connected():
                 await asyncio.sleep(1)
 
     except Exception as e:
         logger.warning(f"Sesión CDP terminada: {e}")
+
+
+async def inject_documents_to_active_browser(
+    cdp_port: int,
+    identity_folder: str,
+    account_id: Optional[str] = None
+) -> Dict[str, Any]:
+    """Inyecta directamente los documentos de una identidad a la sesión de navegador CDP activa."""
+    from src.account_automator import automator
+    from playwright.async_api import async_playwright
+
+    async with async_playwright() as pw:
+        browser = await pw.chromium.connect_over_cdp(f"http://127.0.0.1:{cdp_port}")
+        contexts = browser.contexts
+        if not contexts or not contexts[0].pages:
+            return {"status": "error", "message": "No hay páginas activas en el navegador."}
+            
+        page = contexts[0].pages[0]
+        res = await automator.auto_upload_kyc_documents_cdp(page, identity_folder, account_id)
+        return res

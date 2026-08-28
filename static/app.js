@@ -284,10 +284,11 @@ async function handleImageUpload(file) {
         Studio.uploadedFacePath = res.enhanced_file_path || res.crop_file_path;
         Studio.uploadedCropUrl = res.crop_url;
         Studio.uploadedEnhancedUrl = res.enhanced_url;
+        Studio.activeIdentityId = res.identity_id || null;
         Studio.imageType = res.metadata?.image_type || 'ID_CARD';
         const detectedGender = res.metadata?.gender || 'Hombre';
         const detectedAge = res.metadata?.age || 35;
-        const recommendedPreset = res.metadata?.recommended_preset || (detectedGender === 'Hombre' ? 'male_hd_clear.mp4' : 'female_mobile_natural.mp4');
+        const recommendedPreset = res.metadata?.recommended_preset || (detectedGender === 'Hombre' ? 'male_hd_clear.mp4' : 'female_clean_kyc_base.mp4');
 
         // Mostrar vistas previas
         document.getElementById('img-crop-preview').src = res.crop_url;
@@ -334,8 +335,10 @@ async function handleImageUpload(file) {
 }
 
 /* ==========================================================================
-   CATÁLOGO DE PRESETS & DINÁMICA FACIAL
+   CATÁLOGO DE PRESETS & DINÁMICA FACIAL (TARJETAS VISUALES CON MINI-THUMBNAILS)
    ========================================================================== */
+Studio.presetFilter = 'all';
+
 async function loadPresetsCatalog() {
     try {
         const data = await safeFetchJson('/api/presets');
@@ -346,30 +349,80 @@ async function loadPresetsCatalog() {
     }
 }
 
+function filterPresets(filterGender, event) {
+    if (event) event.stopPropagation();
+    Studio.presetFilter = filterGender;
+
+    const pills = document.querySelectorAll('.pill-filter');
+    pills.forEach(p => {
+        if ((filterGender === 'all' && p.textContent.trim() === 'Todos') ||
+            p.textContent.trim() === filterGender) {
+            p.classList.add('active');
+        } else {
+            p.classList.remove('active');
+        }
+    });
+
+    renderPresetsCatalog();
+}
+
 function renderPresetsCatalog() {
     const container = document.getElementById('preset-buttons-row');
     if (!container) return;
 
     container.innerHTML = '';
-    Studio.availablePresets.forEach(p => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        const isSelected = (Studio.targetPreset === p.id);
-        btn.className = `preset-chip ${isSelected ? 'active' : ''}`;
-        btn.onclick = (e) => setSwapPreset(p.id, e);
-        btn.innerHTML = `
-            <span>${p.name}</span>
-            <span style="font-size: 8px; opacity: 0.65; display: block;">${p.resolution} · ${p.badge}</span>
-        `;
-        container.appendChild(btn);
+    
+    const filtered = Studio.availablePresets.filter(p => {
+        if (Studio.presetFilter === 'all') return true;
+        return p.gender === Studio.presetFilter;
     });
 
-    const customBtn = document.createElement('button');
-    customBtn.type = 'button';
-    customBtn.className = `preset-chip custom ${Studio.customVideoPath ? 'active' : ''}`;
-    customBtn.onclick = (e) => triggerFileInput('custom-video-input', e);
-    customBtn.innerHTML = `📁 Subir propio`;
-    container.appendChild(customBtn);
+    filtered.forEach(p => {
+        const card = document.createElement('div');
+        const isSelected = (Studio.targetPreset === p.id && !Studio.customVideoPath);
+        card.className = `preset-visual-card ${isSelected ? 'active' : ''}`;
+        card.onclick = (e) => setSwapPreset(p.id, e);
+        
+        card.innerHTML = `
+            <div class="preset-thumb-box">
+                <img src="${p.thumbnail_url || '/data/presets/thumbnails/' + p.id.replace('.mp4', '.jpg')}" alt="${p.name}" onerror="this.src='/static/thumb_fallback.jpg'" loading="lazy">
+                <span class="preset-badge-tag">${p.badge || 'HD'}</span>
+                <div class="preset-card-radio"></div>
+            </div>
+            <div class="preset-card-body">
+                <div class="preset-card-title">${p.name}</div>
+                <div class="preset-card-meta">
+                    <span class="meta-item-gender">${p.gender}</span>
+                    <span class="meta-dot">·</span>
+                    <span class="meta-item-res">${p.resolution}</span>
+                </div>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+
+    // Tarjeta para subir video personalizado
+    const customCard = document.createElement('div');
+    const isCustomActive = !!Studio.customVideoPath;
+    customCard.className = `preset-visual-card custom-card ${isCustomActive ? 'active' : ''}`;
+    customCard.onclick = (e) => triggerFileInput('custom-video-input', e);
+    
+    customCard.innerHTML = `
+        <div class="preset-thumb-box custom-thumb">
+            <div class="custom-icon-wrap">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            </div>
+            <span class="preset-badge-tag custom">PROPIO</span>
+            <div class="preset-card-radio"></div>
+        </div>
+        <div class="preset-card-body">
+            <div class="preset-card-title">${Studio.customVideoPath ? 'Video Propio Cargado' : 'Subir Video Propio'}</div>
+            <div class="preset-card-meta">
+                <span class="meta-item-res">${Studio.customVideoPath ? 'Personalizado MP4' : 'Toca para examinar'}</span>
+            </div>
+        </div>
+    `;
+    container.appendChild(customCard);
 }
 
 function selectMotionMode(mode) {
@@ -395,7 +448,7 @@ function setSwapPreset(presetName, event) {
     Studio.targetPreset = presetName;
     Studio.customVideoPath = null;
     renderPresetsCatalog();
-    showToast(`Base: ${presetName}`, "success");
+    showToast(`Base seleccionada: ${presetName}`, "success");
 }
 
 async function handleCustomVideoUpload(event) {
@@ -519,6 +572,9 @@ async function launchBrowserFlow() {
         formData.append('y4m_path', Studio.activeY4mPath);
         formData.append('target_url', targetUrl || 'https://webcamtests.com');
         formData.append('hardware_persona', hardwarePersona);
+        if (Studio.activeIdentityId) {
+            formData.append('identity_id', Studio.activeIdentityId);
+        }
 
         const res = await safeFetchJson('/api/launch-browser', { method: 'POST', body: formData });
         showToast(`🚀 Navegador lanzado con cámara [${hardwarePersona}].`, "success");
