@@ -34,7 +34,7 @@ from src.db import (
     register_account, update_account_status, record_kyc_session
 )
 from src.identity_manager import create_or_get_identity_session, extract_ine_demographics, sanitize_identity_name
-from src.account_automator import automator
+from src.account_automator import automator, kyc_monitor, BETMEXICO_DOC_TYPES
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger("KCKY_Server")
@@ -860,7 +860,7 @@ async def api_launch_browser(
     state.browser_proc = launch_browser_process(
         executable_path=executable,
         y4m_path=effective_y4m,
-        target_url=final_url,
+        target_url="about:blank",
         cdp_port=state.cdp_port,
         user_data_dir=user_data_dir
     )
@@ -881,6 +881,7 @@ async def api_launch_browser(
         cdp_port=state.cdp_port,
         hardware_persona=hardware_persona,
         identity_id=effective_identity,
+        target_url=final_url,
         event_callback=handle_telemetry,
         log_callback=broadcast_log
     ))
@@ -1002,6 +1003,88 @@ async def api_list_accounts():
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM accounts ORDER BY updated_at DESC LIMIT 50")
         return {"accounts": [dict(r) for r in cursor.fetchall()]}
+
+
+@app.get("/api/betmexico/endpoints-map")
+async def api_get_betmexico_endpoints_map():
+    """Retorna el mapa estructurado de endpoints y esquemas de verificación de BetMexico (para auditoría CDP/Red)."""
+    return {
+        "platform": "BetMexico",
+        "url_base": "https://betmexico.mx/user-identification",
+        "doc_types": BETMEXICO_DOC_TYPES,
+        "endpoints": {
+            "GetStatusFiles": {
+                "method": "GET/POST",
+                "description": "Estado de aprobación de cada archivo subido.",
+                "key_fields": {
+                    "userTypeDocument": "1=Selfie/Liveness, 2=Reverso INE, 3=Frente INE, 4=Comprobante Domicilio",
+                    "isApproved": "true/false",
+                    "dateUploadDocument": "Timestamp ISO"
+                }
+            },
+            "HasFullValidation": {
+                "method": "GET",
+                "description": "Bandera global de cuenta validada al 100%.",
+                "key_fields": {
+                    "data": "true si la cuenta está completamente verificada, false si está pendiente o en revisión",
+                    "message": "Mensaje informativo ('Usuario pendiente de verificación.')"
+                }
+            },
+            "Users": {
+                "method": "GET",
+                "description": "Perfil del usuario y estado biométrico de la cuenta.",
+                "key_fields": {
+                    "userAccount.faceStatus": "-1 = En revisión / Falla de match biométrico, 1 = Aprobado",
+                    "userRegisterStep": "Paso actual de registro (e.g. 2)",
+                    "userDetail.address": "Dirección registrada",
+                    "userDetail.cellPhone": "Teléfono registrado"
+                }
+            },
+            "AddressAcknowledgment": {
+                "method": "POST",
+                "description": "Aceptación del comprobante de domicilio.",
+                "key_fields": {
+                    "data": "true",
+                    "message": "ABLE_ACKNOWLEDGE_ADDRESS"
+                }
+            }
+        },
+        "heuristics": {
+            "stuck_timeout_seconds": 300,
+            "stuck_condition": "Si transcurridos >5 minutos HasFullValidation=false y selfie (1) o frente (3) siguen en isApproved=false o faceStatus=-1, la cuenta está en cola muerta y debe ser descartada."
+        }
+    }
+
+
+@app.post("/api/betmexico/evaluate-status")
+async def api_evaluate_betmexico_status(
+    status_files_json: Optional[str] = Form(None),
+    has_full_validation_json: Optional[str] = Form(None),
+    users_profile_json: Optional[str] = Form(None),
+    elapsed_seconds: float = Form(0.0)
+):
+    """Decodifica respuestas de red de BetMexico y emite el diagnóstico en tiempo real."""
+    sf_data = json.loads(status_files_json) if status_files_json else None
+    fv_data = json.loads(has_full_validation_json) if has_full_validation_json else None
+    usr_data = json.loads(users_profile_json) if users_profile_json else None
+
+    parsed_sf = kyc_monitor.parse_get_status_files(sf_data) if sf_data else None
+    parsed_fv = kyc_monitor.parse_has_full_validation(fv_data) if fv_data else None
+    parsed_usr = kyc_monitor.parse_users_profile(usr_data) if usr_data else None
+
+    health = kyc_monitor.evaluate_health_and_timeout(
+        status_files=parsed_sf,
+        full_validation=parsed_fv,
+        users_profile=parsed_usr,
+        elapsed_seconds=elapsed_seconds
+    )
+
+    return {
+        "status_files": parsed_sf,
+        "full_validation": parsed_fv,
+        "users_profile": parsed_usr,
+        "health": health
+    }
 
 
 @app.get("/favicon.ico", include_in_schema=False)

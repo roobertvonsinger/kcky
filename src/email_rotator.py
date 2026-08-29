@@ -17,24 +17,30 @@ BASE_EMAILS = [
 ]
 
 
-def generate_dot_variations_for_user(username: str) -> List[str]:
+def generate_dot_variations_for_user(username: str, include_multi_dots: bool = False) -> List[str]:
     """
-    Genera todas las variaciones posibles de 1 punto desplazándose de DERECHA a IZQUIERDA.
-    Por ejemplo, para 'retirobetmex01':
-    - retirobetmex0.1
-    - retirobetmex.01
-    - ...
-    - r.etirobetmex01
+    Genera todas las variaciones de 1 punto de derecha a izquierda.
+    Para 'retirobetmex01' genera: 'retirobetmex0.1', ..., 'r.etirobetmex01'.
     """
     n = len(username)
     if n <= 1:
         return [username]
     
     variations = []
-    # De derecha a izquierda: insertar punto en posición i (desde n-1 hasta 1)
+    # 1. 1 solo punto de derecha a izquierda
     for i in range(n - 1, 0, -1):
         variant = username[:i] + "." + username[i:]
-        variations.append(variant)
+        if variant not in variations:
+            variations.append(variant)
+            
+    # 2. 2 puntos distribuidos si se solicitan explícitamente
+    if include_multi_dots:
+        for j in range(n - 1, 1, -1):
+            for i in range(j - 1, 0, -1):
+                variant = username[:i] + "." + username[i:j] + "." + username[j:]
+                if variant not in variations:
+                    variations.append(variant)
+                
     return variations
 
 

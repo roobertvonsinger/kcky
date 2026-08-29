@@ -11,7 +11,10 @@ import logging
 from pathlib import Path
 from typing import Dict, Any, Optional, List, Tuple
 
-from src.db import register_account, update_account_status, record_kyc_session, get_identity, get_db_connection
+from src.db import (
+    register_account, update_account_status, record_kyc_session,
+    get_identity, get_db_connection, get_accounts_by_identity
+)
 from src.email_rotator import get_next_available_email, mark_email_as_used
 
 logger = logging.getLogger("AccountAutomator")
@@ -146,15 +149,35 @@ class AccountAutomator:
         account_id: str,
         identity_id: str,
         demographics: Dict[str, Any],
-        credentials: Optional[Dict[str, str]] = None
+        credentials: Optional[Dict[str, str]] = None,
+        force_new: bool = False
     ) -> Dict[str, Any]:
         """
         Hook ejecutado en segundo plano mientras la GPU genera el video swap/liveness.
-        Llena el formulario de registro de la plataforma y persiste el estado en SQLite.
+        Verifica duplicados en BD, llena el formulario de registro y persiste el estado.
         """
-        logger.info(f"[{self.platform}] Iniciando creación de cuenta para identidad: {identity_id}")
-        
+        logger.info(f"[{self.platform}] Iniciando verificación/creación de cuenta para identidad: {identity_id}")
         fields = self.parse_demographic_fields(demographics, credentials)
+
+        # 1. MECANISMO ANTI-DUPLICADOS: Si no se fuerza una nueva, verificar si ya existe una cuenta previa activa
+        if not force_new:
+            existing = get_accounts_by_identity(identity_id, platform=self.platform)
+            active = [a for a in existing if a.get("status") in ["CREATED", "VERIFYING", "APPROVED"]]
+            if active:
+                prev = active[0]
+                logger.info(f"[{self.platform}] ⚠️ Registro previo encontrado para {identity_id}: {prev['id']} (Estado: {prev['status']}). Reutilizando cuenta existente.")
+                reused_fields = dict(fields)
+                reused_fields["username"] = prev.get("username") or fields["username"]
+                reused_fields["email"] = prev.get("email") or fields["email"]
+                reused_fields["phone"] = prev.get("phone") or fields["phone"]
+                return {
+                    "status": "success",
+                    "reused": True,
+                    "account_id": prev["id"],
+                    "state": prev["status"],
+                    "message": f"Cuenta existente reutilizada ({prev['username']})",
+                    "fields": reused_fields
+                }
 
         # Registrar cuenta en estado CREATING en base de datos
         register_account(
@@ -472,5 +495,138 @@ class AccountAutomator:
         }
 
 
-# Instancia singleton del automador
+# ==============================================================================
+# MAPEO Y TELEMETRÍA DE ENDPOINTS KYC BETMEXICO (CDP & NETWORK AUDIT)
+# ==============================================================================
+
+BETMEXICO_DOC_TYPES = {
+    1: {"code": "selfie", "label": "Validación Facial / Selfie", "critical": True},
+    2: {"code": "id_back", "label": "Reverso de Identificación (INE)", "critical": False},
+    3: {"code": "id_front", "label": "Frente de Identificación (INE)", "critical": True},
+    4: {"code": "address_proof", "label": "Comprobante de Domicilio", "critical": False}
+}
+
+class BetMexicoKYCMonitor:
+    """
+    Monitor y Decodificador de Respuestas de Red BetMexico:
+    - GetStatusFiles: Mapeo de userTypeDocument (1=Selfie, 2=Reverso, 3=Frente, 4=Domicilio).
+    - HasFullValidation: Estado global de aprobación de la cuenta.
+    - Users/: faceStatus (-1=En revisión/Falla biométrica, 1=Aprobado) y datos del titular.
+    - AddressAcknowledgment/: Estado del comprobante de domicilio.
+    """
+
+    @staticmethod
+    def parse_get_status_files(response_json: Any) -> Dict[str, Any]:
+        """Parsea la respuesta del endpoint GetStatusFiles de BetMexico."""
+        raw_list = response_json if isinstance(response_json, list) else response_json.get("data", [])
+        parsed_docs = {}
+        all_critical_approved = True
+        has_any_rejection = False
+
+        for item in raw_list:
+            doc_type_id = item.get("userTypeDocument")
+            is_approved = bool(item.get("isApproved", False))
+            upload_date = item.get("dateUploadDocument", "")
+            
+            meta = BETMEXICO_DOC_TYPES.get(doc_type_id, {
+                "code": f"doc_{doc_type_id}",
+                "label": f"Documento Tipo {doc_type_id}",
+                "critical": False
+            })
+            
+            parsed_docs[meta["code"]] = {
+                "type_id": doc_type_id,
+                "label": meta["label"],
+                "is_approved": is_approved,
+                "upload_date": upload_date,
+                "critical": meta["critical"]
+            }
+
+            if meta["critical"] and not is_approved:
+                all_critical_approved = False
+
+        return {
+            "documents": parsed_docs,
+            "all_critical_approved": all_critical_approved,
+            "selfie_approved": parsed_docs.get("selfie", {}).get("is_approved", False),
+            "front_approved": parsed_docs.get("id_front", {}).get("is_approved", False),
+            "back_approved": parsed_docs.get("id_back", {}).get("is_approved", False),
+            "raw": raw_list
+        }
+
+    @staticmethod
+    def parse_has_full_validation(response_json: Any) -> Dict[str, Any]:
+        """Parsea la respuesta del endpoint HasFullValidation."""
+        is_valid = bool(response_json.get("data", False)) if isinstance(response_json, dict) else False
+        msg = response_json.get("message", "") if isinstance(response_json, dict) else ""
+        return {
+            "has_full_validation": is_valid,
+            "message": msg,
+            "is_verified": is_valid
+        }
+
+    @staticmethod
+    def parse_users_profile(response_json: Any) -> Dict[str, Any]:
+        """Parsea la respuesta del endpoint Users/ para extraer faceStatus y datos de cuenta."""
+        data = response_json.get("data", {}) if isinstance(response_json, dict) else {}
+        user_account = data.get("userAccount", {})
+        user_detail = data.get("userDetail", {})
+
+        face_status = user_account.get("faceStatus", 0)  # -1 = revisión/fallo, 1 = aprobado
+        return {
+            "full_name": data.get("fullName", ""),
+            "email": user_account.get("email", ""),
+            "username": user_account.get("username", ""),
+            "face_status": face_status,
+            "face_status_label": "Aprobado" if face_status == 1 else ("En revisión / Mismatch" if face_status == -1 else "Pendiente"),
+            "register_step": data.get("userRegisterStep", 0),
+            "address": user_detail.get("address", ""),
+            "cellphone": user_detail.get("cellPhone", "")
+        }
+
+    @staticmethod
+    def evaluate_health_and_timeout(
+        status_files: Optional[Dict[str, Any]],
+        full_validation: Optional[Dict[str, Any]],
+        users_profile: Optional[Dict[str, Any]],
+        elapsed_seconds: float,
+        stuck_timeout_seconds: float = 300.0  # 5 minutos
+    ) -> Dict[str, Any]:
+        """
+        Evalúa el estado general del KYC y detecta estancamiento (timeout) si BetMexico derivó a cola muerta.
+        """
+        is_verified = full_validation.get("has_full_validation", False) if full_validation else False
+        if is_verified:
+            return {
+                "verdict": "VERIFIED",
+                "message": "🎉 Cuenta 100% validada y aprobada en BetMexico.",
+                "action": "PROCEED",
+                "elapsed_seconds": round(elapsed_seconds, 1)
+            }
+
+        face_status = users_profile.get("face_status", 0) if users_profile else 0
+        selfie_approved = status_files.get("selfie_approved", False) if status_files else False
+        front_approved = status_files.get("front_approved", False) if status_files else False
+        back_approved = status_files.get("back_approved", False) if status_files else False
+
+        # Si ya pasaron los 5-10 minutos y la selfie/frente no aprueban
+        if elapsed_seconds >= stuck_timeout_seconds:
+            if not selfie_approved or not front_approved or face_status == -1:
+                return {
+                    "verdict": "STUCK_OR_DEAD",
+                    "message": f"⚠️ Verificación estancada tras {int(elapsed_seconds//60)}m {int(elapsed_seconds%60)}s. La selfie ({'Aprobada' if selfie_approved else 'No aprobada'}) o frente ({'Aprobado' if front_approved else 'No aprobado'}) no hicieron match. Se recomienda descartar cuenta y rotar identidad.",
+                    "action": "ROTATE_NEXT",
+                    "elapsed_seconds": round(elapsed_seconds, 1)
+                }
+
+        return {
+            "verdict": "PENDING",
+            "message": f"⏳ En proceso ({int(elapsed_seconds)}s transcurridos). Reverso: {'OK' if back_approved else '...'}, Frente: {'OK' if front_approved else '...'}, Selfie: {'OK' if selfie_approved else '...'}",
+            "action": "WAIT",
+            "elapsed_seconds": round(elapsed_seconds, 1)
+        }
+
+
+# Instancias singleton
 automator = AccountAutomator()
+kyc_monitor = BetMexicoKYCMonitor()

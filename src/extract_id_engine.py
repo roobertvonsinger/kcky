@@ -386,10 +386,11 @@ def process_id_card(
     fw = x2 - x1
     fh = y2 - y1
 
-    if fw < 80 or fh < 80:
+    min_face_size = 40 if image_type == "ID_CARD" else 60
+    if fw < min_face_size or fh < min_face_size:
         return {
             "success": False,
-            "error": f"Imagen rechazada: El rostro es demasiado pequeño ({fw}x{fh}px). Acércate más a la cámara."
+            "error": f"Imagen rechazada: El rostro es demasiado pequeño ({fw}x{fh}px, min {min_face_size}px). Acércate más a la cámara."
         }
 
     if best_face.get("pose") is not None:

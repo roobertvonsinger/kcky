@@ -42,7 +42,18 @@ HARDWARE_PERSONAS = {
         "pid": "082D",
         "label": "Logitech HD Pro Webcam C920",
         "mic_label": "Microphone (Logitech HD Pro Webcam C920)",
-        "desc": "Estándar de la industria, menor scoring de riesgo en KYC."
+        "desc": "Estándar de la industria, menor scoring de riesgo en KYC.",
+        # Fingerprint de hardware para evasión anti-bot completa
+        "gpu_vendor": "Google Inc. (AMD)",
+        "gpu_renderer": "ANGLE (AMD, AMD Radeon(TM) Graphics Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "hardware_concurrency": 8,
+        "device_memory": 8,
+        "max_touch_points": 0,
+        "platform": "Win32",
+        "screen_width": 1920,
+        "screen_height": 1080,
+        "screen_color_depth": 24,
+        "pixel_ratio": 1.0,
     },
     "integrated": {
         "name": "Integrated Camera",
@@ -50,7 +61,17 @@ HARDWARE_PERSONAS = {
         "pid": "B614",
         "label": "Integrated Camera (04f2:b614)",
         "mic_label": "Microphone (Realtek(R) Audio)",
-        "desc": "Cámara OEM para laptops Windows 10/11."
+        "desc": "Cámara OEM para laptops Windows 10/11.",
+        "gpu_vendor": "Google Inc. (Intel)",
+        "gpu_renderer": "ANGLE (Intel, Intel(R) UHD Graphics 630 Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "hardware_concurrency": 8,
+        "device_memory": 8,
+        "max_touch_points": 0,
+        "platform": "Win32",
+        "screen_width": 1920,
+        "screen_height": 1080,
+        "screen_color_depth": 24,
+        "pixel_ratio": 1.0,
     },
     "hp_wide": {
         "name": "HP Wide Vision HD Camera",
@@ -58,7 +79,17 @@ HARDWARE_PERSONAS = {
         "pid": "03A2",
         "label": "HP Wide Vision HD Camera",
         "mic_label": "Internal Microphone (Conexant ISST Audio)",
-        "desc": "Emulación nativa de equipos HP Pavilion / Envy."
+        "desc": "Emulación nativa de equipos HP Pavilion / Envy.",
+        "gpu_vendor": "Google Inc. (Intel)",
+        "gpu_renderer": "ANGLE (Intel, Intel(R) Iris(R) Xe Graphics Direct3D11 vs_5_0 ps_5_0, D3D11)",
+        "hardware_concurrency": 12,
+        "device_memory": 16,
+        "max_touch_points": 10,
+        "platform": "Win32",
+        "screen_width": 1920,
+        "screen_height": 1080,
+        "screen_color_depth": 24,
+        "pixel_ratio": 1.5,
     }
 }
 

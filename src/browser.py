@@ -108,7 +108,6 @@ def launch_browser_process(
         f"--user-data-dir={user_data_dir}",
         "--no-first-run",
         "--no-default-browser-check",
-        "--test-type",
         "--disable-infobars",
         "--disable-blink-features=AutomationControlled",
         "--use-fake-ui-for-media-stream",
@@ -130,6 +129,7 @@ async def attach_cdp_stealth_session(
     hardware_persona: str = "logitech_c920",
     identity_id: Optional[str] = None,
     account_id: Optional[str] = None,
+    target_url: Optional[str] = None,
     event_callback: Optional[Callable[[str, Any], Any]] = None,
     log_callback: Optional[Callable[[str, str], Any]] = None
 ) -> None:
@@ -138,14 +138,33 @@ async def attach_cdp_stealth_session(
 
     spoof_script_path = SCRIPTS_DIR / "webrtc_cam_spoof.js"
     sniffer_script_path = SCRIPTS_DIR / "kyc_sniffer.js"
+    stealth_script_path = SCRIPTS_DIR / "stealth_evasions.js"
+
+    hw_config = HARDWARE_PERSONAS.get(hardware_persona, HARDWARE_PERSONAS["logitech_c920"])
+
+    # Inyectar configuración de hardware persona como variable global para los scripts JS
+    persona_js = f"""window.__hw_persona = {{
+        label: {json.dumps(hw_config['label'])},
+        camLabel: {json.dumps(hw_config['label'])},
+        micLabel: {json.dumps(hw_config['mic_label'])},
+        mic_label: {json.dumps(hw_config['mic_label'])},
+        gpu_vendor: {json.dumps(hw_config.get('gpu_vendor', 'Google Inc. (AMD)'))},
+        gpu_renderer: {json.dumps(hw_config.get('gpu_renderer', 'ANGLE (AMD, AMD Radeon(TM) Graphics Direct3D11 vs_5_0 ps_5_0, D3D11)'))},
+        hardware_concurrency: {hw_config.get('hardware_concurrency', 8)},
+        device_memory: {hw_config.get('device_memory', 8)},
+        max_touch_points: {hw_config.get('max_touch_points', 0)},
+        platform: {json.dumps(hw_config.get('platform', 'Win32'))}
+    }};"""
+
+    stealth_code = ""
+    if stealth_script_path.is_file():
+        with open(stealth_script_path, "r", encoding="utf-8") as f:
+            stealth_code = f.read()
 
     spoof_code = ""
     if spoof_script_path.is_file():
         with open(spoof_script_path, "r", encoding="utf-8") as f:
             spoof_code = f.read()
-            hw_config = HARDWARE_PERSONAS.get(hardware_persona, HARDWARE_PERSONAS["logitech_c920"])
-            spoof_code = spoof_code.replace("Integrated Camera (04f2:b614)", hw_config["label"])
-            spoof_code = spoof_code.replace("Microphone (Realtek(R) Audio)", hw_config["mic_label"])
 
     sniffer_code = ""
     if sniffer_script_path.is_file():
@@ -177,11 +196,22 @@ async def attach_cdp_stealth_session(
             contexts = browser.contexts
             context = contexts[0] if contexts else await browser.new_context()
 
-            # Preload scripts stealth para cualquier nueva página / iframe
+            # Preload scripts stealth en orden: 1) Persona config, 2) Evasiones, 3) WebRTC spoof, 4) Sniffer
+            await context.add_init_script(persona_js)
+            if stealth_code:
+                await context.add_init_script(stealth_code)
             if spoof_code:
                 await context.add_init_script(spoof_code)
             if sniffer_code:
                 await context.add_init_script(sniffer_code)
+
+            # Inyectar inmediatamente en todas las páginas abiertas actuales
+            combined_js = f"{persona_js}\n{stealth_code}\n{spoof_code}\n{sniffer_code}"
+            for p in context.pages:
+                try:
+                    await p.evaluate(combined_js)
+                except Exception:
+                    pass
 
             def attach_page_listeners(p):
                 # 1. File Chooser interceptor para diálogos nativos de subida de archivos
@@ -212,12 +242,57 @@ async def attach_cdp_stealth_session(
 
                 p.on("console", on_console)
 
+                # 3. Interceptor de respuestas de red BetMexico (GetStatusFiles, Users, HasFullValidation)
+                async def on_response(response):
+                    url = response.url
+                    if any(endpoint in url for endpoint in ["GetStatusFiles", "HasFullValidation", "Users", "AddressAcknowledgment"]):
+                        try:
+                            from src.account_automator import kyc_monitor
+                            res_json = await response.json()
+                            if "GetStatusFiles" in url:
+                                parsed = kyc_monitor.parse_get_status_files(res_json)
+                                if log_callback:
+                                    s = "✅ Aprobada" if parsed["selfie_approved"] else "⏳ En revisión"
+                                    f = "✅ Aprobado" if parsed["front_approved"] else "⏳ En revisión"
+                                    b = "✅ Aprobado" if parsed["back_approved"] else "⏳ En revisión"
+                                    await log_callback(f"📄 BetMexico GetStatusFiles: Selfie={s}, Frente={f}, Reverso={b}", "info")
+                            elif "HasFullValidation" in url:
+                                parsed = kyc_monitor.parse_has_full_validation(res_json)
+                                if log_callback:
+                                    status_emoji = "🎉" if parsed["has_full_validation"] else "⏳"
+                                    await log_callback(f"{status_emoji} BetMexico HasFullValidation: {parsed['message']}", "success" if parsed["has_full_validation"] else "info")
+                            elif "Users" in url:
+                                parsed = kyc_monitor.parse_users_profile(res_json)
+                                if log_callback:
+                                    await log_callback(f"👤 BetMexico Users: Titular='{parsed['full_name']}', faceStatus={parsed['face_status']} ({parsed['face_status_label']})", "info")
+                        except Exception:
+                            pass
+
+                p.on("response", lambda res: asyncio.create_task(on_response(res)))
+
+                # 4. Interceptor de peticiones de salida (Request Tracker - Segundo 0)
+                async def on_request(request):
+                    url = request.url
+                    method = request.method
+                    if any(kw in url.lower() for kw in ["upload", "file", "face", "selfie", "document", "validate", "getstatusfiles"]):
+                        if log_callback:
+                            await log_callback(f"📤 [SEGUNDO 0] Disparo de red ({method}): {url.split('?')[0]}", "info")
+
+                p.on("request", lambda req: asyncio.create_task(on_request(req)))
+
             # Escuchar en todas las páginas abiertas actuales
             for p in context.pages:
                 attach_page_listeners(p)
 
             # Escuchar en nuevas pestañas o popups generados por el flujo de onboarding
             context.on("page", lambda new_page: attach_page_listeners(new_page))
+
+            # Navegar de forma segura a target_url una vez que todos los scripts están activos
+            if target_url and target_url != "about:blank" and context.pages:
+                try:
+                    await context.pages[0].goto(target_url, wait_until="domcontentloaded")
+                except Exception as e:
+                    logger.warning(f"Error al navegar a {target_url}: {e}")
 
             if log_callback:
                 await log_callback("🛡️ WebRTC Stealth Spoofing, KYC Sniffer & CDP Document Injector activos.", "success")

@@ -225,6 +225,23 @@ def update_account_status(account_id: str, status: str, error_detail: Optional[s
         conn.commit()
 
 
+def get_accounts_by_identity(identity_id: str, platform: Optional[str] = None) -> List[Dict[str, Any]]:
+    """Obtiene el historial de cuentas registradas para una identidad dada para prevenir duplicados."""
+    with get_db_connection() as conn:
+        cursor = conn.cursor()
+        if platform:
+            cursor.execute(
+                "SELECT * FROM accounts WHERE identity_id = ? AND platform = ? ORDER BY created_at DESC",
+                (identity_id, platform)
+            )
+        else:
+            cursor.execute(
+                "SELECT * FROM accounts WHERE identity_id = ? ORDER BY created_at DESC",
+                (identity_id,)
+            )
+        return [dict(r) for r in cursor.fetchall()]
+
+
 # ==============================================================================
 # OPERACIONES CRUD — SESIONES KYC
 # ==============================================================================

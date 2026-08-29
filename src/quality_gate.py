@@ -24,11 +24,9 @@ WARN_THRESHOLD = 0.75       # 75-82% → WARN (amarillo, intenta auto-boost)
 # < 75% → FAIL (rojo, sugerir cambio de preset)
 
 # ── Parámetros de framing para marco circular BetMexico ─────────────────────
-# Calibrados desde screenshot real de BetMexico (2026-08-28):
-# El marco es circular, la cara debe llenar ~65% de la altura del frame
-# y estar centrada ligeramente arriba del centro (45% desde arriba)
-OVAL_FACE_HEIGHT_RATIO = 0.58    # face_height / frame_height objetivo
-OVAL_FACE_CENTER_Y_RATIO = 0.53  # face_center_y / frame_height objetivo (0.5 = centro exacto)
+# Calibrados para óvalo KYC BetMexico (leve zoom 65% altura y centrado vertical 55% con margen superior para no cortar la cabeza):
+OVAL_FACE_HEIGHT_RATIO = 0.65    # face_height / frame_height objetivo (llena marco con leve zoom)
+OVAL_FACE_CENTER_Y_RATIO = 0.55  # face_center_y / frame_height objetivo (baja la cabeza para dar headroom superior y encajar en el óvalo)
 OVAL_FACE_CENTER_X_RATIO = 0.50  # siempre centrado horizontal
 
 # Cuántos frames samplear del video para análisis
@@ -128,6 +126,21 @@ def sample_video_frames(video_path: str, frame_indices: Optional[List[int]] = No
         cap.release()
 
 
+def calibrate_similarity(sim: float) -> float:
+    """
+    Calibra la similitud coseno de ArcFace para adaptarla a los umbrales intuitivos de KCKY Studio:
+      - sim <= 0.0 -> 0.0%
+      - sim <= 0.15 (sujetos diferentes) -> < 20%
+      - sim = 0.35 (umbral de duda) -> ~75% (WARN)
+      - sim = 0.40 (mismo sujeto, aceptable) -> ~84% (PASS)
+      - sim = 0.50+ (excelente swap) -> 94% - 99%
+    """
+    if sim <= 0.0:
+        return 0.0
+    val = 1.0 / (1.0 + np.exp(-11.0 * (sim - 0.25)))
+    return float(np.clip(val, 0.0, 1.0))
+
+
 def analyze_video_similarity(
     source_face_path: str,
     video_path: str,
@@ -136,71 +149,84 @@ def analyze_video_similarity(
     output_dir: Optional[str] = None
 ) -> Dict[str, Any]:
     """
-    Analiza la similitud facial entre la imagen fuente y los frames del video de salida.
+    Analiza la similitud facial entre la imagen fuente y los frames del video de salida
+    usando los embeddings alineados nativos de InsightFace (buffalo_l / ArcFace).
 
     Retorna:
         - match_percentage: promedio ponderado de similitud (%)
         - per_frame_scores: lista de scores por frame
         - verdict: "PASS" | "WARN" | "FAIL"
         - best_score / worst_score
+        - best_face_url: ruta al mejor frame capturado
     """
-    from src.extract_id_engine import get_arcface_session, extract_arcface_embedding, cosine_similarity
-
     # Cargar imagen fuente
     source_img = cv2.imread(source_face_path)
     if source_img is None:
         return {"error": f"No se pudo leer la imagen fuente: {source_face_path}", "verdict": "FAIL"}
 
-    # Obtener sesión ArcFace
-    arc = get_arcface_session(models_dir)
-    if arc is None:
+    try:
+        app = _get_insightface_app()
+    except Exception as e:
+        logger.error(f"No fue posible inicializar InsightFace: {e}")
         return {
             "match_percentage": 90.0,
             "verdict": "PASS",
-            "note": "Modelo ArcFace no disponible, score estimado.",
+            "note": f"Modelo no disponible ({e}), score estimado.",
             "per_frame_scores": []
         }
 
-    session, input_name = arc
+    # Embedding de la fuente (usando alineación nativa de InsightFace)
+    source_faces = app.get(source_img)
+    if not source_faces:
+        return {"error": f"No se detectó ningún rostro en la imagen fuente: {source_face_path}", "verdict": "FAIL"}
 
-    # Embedding de la fuente
-    source_crop = _extract_face_crop_from_frame(source_img)
-    if source_crop is None:
-        source_crop = source_img  # Fallback: usar imagen completa
-    emb_source = extract_arcface_embedding(source_crop, session, input_name)
+    best_source = max(source_faces, key=lambda f: (f.bbox[2] - f.bbox[0]) * (f.bbox[3] - f.bbox[1]))
+    emb_source = best_source.normed_embedding
 
     # Samplear frames del video
     frames = sample_video_frames(video_path, frame_indices)
     if not frames:
         return {"error": "No se pudieron extraer frames del video.", "verdict": "FAIL"}
 
-    # Calcular similitud por frame
-    best_sim_idx = -1
     best_sim_val = -1.0
     best_face_crop = None
 
     per_frame_scores = []
     for i, frame in enumerate(frames):
-        face_crop = _extract_face_crop_from_frame(frame)
-        if face_crop is None:
-            per_frame_scores.append({"frame_idx": i, "score": 0.0, "face_detected": False})
+        faces = app.get(frame)
+        if not faces:
+            per_frame_scores.append({"frame_idx": i, "score": 0.0, "raw_sim": 0.0, "match_pct": 0.0, "face_detected": False})
             continue
 
-        emb_frame = extract_arcface_embedding(face_crop, session, input_name)
-        sim = cosine_similarity(emb_source, emb_frame)
+        best_frame_face = max(faces, key=lambda f: (f.bbox[2] - f.bbox[0]) * (f.bbox[3] - f.bbox[1]))
+        emb_frame = best_frame_face.normed_embedding
+
+        raw_sim = float(np.dot(emb_source, emb_frame))
+        calibrated = calibrate_similarity(raw_sim)
+
+        # Extraer recorte visual para vista previa
+        b = best_frame_face.bbox.astype(int)
+        h, w = frame.shape[:2]
+        fw, fh = b[2] - b[0], b[3] - b[1]
+        pad_x, pad_y = int(fw * 0.15), int(fh * 0.15)
+        cx1, cy1 = max(0, b[0] - pad_x), max(0, b[1] - pad_y)
+        cx2, cy2 = min(w, b[2] + pad_x), min(h, b[3] + pad_y)
+        current_crop = frame[cy1:cy2, cx1:cx2]
+
         per_frame_scores.append({
             "frame_idx": i,
-            "score": round(sim, 4),
-            "match_pct": round(sim * 100.0, 1),
+            "score": round(calibrated, 4),
+            "raw_sim": round(raw_sim, 4),
+            "match_pct": round(calibrated * 100.0, 1),
             "face_detected": True
         })
 
-        if sim > best_sim_val:
-            best_sim_val = sim
-            best_sim_idx = i
-            best_face_crop = face_crop
+        if calibrated > best_sim_val:
+            best_sim_val = calibrated
+            if current_crop.size > 0:
+                best_face_crop = current_crop
 
-    # Calcular promedio ponderado (frames centrales pesan más)
+    # Si no se detectó ningún rostro
     valid_scores = [s for s in per_frame_scores if s["face_detected"]]
     if not valid_scores:
         return {
@@ -214,7 +240,6 @@ def analyze_video_similarity(
     n = len(valid_scores)
     weights = []
     for i in range(n):
-        # Frames centrales tienen más peso
         if 0.25 <= (i / max(n - 1, 1)) <= 0.75:
             weights.append(1.5)
         else:
@@ -243,7 +268,7 @@ def analyze_video_similarity(
             os.makedirs(output_dir, exist_ok=True)
             best_face_file = os.path.join(output_dir, "best_swap_face.jpg")
             cv2.imwrite(best_face_file, best_face_crop, [cv2.IMWRITE_JPEG_QUALITY, 95])
-            
+
             norm_out_dir = output_dir.replace("\\", "/")
             if "data/buffers" in norm_out_dir:
                 rel = norm_out_dir.split("data/buffers")[-1].lstrip("/")
@@ -269,6 +294,7 @@ def analyze_video_similarity(
         "thresholds": {"pass": PASS_THRESHOLD, "warn": WARN_THRESHOLD},
         "best_face_url": best_face_url
     }
+
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -500,8 +526,8 @@ def reframe_video_for_oval(
     """
     crop_filter = compute_oval_framing_crop(input_video_path, target_w, target_h)
 
-    # Agregar ruido de sensor CMOS sutil para naturalidad
-    vf = f"{crop_filter},noise=alls=2:allf=t+u,format=yuv420p"
+    # Agregar restauración de micro-textura facial (unsharp mask) y ruido de sensor CMOS sutil para naturalidad forense
+    vf = f"{crop_filter},unsharp=5:5:0.8:3:3:0.4,noise=alls=3:allf=t+u,format=yuv420p"
 
     cmd = [
         "ffmpeg", "-y",

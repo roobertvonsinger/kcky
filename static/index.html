@@ -109,9 +109,38 @@
                         </div>
                     </div>
 
+                    <!-- Datos Demográficos Extraídos por OCR -->
+                    <div class="demographics-card-box" id="demographics-card-box" style="margin-top: 12px; padding: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px;">
+                        <div style="font-size: 11px; font-weight: 700; color: #aaa; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
+                            <span>📋 Datos Extraídos (OCR / INE)</span>
+                            <span id="account-status-chip" style="display: none; padding: 2px 6px; border-radius: 4px; font-size: 10px; background: rgba(76,175,80,0.2); color: #81c784;">Cuenta Activa</span>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 12px;">
+                            <div><span style="color: #777;">Titular:</span> <b id="demo-name" style="color: #eee;">-</b></div>
+                            <div><span style="color: #777;">CURP:</span> <b id="demo-curp" style="color: #eee;">-</b></div>
+                            <div><span style="color: #777;">Fecha Nac.:</span> <b id="demo-birth" style="color: #eee;">-</b></div>
+                            <div><span style="color: #777;">Género:</span> <b id="demo-gender" style="color: #eee;">-</b></div>
+                        </div>
+                    </div>
+
+                    <!-- Slot para Reverso de Credencial INE -->
+                    <div class="back-id-box" id="back-id-box" style="margin-top: 10px; padding: 10px 12px; background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.12); border-radius: 10px; display: flex; align-items: center; justify-content: space-between;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 20px;">🔄</span>
+                            <div>
+                                <div style="font-size: 12px; font-weight: 600; color: #eee;" id="back-status-title">Reverso de Credencial (INE)</div>
+                                <div style="font-size: 11px; color: #888;" id="back-status-subtitle">Requerido para validación KYC completa</div>
+                            </div>
+                        </div>
+                        <input type="file" id="back-id-file-input" accept="image/jpeg,image/png,image/webp" style="display: none;" onchange="handleBackImageUpload(this)">
+                        <button type="button" class="btn-sublink" id="btn-upload-back" onclick="triggerFileInput('back-id-file-input', event)" style="padding: 6px 12px; background: rgba(255,255,255,0.06); border-radius: 6px; border: 1px solid rgba(255,255,255,0.15);">
+                            Subir Reverso
+                        </button>
+                    </div>
+
                     <!-- Cambio Rápido de Imagen -->
-                    <div class="action-sublink-row">
-                        <button type="button" class="btn-sublink" onclick="triggerFileInput('identity-file-input', event)">Cambiar imagen</button>
+                    <div class="action-sublink-row" style="margin-top: 10px;">
+                        <button type="button" class="btn-sublink" onclick="triggerFileInput('identity-file-input', event)">Cambiar imagen frontal</button>
                     </div>
 
                     <!-- Botón Hotzone Inferior -->

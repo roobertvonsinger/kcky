@@ -19,6 +19,16 @@ BASE_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(BASE_DIR))
 os.chdir(BASE_DIR)
 
+# Auto-relaunch al venv de Deep-Live-Cam (DirectML + InsightFace) si el interprete actual carece de librerías
+DLC_PYTHON = (BASE_DIR.parent / "Deep-Live-Cam" / "venv" / "Scripts" / "python.exe").resolve()
+if DLC_PYTHON.is_file() and sys.executable.lower() != str(DLC_PYTHON).lower():
+    try:
+        import insightface
+    except ImportError:
+        import subprocess
+        cmd = [str(DLC_PYTHON)] + sys.argv
+        sys.exit(subprocess.call(cmd))
+
 from src.config import DEFAULT_HOST, DEFAULT_PORT, BUFFERS_DIR
 from src.liveness import generate_synthetic_liveness, convert_video_to_seamless_y4m
 from src.browser import find_orbita_executable, launch_browser_process, find_free_port
@@ -32,13 +42,18 @@ def free_port_if_in_use(port: int):
         cmd = f'powershell -NoProfile -Command "Get-NetTCPConnection -LocalPort {port} -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique"'
         output = subprocess.check_output(cmd, shell=True, text=True, errors="replace").strip()
         current_pid = os.getpid()
+        killed = False
         for line in output.splitlines():
             line = line.strip()
             if line and line.isdigit():
                 pid = int(line)
                 if pid != current_pid and pid != 0:
-                    print(f"[*] Liberando puerto {port} (Terminando proceso huérfano PID: {pid})...")
+                    print(f"[*] Liberando puerto {port} (Terminando proceso huerfano PID: {pid})...")
                     subprocess.run(f"taskkill /F /PID {pid}", shell=True, capture_output=True)
+                    killed = True
+        if killed:
+            import time
+            time.sleep(1.2)
     except Exception:
         pass
 

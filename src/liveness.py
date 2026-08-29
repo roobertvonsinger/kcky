@@ -206,7 +206,7 @@ def compute_smart_biometric_crop(
 
     # Fallback: cálculo directo con InsightFace
     FACE_HEIGHT_RATIO = 0.65
-    FACE_CENTER_Y = 0.45
+    FACE_CENTER_Y = 0.55
     target_ar = target_w / target_h
 
     try:
@@ -344,22 +344,22 @@ def convert_video_to_seamless_y4m(
 
     if framing_mode == "fit_pad":
         filter_args = [
-            "-vf", f"scale={width}:{height}:force_original_aspect_ratio=decrease,pad={width}:{height}:(ow-iw)/2:(oh-ih)/2,noise=alls=2:allf=t+u,format=yuv420p"
+            "-vf", f"scale={width}:{height}:force_original_aspect_ratio=decrease,pad={width}:{height}:(ow-iw)/2:(oh-ih)/2,unsharp=5:5:0.8:3:3:0.4,noise=alls=3:allf=t+u,format=yuv420p"
         ]
     elif is_portrait and (width > height):
         # Video vertical (selfie móvil) en salida horizontal (16:9 webcam):
         # Mantiene 100% de la cabeza/pecho centrado sin cortes y añade fondo ambiental desenfocado en los flancos
         filter_complex = (
             f"[0:v]scale={width}:{height}:force_original_aspect_ratio=increase,crop={width}:{height},boxblur=25:5,eq=brightness=-0.18[bg];"
-            f"[0:v]scale=-2:{height}[fg];"
-            f"[bg][fg]overlay=(W-w)/2:0,noise=alls=2:allf=t+u,format=yuv420p"
+            f"[0:v]scale=-2:{height},unsharp=5:5:0.8:3:3:0.4[fg];"
+            f"[bg][fg]overlay=(W-w)/2:0,noise=alls=3:allf=t+u,format=yuv420p"
         )
         filter_args = ["-filter_complex", filter_complex]
     else:
         # Video horizontal o relación 16:9 / 4:3
         # Headroom 0.35 para centrar cara en marco circular KYC (antes 0.15 dejaba cara MUY arriba)
         vf_scale = f"scale={width}:{height}:force_original_aspect_ratio=increase,crop={width}:{height}:(iw-ow)/2:'max(0, (ih-oh)*0.35)'"
-        filter_args = ["-vf", f"{vf_scale},noise=alls=2:allf=t+u,format=yuv420p"]
+        filter_args = ["-vf", f"{vf_scale},unsharp=5:5:0.8:3:3:0.4,noise=alls=3:allf=t+u,format=yuv420p"]
 
     total_frames = min_duration * fps
 

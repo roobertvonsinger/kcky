@@ -324,6 +324,23 @@ async function handleImageUpload(file) {
             arcfaceText.textContent = `${arcfaceScore}% ArcFace`;
         }
 
+        // Renderizar datos demográficos extraídos por OCR
+        const demoName = document.getElementById('demo-name');
+        const demoCurp = document.getElementById('demo-curp');
+        const demoBirth = document.getElementById('demo-birth');
+        const demoGender = document.getElementById('demo-gender');
+        const backBox = document.getElementById('back-id-box');
+
+        if (demoName) demoName.textContent = res.demographics?.full_name || (res.identity_id ? res.identity_id.replace(/_/g, ' ') : 'Detectado');
+        if (demoCurp) demoCurp.textContent = res.demographics?.curp || 'No visible';
+        if (demoBirth) demoBirth.textContent = res.demographics?.birth_date || '-';
+        if (demoGender) demoGender.textContent = res.demographics?.gender || detectedGender;
+
+        // Mostrar slot de reverso si es credencial/INE
+        if (backBox) {
+            backBox.style.display = (Studio.imageType === 'ID_CARD' || res.requires_back_upload) ? 'flex' : 'none';
+        }
+
         scanningUI.style.display = 'none';
         resultBox.style.display = 'block';
 
@@ -333,6 +350,36 @@ async function handleImageUpload(file) {
         scanningUI.style.display = 'none';
         idleUI.style.display = 'block';
         showToast(err.message || "Error al procesar la imagen.", "error");
+    }
+}
+
+async function handleBackImageUpload(input) {
+    if (!input.files || input.files.length === 0 || !Studio.activeIdentityId) return;
+    const file = input.files[0];
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const btn = document.getElementById('btn-upload-back');
+    const title = document.getElementById('back-status-title');
+    const subtitle = document.getElementById('back-status-subtitle');
+
+    if (btn) btn.textContent = 'Guardando...';
+    try {
+        const res = await safeFetchJson(`/api/identities/${Studio.activeIdentityId}/upload-back`, {
+            method: 'POST',
+            body: formData
+        });
+        if (title) title.textContent = '✅ Reverso Guardado';
+        if (subtitle) subtitle.textContent = 'Archivado en inputs/back.jpg';
+        if (btn) {
+            btn.textContent = 'Reemplazar';
+            btn.style.borderColor = '#81c784';
+            btn.style.color = '#81c784';
+        }
+        showToast("Reverso de credencial guardado exitosamente.", "success");
+    } catch (err) {
+        if (btn) btn.textContent = 'Reintentar';
+        showToast(err.message || "Error al subir reverso", "error");
     }
 }
 

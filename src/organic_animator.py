@@ -72,6 +72,8 @@ class OrganicFaceAnimator:
         self.target_height = target_height
         self.fps = fps
         self._app = None
+        # Ruido estático por píxel (fixed-pattern noise) - se genera una vez por instancia
+        self._per_pixel_offset = None
 
     def _get_insightface_app(self):
         if self._app is None:
@@ -167,6 +169,9 @@ class OrganicFaceAnimator:
         # 4. Triangulación de Delaunay sobre los puntos base
         delaunay = Delaunay(all_base_pts)
         
+        # Generar ruido estático por píxel (fixed-pattern noise) para toda la duración
+        self._per_pixel_offset = np.random.normal(0, 1.0, (self.target_height, self.target_width, 3))
+        
         return canvas, all_base_pts, delaunay
 
     def _generate_synthetic_grid(self, w: int, h: int) -> np.ndarray:
@@ -199,16 +204,17 @@ class OrganicFaceAnimator:
 
         total_frames = duration * self.fps
 
-        # Configurar generador de parpadeos aleatorios naturales (Poisson-like)
+        # Configurar generador de parpadeos aleatorios naturales (DISTRIBUCIÓN POISSON)
         blink_events = []
-        t_cursor = random.uniform(1.8, 3.5)
+        t_cursor = np.random.poisson(3.0)  # Primer parpadeo entre 0-6s (lambda=3)
         while t_cursor < duration:
             blink_events.append({
                 "start_time": t_cursor,
                 "duration": random.uniform(0.22, 0.32), # 250ms aprox
                 "double_blink": random.random() < 0.15  # 15% de doble parpadeo
             })
-            t_cursor += random.uniform(2.5, 4.8)
+            # Siguiente parpadeo: Poisson con lambda=3 (20 parpadeos/minuto promedio)
+            t_cursor += np.random.poisson(3.0)
 
         # Configurar micro-saccades oculares
         saccade_events = []
@@ -263,8 +269,10 @@ class OrganicFaceAnimator:
         for frame_idx in range(total_frames):
             current_time = frame_idx / float(self.fps)
 
-            # 1. Calcular ciclo de respiración (0.22 Hz = ~13 respiraciones por minuto)
-            resp_phase = 2 * math.pi * 0.22 * current_time
+            # 1. Calcular ciclo de respiración con jitter realista (±0.05 Hz)
+            # Frecuencia base: 0.22 Hz + variación aleatoria por ciclo
+            base_resp_freq = 0.22 + np.random.uniform(-0.05, 0.05)
+            resp_phase = 2 * math.pi * base_resp_freq * current_time
             resp_dy = 1.8 * math.sin(resp_phase)       # movimiento vertical suave
             resp_scale = 1.0 + 0.003 * math.sin(resp_phase) # ligera expansión de torso/pecho
 
@@ -345,15 +353,17 @@ class OrganicFaceAnimator:
                 t_dst = deformed_pts[tri]
                 _warp_triangle(canvas_f, frame_warped, t_src, t_dst)
 
-            # 7. Inyectar ruido de sensor CMOS dinámico y micro-variaciones de fotometría
+            # 7. Inyectar ruido de sensor CMOS dinámico + FIXED-PATTERN NOISE
             frame_u8 = np.clip(frame_warped, 0, 255).astype(np.uint8)
             
-            # Ruido CMOS gaussiano sutil (sigma = 2.0)
-            noise = np.random.normal(0, 2.2, (self.target_height, self.target_width, 3)).astype(np.float32)
+            # Ruido CMOS gaussiano sutil (sigma = 2.0) + ruido estático por píxel
+            temporal_noise = np.random.normal(0, 2.2, (self.target_height, self.target_width, 3)).astype(np.float32)
+            # Combinar ruido temporal + ruido estático por píxel (fixed-pattern)
+            combined_noise = temporal_noise + self._per_pixel_offset.astype(np.float32)
             # Micro-fluctuación de exposición ambiental (luz ambiente natural)
             lum_drift = 1.0 + 0.004 * math.sin(2 * math.pi * 0.35 * current_time)
             
-            final_frame = np.clip(frame_u8.astype(np.float32) * lum_drift + noise, 0, 255).astype(np.uint8)
+            final_frame = np.clip(frame_u8.astype(np.float32) * lum_drift + combined_noise, 0, 255).astype(np.uint8)
 
             # Escribir frame en el pipe Y4M
             proc_y4m.stdin.write(final_frame.tobytes())
