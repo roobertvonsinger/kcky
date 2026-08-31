@@ -213,11 +213,27 @@ async def attach_cdp_stealth_session(
                 except Exception:
                     pass
 
+            def safe_create_task(coro, task_name: str = "cdp_task"):
+                async def _runner():
+                    try:
+                        await coro
+                    except asyncio.CancelledError:
+                        pass
+                    except Exception as e:
+                        logger.warning(f"Error en tarea CDP ({task_name}): {e}", exc_info=False)
+                        if log_callback:
+                            try:
+                                await log_callback(f"⚠️ Evento CDP advertencia ({task_name}): {e}", "warning")
+                            except Exception:
+                                pass
+                return asyncio.create_task(_runner())
+
             def attach_page_listeners(p):
                 # 1. File Chooser interceptor para diálogos nativos de subida de archivos
                 if identity_folder:
-                    p.on("filechooser", lambda fc: asyncio.create_task(
-                        automator.handle_file_chooser(fc, identity_folder, account_id, log_callback)
+                    p.on("filechooser", lambda fc: safe_create_task(
+                        automator.handle_file_chooser(fc, identity_folder, account_id, log_callback),
+                        "handle_file_chooser"
                     ))
 
                 # 2. Interceptor de consola y eventos de telemetría
@@ -230,12 +246,13 @@ async def attach_cdp_stealth_session(
                             event_type = data.get("type", "EVENT")
                             
                             if event_callback:
-                                asyncio.create_task(event_callback(event_type, data))
+                                safe_create_task(event_callback(event_type, data), "event_callback")
                                 
                             # Si se detectan inputs de archivo, disparar auto-upload inmediatamente
                             if event_type == "KYC_FILE_INPUT_DETECTED" and identity_folder:
-                                asyncio.create_task(
-                                    automator.auto_upload_kyc_documents_cdp(p, identity_folder, account_id, log_callback)
+                                safe_create_task(
+                                    automator.auto_upload_kyc_documents_cdp(p, identity_folder, account_id, log_callback),
+                                    "auto_upload_kyc_documents"
                                 )
                         except Exception:
                             pass
@@ -268,7 +285,7 @@ async def attach_cdp_stealth_session(
                         except Exception:
                             pass
 
-                p.on("response", lambda res: asyncio.create_task(on_response(res)))
+                p.on("response", lambda res: safe_create_task(on_response(res), "on_response"))
 
                 # 4. Interceptor de peticiones de salida (Request Tracker - Segundo 0)
                 async def on_request(request):
@@ -278,7 +295,7 @@ async def attach_cdp_stealth_session(
                         if log_callback:
                             await log_callback(f"📤 [SEGUNDO 0] Disparo de red ({method}): {url.split('?')[0]}", "info")
 
-                p.on("request", lambda req: asyncio.create_task(on_request(req)))
+                p.on("request", lambda req: safe_create_task(on_request(req), "on_request"))
 
             # Escuchar en todas las páginas abiertas actuales
             for p in context.pages:

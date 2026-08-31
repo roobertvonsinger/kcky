@@ -8,7 +8,7 @@ import json
 import logging
 from pathlib import Path
 from typing import Dict, Any, List, Optional
-from datetime import datetime
+from datetime import datetime, timezone
 
 from src.config import DB_PATH
 
@@ -121,7 +121,7 @@ def upsert_identity(
 ) -> Dict[str, Any]:
     """Crea o actualiza una identidad física en la base de datos."""
     meta_json = json.dumps(metadata or {}, ensure_ascii=False)
-    now = datetime.utcnow().isoformat()
+    now = datetime.now(timezone.utc).isoformat()
 
     with get_db_connection() as conn:
         cursor = conn.cursor()
@@ -197,7 +197,7 @@ def register_account(
     status: str = "CREATING"
 ) -> Dict[str, Any]:
     """Registra una cuenta de plataforma vinculada a una identidad."""
-    now = datetime.utcnow().isoformat()
+    now = datetime.now(timezone.utc).isoformat()
     with get_db_connection() as conn:
         cursor = conn.cursor()
         cursor.execute("""
@@ -214,7 +214,7 @@ def register_account(
 
 def update_account_status(account_id: str, status: str, error_detail: Optional[str] = None):
     """Actualiza el estado de una cuenta (CREATING, CREATED, VERIFYING, APPROVED, REJECTED, DEAD)."""
-    now = datetime.utcnow().isoformat()
+    now = datetime.now(timezone.utc).isoformat()
     with get_db_connection() as conn:
         cursor = conn.cursor()
         cursor.execute("""
@@ -258,7 +258,7 @@ def record_kyc_session(
     account_id: Optional[str] = None
 ) -> Dict[str, Any]:
     """Registra o actualiza el resultado de una sesión de verificación KYC."""
-    now = datetime.utcnow().isoformat()
+    now = datetime.now(timezone.utc).isoformat()
     with get_db_connection() as conn:
         cursor = conn.cursor()
         cursor.execute("""

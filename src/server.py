@@ -665,11 +665,19 @@ async def api_process_swap(
                 acc_id = f"acc_{state.active_identity_id}_{uuid.uuid4().hex[:4]}"
                 identity = get_identity(state.active_identity_id)
                 demographics = identity.get("metadata", {}).get("demographics", {}) if identity else {}
-                asyncio.create_task(automator.create_account_in_background(
-                    account_id=acc_id,
-                    identity_id=state.active_identity_id,
-                    demographics=demographics
-                ))
+                
+                async def _safe_create_swap_bg():
+                    try:
+                        await automator.create_account_in_background(
+                            account_id=acc_id,
+                            identity_id=state.active_identity_id,
+                            demographics=demographics
+                        )
+                    except Exception as err:
+                        logger.error(f"Error en creación de cuenta swap ({acc_id}): {err}")
+                        await broadcast_log(f"⚠️ Error en creación de cuenta ({acc_id}): {err}", "error", "account_automator")
+
+                asyncio.create_task(_safe_create_swap_bg())
                 await broadcast_log(f"👑 [BetMexico] Creación de cuenta iniciada bajo demanda para {state.active_identity_id} ({acc_id}).", "info", category="account_automator")
             except Exception as e:
                 logger.warning(f"No fue posible iniciar creación de cuenta en background: {e}")
@@ -983,15 +991,20 @@ async def api_create_account_background(
     identity = get_identity(identity_id)
     demographics = identity.get("metadata", {}).get("demographics", {}) if identity else {}
     
-    # Lanzar creación asíncrona no bloqueante
-    asyncio.create_task(
-        automator.create_account_in_background(
-            account_id=acc_id,
-            identity_id=identity_id,
-            demographics=demographics,
-            credentials=creds
-        )
-    )
+    # Lanzar creación asíncrona no bloqueante con manejo seguro de excepciones
+    async def _safe_create_bg():
+        try:
+            await automator.create_account_in_background(
+                account_id=acc_id,
+                identity_id=identity_id,
+                demographics=demographics,
+                credentials=creds
+            )
+        except Exception as err:
+            logger.error(f"Error en creación de cuenta en background ({acc_id}): {err}")
+            await broadcast_log(f"⚠️ Error en creación de cuenta ({acc_id}): {err}", "error", "account_automator")
+
+    asyncio.create_task(_safe_create_bg())
     return {"status": "started", "account_id": acc_id, "identity_id": identity_id}
 
 
